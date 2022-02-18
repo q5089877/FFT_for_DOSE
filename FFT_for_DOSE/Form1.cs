@@ -13,14 +13,30 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Management;
 using Microsoft.Win32;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace FFT_DOSE
 {
     public partial class Form1 : Form
     {
+        static double chart_MAX = 250;
+        static int int_interval = 300;
+        string str_Response = "";
+        bool Send_ASS_CHECK = true;
         DBConn access_data;
-        string str_ttl = "";
+        string str_rece_dose = "";
         MethodInvoker mi_pcb_feedback;
+
+        //POWER
+        IMessageBasedSession session;
+        MessageBasedFormattedIO formattedIO;
+
+        //Chart
+        private System.Windows.Forms.Timer timerRealTimeData;
+        private Random random = new Random();
+        private int pointIndex = 0;
+        Chart chart1 = new RealtimeChart().GetChart;
+        int[] int_curr_value = new int[] { 7200 };
         public Form1()
         {
             InitializeComponent();
@@ -28,6 +44,7 @@ namespace FFT_DOSE
 
         string PLC_COM = "";
         string POWER_COM = "";
+        string DOSE_COM = "";
         private void Form1_Load(object sender, EventArgs e)
         {
             mi_pcb_feedback = new MethodInvoker(Update_pcb_feedback);
@@ -95,15 +112,20 @@ namespace FFT_DOSE
                         PLC_COM = cbx_plc.SelectedItem.ToString();
                     }
 
-                    //if (temp_item == "2" && Convert.ToUInt16(temp_select) > 0) // dose com
-                    //{ cbx_dose.SelectedIndex = Convert.ToUInt16(temp_select); }
-
                     if (temp_item == "3" && Convert.ToUInt16(temp_select) > 0) // power com
                     {
                         cbx_power.SelectedIndex = Convert.ToUInt16(temp_select);
                         POWER_COM = cbx_power.SelectedItem.ToString();
                     }
                 }
+
+                this.Controls.Add(chart1);
+                //Chart
+                timerRealTimeData = new System.Windows.Forms.Timer();
+                timerRealTimeData.Enabled = true;
+                timerRealTimeData.Interval = int_interval;
+                timerRealTimeData.Tick += new System.EventHandler(this.timerRealTimeData_Tick);
+                int_curr_value[0] = 150;
             }
             catch (Exception ex2)
             {
@@ -274,7 +296,6 @@ namespace FFT_DOSE
         public string GetPortInformation()
         {
             cbx_plc.Items.Add("");
-            cbx_dose.Items.Add("");
             cbx_power.Items.Add("");
 
             ManagementClass processClass = new ManagementClass("Win32_PnPEntity");
@@ -288,13 +309,13 @@ namespace FFT_DOSE
                     //Thats all information i got from port.
                     //Do whatever you want with this information   
                     cbx_plc.Items.Add(name);
-                    cbx_dose.Items.Add(name);
                     cbx_power.Items.Add(name);
                 }
             }
             return string.Empty;
         }
 
+        #region Get DOSE COM
         public string GetPortInformation_for_DOSE_COM()
         {
             ManagementClass processClass = new ManagementClass("Win32_PnPEntity");
@@ -305,10 +326,17 @@ namespace FFT_DOSE
                 if (name != null && name.ToString().Contains("USB") && name.ToString().Contains("COM"))
                 {
                     var portInfo = new SerialPortInfo(property);
+                    if (name.ToString().Contains("USB Serial Port"))
+                    {
+                        int str_length = name.ToString().Length;
+                        string dose_com = name.ToString().Substring(17, str_length - 18);
+                        return dose_com;
+                    }
                 }
             }
-            return string.Empty;
+            return "NO COM";
         }
+        #endregion
 
         #region Hide Code by PLC
         //private void button1_Click(object sender, EventArgs e)
@@ -394,7 +422,10 @@ namespace FFT_DOSE
         {
             try
             {
-                string strSQL = String.Format("UPDATE select_data set select_data ='" + cbx_power.SelectedIndex.ToString() + "'" + "where item = '3'");
+                string strSQL = String.Format("UPDATE select_data set select_data ='" + cbx_power.SelectedIndex.ToString() + "' " + "where com = '3'");
+                access_data.ExecuteSQL(strSQL);
+
+                strSQL = String.Format("UPDATE select_data set com_name ='" + cbx_power.SelectedItem.ToString() + "' " + "where com = '3'");
                 access_data.ExecuteSQL(strSQL);
 
                 string com_name = cbx_power.SelectedItem.ToString();
@@ -405,7 +436,7 @@ namespace FFT_DOSE
                 string VISA_ADDRESS = "ASRL" + com_num + "::INSTR";
 
                 // Create a connection (session) to the RS-232 device.                                 
-                IMessageBasedSession session = GlobalResourceManager.Open(VISA_ADDRESS) as IMessageBasedSession;
+                session = GlobalResourceManager.Open(VISA_ADDRESS) as IMessageBasedSession;
 
                 // Enable the Termination Character.                
                 session.TerminationCharacterEnabled = true;
@@ -419,7 +450,7 @@ namespace FFT_DOSE
                 serial.FlowControl = SerialFlowControlModes.DtrDsr;
 
                 // Send the *IDN? and read the response as strings
-                MessageBasedFormattedIO formattedIO = new MessageBasedFormattedIO(session);
+                formattedIO = new MessageBasedFormattedIO(session);
                 //   formattedIO.WriteLine("MEASure:CURRent?");
                 formattedIO.WriteLine("*IDN?");
                 string idnResponse = formattedIO.ReadLine();
@@ -435,7 +466,7 @@ namespace FFT_DOSE
 
                 Console.WriteLine("Current returned: {0}", idnResponse);
 
-                Thread.Sleep(1000);
+                Thread.Sleep(100);
 
                 formattedIO.WriteLine("OUTPut 1");
                 formattedIO.WriteLine("OUTPut 1");
@@ -443,15 +474,19 @@ namespace FFT_DOSE
 
                 Console.WriteLine("Current returned: {0}", idnResponse);
 
-                Thread.Sleep(1000);
+                Thread.Sleep(100);
 
                 formattedIO.WriteLine("MEASure:voltage?");
                 idnResponse = formattedIO.ReadLine();
 
                 Console.WriteLine("Current returned: {0}", idnResponse);
 
-                // Close the connection to the instrument
-                session.Dispose();
+                formattedIO.WriteLine("VOLTage 5.00");
+                Thread.Sleep(100);
+
+                formattedIO.WriteLine("SYST:REM");
+                Thread.Sleep(100);
+
             }
             catch (Exception ex)
             {
@@ -467,17 +502,11 @@ namespace FFT_DOSE
         {
             try
             {
-                GetPortInformation_for_DOSE_COM();
-                str_ttl = "";
+                str_rece_dose = "";
 
-                string port_name = cbx_dose.SelectedItem.ToString();
-                int int_left = port_name.ToString().IndexOf("(");
-                int int_right = port_name.ToString().IndexOf(")");
-                int int_length = int_right - int_left;
-                string comport_num = port_name.ToString().Substring(int_left + 1, int_length - 1);
                 RS232_DOSE.Close();
                 RS232_DOSE.Dispose();
-                RS232_DOSE.PortName = comport_num;
+                RS232_DOSE.PortName = GetPortInformation_for_DOSE_COM();
                 RS232_DOSE.Open();
 
                 int delay_time = 100;
@@ -573,10 +602,6 @@ namespace FFT_DOSE
 
 
 
-
-
-
-
                 UTF8bytes = Encoding.UTF8.GetBytes("Battery_Max:" + tbx_batt_max.Text + "\0" + Environment.NewLine);
                 RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
                 Thread.Sleep(delay_time);
@@ -618,9 +643,8 @@ namespace FFT_DOSE
             if (in_data.Length > 3)
             {
                 Console.WriteLine(in_data);
-                str_ttl = str_ttl + in_data;
+                str_rece_dose = str_rece_dose + in_data;
                 this.BeginInvoke(mi_pcb_feedback, null);
-
             }
         }
 
@@ -656,7 +680,10 @@ namespace FFT_DOSE
         {
             try
             {
-                string strSQL = String.Format("UPDATE select_data set select_data ='" + cbx_plc.SelectedIndex.ToString() + "'" + "where item = '1'");
+                string strSQL = String.Format("UPDATE select_data set select_data ='" + cbx_plc.SelectedIndex.ToString() + "' " + "where com = '1'");
+                access_data.ExecuteSQL(strSQL);
+
+                strSQL = String.Format("UPDATE select_data set com_name ='" + cbx_plc.SelectedItem.ToString() + "' " + "where com = '1'");
                 access_data.ExecuteSQL(strSQL);
 
                 string port_name = cbx_plc.SelectedItem.ToString();
@@ -690,21 +717,26 @@ namespace FFT_DOSE
             //#ASS_START
             //........
             //#ASS_STOP
-            str_ttl = "";
 
-            string port_name = cbx_dose.SelectedItem.ToString();
-            int int_left = port_name.ToString().IndexOf("(");
-            int int_right = port_name.ToString().IndexOf(")");
-            int int_length = int_right - int_left;
-            string comport_num = port_name.ToString().Substring(int_left + 1, int_length - 1);
+            str_rece_dose = "";
+
+            ////Open Power
+            //formattedIO.WriteLine("OUTPut 1");
+            //Console.WriteLine("Current returned: {0}", str_Response);
+            //Thread.Sleep(2000);
+
             RS232_DOSE.Close();
             RS232_DOSE.Dispose();
-            RS232_DOSE.PortName = comport_num;
+            RS232_DOSE.PortName = GetPortInformation_for_DOSE_COM();
             RS232_DOSE.Open();
 
             int delay_time = 100;
 
-            byte[] UTF8bytes = Encoding.UTF8.GetBytes("#RE_ASS_MOUNTING" + Environment.NewLine);
+            byte[] UTF8bytes = Encoding.UTF8.GetBytes("#RETEST" + Environment.NewLine);
+            RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+            Thread.Sleep(delay_time);
+
+            UTF8bytes = Encoding.UTF8.GetBytes("#RE_ASS_MOUNTING" + Environment.NewLine);
             RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
             Thread.Sleep(delay_time);
 
@@ -715,7 +747,6 @@ namespace FFT_DOSE
             UTF8bytes = Encoding.UTF8.GetBytes("#ASS_MOUNTING" + Environment.NewLine);
             RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
             Thread.Sleep(delay_time);
-
 
             UTF8bytes = Encoding.UTF8.GetBytes("#ASS_START" + Environment.NewLine);
             RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
@@ -764,7 +795,7 @@ namespace FFT_DOSE
 
         void Update_pcb_feedback()
         {
-            tbx_Pcb_feed_back.AppendText(str_ttl + Environment.NewLine);
+            tbx_Pcb_feed_back.AppendText(str_rece_dose + Environment.NewLine);
         }
 
         private void btn_clr_pcb_Click(object sender, EventArgs e)
@@ -786,7 +817,7 @@ namespace FFT_DOSE
             string subkey = "SYSTEM\\CurrentControlSet\\Control\\COM Name Arbiter\\Devices";
             string keyName = userRoot + "\\" + subkey;
 
-           // RegistryKey key = Registry.LocalMachine.OpenSubKey(subkey);
+            // RegistryKey key = Registry.LocalMachine.OpenSubKey(subkey);
             //byte[] Data = (byte[])key.GetValue("ComDB");
 
             //byte[] ImportData = { 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 00, 
@@ -795,14 +826,14 @@ namespace FFT_DOSE
             //Registry.SetValue(keyName, "ComDB", ImportData, RegistryValueKind.Binary);
             using (RegistryKey key = Registry.LocalMachine.OpenSubKey(subkey, true))
             {
-                if( key ==  null)
+                if (key == null)
                 {
                     string aa = "";
                 }
                 else
                 {
-                    key.DeleteValue("COM6");
-                  //  key.DeleteSubKey("COM6");
+                    //  key.DeleteValue("COM6");
+                    //  key.DeleteSubKey("COM6");
                 }
             }
 
@@ -823,5 +854,232 @@ namespace FFT_DOSE
             //}
         }
         #endregion
+
+        // Define some variables
+        int numberOfPointsInChart = 30;
+        int newX = 0;
+
+        private void timerRealTimeData_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                //從POWER取得電流
+
+                formattedIO.WriteLine("MEASure:current?");
+                string Curr_Response = formattedIO.ReadLine();
+                //轉為數字
+                try
+                {
+                    int int_curr = Convert.ToInt32(Curr_Response.Substring(2, 3));
+                    int_curr = int_curr - 13;
+                    if (int_curr < 0)
+                    {
+                        int_curr = 0;
+                    }
+                    int_curr_value[0] = int_curr;
+                    //依電流主動變化畫面高度
+                    if (int_curr < 49)
+                    {
+                        chart1.ChartAreas[0].AxisY.Maximum = 50;
+                    }
+                    else if (int_curr <= 99)
+                    {
+                        chart1.ChartAreas[0].AxisY.Maximum = 100;
+                    }
+                    else if (int_curr <= 149)
+                    {
+                        chart1.ChartAreas[0].AxisY.Maximum = 150;
+                    }
+                    else if (int_curr <= 199)
+                    {
+                        chart1.ChartAreas[0].AxisY.Maximum = 200;
+                    }
+                    else if (int_curr <= 249)
+                    {
+                        chart1.ChartAreas[0].AxisY.Maximum = 250;
+                    }
+                    else if (int_curr <= 299)
+                    {
+                        chart1.ChartAreas[0].AxisY.Maximum = 300;
+                    }
+                    else
+                    {
+                        chart1.ChartAreas[0].AxisY.Maximum = 1000;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
+                }
+
+                // Simulate adding new data points           
+                newX = pointIndex + 1;
+                //  int newY = random.Next(0, 5000);
+
+                //Chart---------------------------------------------------------------------------------------------------------------------
+                int newY = int_curr_value[0];
+                chart1.Series[0].Points.AddXY(newX, newY);
+                ++pointIndex;
+
+                // Adjust Y & X axis scale
+                chart1.ResetAutoValues();
+                if (chart1.ChartAreas["Default"].AxisX.Maximum < pointIndex)
+                {
+                    chart1.ChartAreas["Default"].AxisX.Maximum = pointIndex;
+                }
+
+                // Keep a constant number of points by removing them from the left
+                while (chart1.Series[0].Points.Count > numberOfPointsInChart)
+                {
+                    // Remove data points on the left side
+                    //   while (chart1.Series[0].Points.Count > numberOfPointsAfterRemoval)
+                    {
+                        chart1.Series[0].Points.RemoveAt(0);
+                    }
+                    // Adjust X axis scale
+                    double _min = pointIndex - numberOfPointsInChart;
+                    double _max = chart1.ChartAreas["Default"].AxisX.Minimum + numberOfPointsInChart;
+                    chart1.ChartAreas["Default"].AxisX.Minimum = pointIndex - numberOfPointsInChart;
+                    chart1.ChartAreas["Default"].AxisX.Maximum = chart1.ChartAreas["Default"].AxisX.Minimum + numberOfPointsInChart;
+                }
+            }
+            catch (Exception ex)
+            {
+                timerRealTimeData.Stop();
+                MessageBox.Show(ex.ToString());
+
+            }
+        }
+
+        public class RealtimeChart
+        {
+            private Chart _chart = null;
+            private int chartWidth = 748;
+            private int chartHeight = 628;
+            public string nameAxisX = "Counter";
+            private string nameAxisY = "Charging Current (mA)";
+
+            public RealtimeChart()
+            {
+                _chart = new Chart();
+
+                ChartArea ctArea = new ChartArea();
+                Legend legend = new Legend();
+                Series series = new Series();
+
+                _chart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(243)))), ((int)(((byte)(223)))), ((int)(((byte)(193)))));
+                _chart.BackGradientStyle = System.Windows.Forms.DataVisualization.Charting.GradientStyle.TopBottom;
+                _chart.BorderlineColor = System.Drawing.Color.FromArgb(((int)(((byte)(181)))), ((int)(((byte)(64)))), ((int)(((byte)(1)))));
+                _chart.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
+                _chart.BorderlineWidth = 2;
+                _chart.BorderSkin.SkinStyle = System.Windows.Forms.DataVisualization.Charting.BorderSkinStyle.None;
+                _chart.Location = new System.Drawing.Point(885, 10);
+                _chart.Name = "chart1";
+                _chart.Size = new System.Drawing.Size(chartWidth, chartHeight);
+                _chart.TabIndex = 1;
+                //  _chart.Dock = System.Windows.Forms.DockStyle.Fill;
+
+                ctArea.Area3DStyle.Inclination = 15;
+                ctArea.Area3DStyle.IsClustered = true;
+                ctArea.Area3DStyle.IsRightAngleAxes = false;
+                ctArea.Area3DStyle.Perspective = 50;
+                ctArea.Area3DStyle.Rotation = 10;
+                ctArea.Area3DStyle.WallWidth = 0;
+                ctArea.AxisX.IsLabelAutoFit = false;
+                ctArea.AxisX.LabelStyle.Font = new System.Drawing.Font("Trebuchet MS", 8.25F, System.Drawing.FontStyle.Bold);
+                ctArea.AxisX.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+                ctArea.AxisX.MajorGrid.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+                ctArea.AxisX.MinorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
+                ctArea.AxisX.Title = nameAxisX;
+
+                //控制point間隔
+                ctArea.AxisX.Interval = 1;
+
+                ctArea.AxisY.IsLabelAutoFit = false;
+                ctArea.AxisY.LabelStyle.Font = new System.Drawing.Font("Trebuchet MS", 8.25F, System.Drawing.FontStyle.Bold);
+                ctArea.AxisY.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+                ctArea.AxisY.MajorGrid.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+                ctArea.AxisY.Maximum = chart_MAX;
+                ctArea.AxisY.Minimum = 0D;
+                ctArea.AxisY.Title = nameAxisY;
+                ctArea.BackColor = System.Drawing.Color.OldLace;
+                ctArea.BackGradientStyle = System.Windows.Forms.DataVisualization.Charting.GradientStyle.TopBottom;
+                ctArea.BackSecondaryColor = System.Drawing.Color.White;
+                ctArea.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+                ctArea.BorderDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
+                ctArea.Name = "Default";
+                ctArea.ShadowColor = System.Drawing.Color.Transparent;
+                _chart.ChartAreas.Add(ctArea);
+
+                legend.BackColor = System.Drawing.Color.Transparent;
+                legend.Enabled = false;
+                legend.Font = new System.Drawing.Font("Trebuchet MS", 8.25F, System.Drawing.FontStyle.Bold);
+                legend.IsTextAutoFit = false;
+                legend.Name = "Default";
+                _chart.Legends.Add(legend);
+
+                series.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(26)))), ((int)(((byte)(59)))), ((int)(((byte)(105)))));
+                series.ChartArea = "Default";
+                series.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+
+
+                series.Legend = "Default";
+                series.Name = "Default";
+                _chart.Series.Add(series);
+
+                //修改粗細
+                _chart.Series[0].BorderWidth = 3;
+
+                //改修字型大小
+                _chart.ChartAreas[0].AxisX.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 12);
+                _chart.ChartAreas[0].AxisY.TitleFont = new System.Drawing.Font("Microsoft Sans Serif", 12);
+            }
+
+            public Chart GetChart
+            {
+                get { return _chart; }
+            }
+
+
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            session.Dispose();
+        }
+
+
+        private void timer_chk_COM_Tick(object sender, EventArgs e)
+        {
+            //利用COM的變化，剛取得DOSE的COM時, 主動送出ASS_CHECK
+            //DOSE_COM = GetPortInformation_for_DOSE_COM();
+            //if (Send_ASS_CHECK && DOSE_COM != "NO COM")
+            //{
+            //    Send_ASS_CHECK = false;
+               
+            //    RS232_DOSE.Close();
+            //    RS232_DOSE.Dispose();
+            //    RS232_DOSE.PortName = DOSE_COM;
+            //    RS232_DOSE.Open();
+
+            //    int delay_time = 100;
+
+            //    byte[] UTF8bytes = Encoding.UTF8.GetBytes("#RETEST" + Environment.NewLine);
+            //    RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+            //    Thread.Sleep(delay_time);
+
+            //    UTF8bytes = Encoding.UTF8.GetBytes("#RE_ASS_MOUNTING" + Environment.NewLine);
+            //    RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+            //    Thread.Sleep(delay_time);
+
+            //    UTF8bytes = Encoding.UTF8.GetBytes("#ASS_CHECK" + Environment.NewLine);
+            //    RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+            //    Thread.Sleep(300);
+
+            //    UTF8bytes = Encoding.UTF8.GetBytes("#ASS_MOUNTING" + Environment.NewLine);
+            //    RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+            //  //  Thread.Sleep(3000);
+            //}
+        }
     }
 }
