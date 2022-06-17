@@ -29,9 +29,10 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.button2 = new System.Windows.Forms.Button();
             this.RS232_PLC = new System.IO.Ports.SerialPort(this.components);
             this.button6 = new System.Windows.Forms.Button();
@@ -82,12 +83,53 @@
             this.btn_clear_com = new System.Windows.Forms.Button();
             this.chart2 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.timer_chk_COM = new System.Windows.Forms.Timer(this.components);
+            this.label20 = new System.Windows.Forms.Label();
+            this.lbl_charge_curr = new System.Windows.Forms.Label();
+            this.label21 = new System.Windows.Forms.Label();
+            this.tbx_gyro_z_min = new System.Windows.Forms.TextBox();
+            this.label22 = new System.Windows.Forms.Label();
+            this.tbx_gyro_z_max = new System.Windows.Forms.TextBox();
+            this.label23 = new System.Windows.Forms.Label();
+            this.tbx_gyro_y_min = new System.Windows.Forms.TextBox();
+            this.label24 = new System.Windows.Forms.Label();
+            this.tbx_gyro_y_max = new System.Windows.Forms.TextBox();
+            this.label25 = new System.Windows.Forms.Label();
+            this.tbx_gyro_x_min = new System.Windows.Forms.TextBox();
+            this.label26 = new System.Windows.Forms.Label();
+            this.tbx_gyro_x_max = new System.Windows.Forms.TextBox();
+            this.label27 = new System.Windows.Forms.Label();
+            this.tbx_acc_z_min = new System.Windows.Forms.TextBox();
+            this.label28 = new System.Windows.Forms.Label();
+            this.tbx_acc_z_max = new System.Windows.Forms.TextBox();
+            this.label29 = new System.Windows.Forms.Label();
+            this.tbx_acc_y_min = new System.Windows.Forms.TextBox();
+            this.label30 = new System.Windows.Forms.Label();
+            this.tbx_acc_y_max = new System.Windows.Forms.TextBox();
+            this.label31 = new System.Windows.Forms.Label();
+            this.tbx_acc_x_min = new System.Windows.Forms.TextBox();
+            this.label32 = new System.Windows.Forms.Label();
+            this.tbx_acc_x_max = new System.Windows.Forms.TextBox();
+            this.cbxSleeve = new System.Windows.Forms.ComboBox();
+            this.label33 = new System.Windows.Forms.Label();
+            this.label34 = new System.Windows.Forms.Label();
+            this.tbxSn = new System.Windows.Forms.TextBox();
+            this.btnOpenManage = new System.Windows.Forms.Button();
+            this.btnConfigFW = new System.Windows.Forms.Button();
+            this.btnShipMode = new System.Windows.Forms.Button();
+            this.tbxHousing = new System.Windows.Forms.TextBox();
+            this.label35 = new System.Windows.Forms.Label();
+            this.label36 = new System.Windows.Forms.Label();
+            this.tbxPCB = new System.Windows.Forms.TextBox();
+            this.btnStatus = new System.Windows.Forms.Button();
+            this.btnDump = new System.Windows.Forms.Button();
+            this.tbxBatch = new System.Windows.Forms.TextBox();
+            this.label37 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.chart2)).BeginInit();
             this.SuspendLayout();
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(441, 669);
+            this.button2.Location = new System.Drawing.Point(808, 694);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(107, 23);
             this.button2.TabIndex = 1;
@@ -102,18 +144,17 @@
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(635, 669);
+            this.button6.Location = new System.Drawing.Point(1001, 694);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(107, 23);
             this.button6.TabIndex = 5;
-            this.button6.Text = "Write M2";
+            this.button6.Text = "Write M2(PLC)";
             this.button6.UseVisualStyleBackColor = true;
-            this.button6.Visible = false;
             this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
             // button7
             // 
-            this.button7.Location = new System.Drawing.Point(554, 669);
+            this.button7.Location = new System.Drawing.Point(920, 694);
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(75, 23);
             this.button7.TabIndex = 6;
@@ -410,9 +451,9 @@
             // 
             this.btn_set_th.Font = new System.Drawing.Font("Verdana", 12F);
             this.btn_set_th.ForeColor = System.Drawing.Color.Navy;
-            this.btn_set_th.Location = new System.Drawing.Point(22, 318);
+            this.btn_set_th.Location = new System.Drawing.Point(22, 602);
             this.btn_set_th.Name = "btn_set_th";
-            this.btn_set_th.Size = new System.Drawing.Size(423, 48);
+            this.btn_set_th.Size = new System.Drawing.Size(423, 38);
             this.btn_set_th.TabIndex = 103;
             this.btn_set_th.Text = "#SET_ASS_TH";
             this.btn_set_th.UseVisualStyleBackColor = true;
@@ -422,9 +463,9 @@
             // 
             this.btn_ass_chk.Font = new System.Drawing.Font("Verdana", 12F);
             this.btn_ass_chk.ForeColor = System.Drawing.Color.Navy;
-            this.btn_ass_chk.Location = new System.Drawing.Point(22, 372);
+            this.btn_ass_chk.Location = new System.Drawing.Point(22, 646);
             this.btn_ass_chk.Name = "btn_ass_chk";
-            this.btn_ass_chk.Size = new System.Drawing.Size(423, 48);
+            this.btn_ass_chk.Size = new System.Drawing.Size(423, 38);
             this.btn_ass_chk.TabIndex = 104;
             this.btn_ass_chk.Text = "#ASS_CHECK";
             this.btn_ass_chk.UseVisualStyleBackColor = true;
@@ -508,7 +549,7 @@
             this.tbx_Pcb_feed_back.Multiline = true;
             this.tbx_Pcb_feed_back.Name = "tbx_Pcb_feed_back";
             this.tbx_Pcb_feed_back.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbx_Pcb_feed_back.Size = new System.Drawing.Size(405, 567);
+            this.tbx_Pcb_feed_back.Size = new System.Drawing.Size(405, 481);
             this.tbx_Pcb_feed_back.TabIndex = 134;
             // 
             // tbx_ttl_send
@@ -518,7 +559,6 @@
             this.tbx_ttl_send.Name = "tbx_ttl_send";
             this.tbx_ttl_send.Size = new System.Drawing.Size(195, 27);
             this.tbx_ttl_send.TabIndex = 133;
-            this.tbx_ttl_send.Text = "#DUMP_DATA";
             // 
             // label19
             // 
@@ -534,28 +574,27 @@
             // 
             this.btn_clear_com.Font = new System.Drawing.Font("Verdana", 12F);
             this.btn_clear_com.ForeColor = System.Drawing.Color.Navy;
-            this.btn_clear_com.Location = new System.Drawing.Point(19, 590);
+            this.btn_clear_com.Location = new System.Drawing.Point(22, 689);
             this.btn_clear_com.Name = "btn_clear_com";
-            this.btn_clear_com.Size = new System.Drawing.Size(423, 48);
+            this.btn_clear_com.Size = new System.Drawing.Size(423, 38);
             this.btn_clear_com.TabIndex = 139;
             this.btn_clear_com.Text = "Clear ComPort";
             this.btn_clear_com.UseVisualStyleBackColor = true;
-            this.btn_clear_com.Visible = false;
             this.btn_clear_com.Click += new System.EventHandler(this.btn_clear_com_Click);
             // 
             // chart2
             // 
-            chartArea4.Name = "ChartArea1";
-            this.chart2.ChartAreas.Add(chartArea4);
-            legend4.Name = "Legend1";
-            this.chart2.Legends.Add(legend4);
-            this.chart2.Location = new System.Drawing.Point(885, 10);
+            chartArea1.Name = "ChartArea1";
+            this.chart2.ChartAreas.Add(chartArea1);
+            legend1.Name = "Legend1";
+            this.chart2.Legends.Add(legend1);
+            this.chart2.Location = new System.Drawing.Point(885, 39);
             this.chart2.Name = "chart2";
-            series4.ChartArea = "ChartArea1";
-            series4.Legend = "Legend1";
-            series4.Name = "Series1";
-            this.chart2.Series.Add(series4);
-            this.chart2.Size = new System.Drawing.Size(748, 628);
+            series1.ChartArea = "ChartArea1";
+            series1.Legend = "Legend1";
+            series1.Name = "Series1";
+            this.chart2.Series.Add(series1);
+            this.chart2.Size = new System.Drawing.Size(748, 599);
             this.chart2.TabIndex = 140;
             this.chart2.Text = "chart2";
             this.chart2.Visible = false;
@@ -565,12 +604,448 @@
             this.timer_chk_COM.Interval = 1000;
             this.timer_chk_COM.Tick += new System.EventHandler(this.timer_chk_COM_Tick);
             // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Font = new System.Drawing.Font("Verdana", 12F);
+            this.label20.Location = new System.Drawing.Point(882, 15);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(246, 18);
+            this.label20.TabIndex = 141;
+            this.label20.Text = "Chargeing Current Maximum:";
+            // 
+            // lbl_charge_curr
+            // 
+            this.lbl_charge_curr.AutoSize = true;
+            this.lbl_charge_curr.Font = new System.Drawing.Font("Verdana", 12F);
+            this.lbl_charge_curr.Location = new System.Drawing.Point(1127, 15);
+            this.lbl_charge_curr.Name = "lbl_charge_curr";
+            this.lbl_charge_curr.Size = new System.Drawing.Size(70, 18);
+            this.lbl_charge_curr.TabIndex = 142;
+            this.lbl_charge_curr.Text = "200 mA";
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Font = new System.Drawing.Font("Verdana", 12F);
+            this.label21.Location = new System.Drawing.Point(235, 492);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(104, 18);
+            this.label21.TabIndex = 166;
+            this.label21.Text = "Gyro_Z_Min";
+            // 
+            // tbx_gyro_z_min
+            // 
+            this.tbx_gyro_z_min.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.tbx_gyro_z_min.Location = new System.Drawing.Point(364, 483);
+            this.tbx_gyro_z_min.Name = "tbx_gyro_z_min";
+            this.tbx_gyro_z_min.Size = new System.Drawing.Size(81, 27);
+            this.tbx_gyro_z_min.TabIndex = 165;
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Font = new System.Drawing.Font("Verdana", 12F);
+            this.label22.Location = new System.Drawing.Point(19, 492);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(108, 18);
+            this.label22.TabIndex = 164;
+            this.label22.Text = "Gyro_Z_Max";
+            // 
+            // tbx_gyro_z_max
+            // 
+            this.tbx_gyro_z_max.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.tbx_gyro_z_max.Location = new System.Drawing.Point(148, 483);
+            this.tbx_gyro_z_max.Name = "tbx_gyro_z_max";
+            this.tbx_gyro_z_max.Size = new System.Drawing.Size(81, 27);
+            this.tbx_gyro_z_max.TabIndex = 163;
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Font = new System.Drawing.Font("Verdana", 12F);
+            this.label23.Location = new System.Drawing.Point(235, 459);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(104, 18);
+            this.label23.TabIndex = 162;
+            this.label23.Text = "Gyro_Y_Min";
+            // 
+            // tbx_gyro_y_min
+            // 
+            this.tbx_gyro_y_min.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.tbx_gyro_y_min.Location = new System.Drawing.Point(364, 450);
+            this.tbx_gyro_y_min.Name = "tbx_gyro_y_min";
+            this.tbx_gyro_y_min.Size = new System.Drawing.Size(81, 27);
+            this.tbx_gyro_y_min.TabIndex = 161;
+            // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.Font = new System.Drawing.Font("Verdana", 12F);
+            this.label24.Location = new System.Drawing.Point(19, 459);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(108, 18);
+            this.label24.TabIndex = 160;
+            this.label24.Text = "Gyro_Y_Max";
+            // 
+            // tbx_gyro_y_max
+            // 
+            this.tbx_gyro_y_max.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.tbx_gyro_y_max.Location = new System.Drawing.Point(148, 450);
+            this.tbx_gyro_y_max.Name = "tbx_gyro_y_max";
+            this.tbx_gyro_y_max.Size = new System.Drawing.Size(81, 27);
+            this.tbx_gyro_y_max.TabIndex = 159;
+            // 
+            // label25
+            // 
+            this.label25.AutoSize = true;
+            this.label25.Font = new System.Drawing.Font("Verdana", 12F);
+            this.label25.Location = new System.Drawing.Point(235, 426);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(104, 18);
+            this.label25.TabIndex = 158;
+            this.label25.Text = "Gyro_X_Min";
+            // 
+            // tbx_gyro_x_min
+            // 
+            this.tbx_gyro_x_min.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.tbx_gyro_x_min.Location = new System.Drawing.Point(364, 417);
+            this.tbx_gyro_x_min.Name = "tbx_gyro_x_min";
+            this.tbx_gyro_x_min.Size = new System.Drawing.Size(81, 27);
+            this.tbx_gyro_x_min.TabIndex = 157;
+            // 
+            // label26
+            // 
+            this.label26.AutoSize = true;
+            this.label26.Font = new System.Drawing.Font("Verdana", 12F);
+            this.label26.Location = new System.Drawing.Point(19, 426);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(108, 18);
+            this.label26.TabIndex = 156;
+            this.label26.Text = "Gyro_X_Max";
+            // 
+            // tbx_gyro_x_max
+            // 
+            this.tbx_gyro_x_max.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.tbx_gyro_x_max.Location = new System.Drawing.Point(148, 417);
+            this.tbx_gyro_x_max.Name = "tbx_gyro_x_max";
+            this.tbx_gyro_x_max.Size = new System.Drawing.Size(81, 27);
+            this.tbx_gyro_x_max.TabIndex = 155;
+            // 
+            // label27
+            // 
+            this.label27.AutoSize = true;
+            this.label27.Font = new System.Drawing.Font("Verdana", 12F);
+            this.label27.Location = new System.Drawing.Point(235, 393);
+            this.label27.Name = "label27";
+            this.label27.Size = new System.Drawing.Size(94, 18);
+            this.label27.TabIndex = 154;
+            this.label27.Text = "Acc_Z_Min";
+            // 
+            // tbx_acc_z_min
+            // 
+            this.tbx_acc_z_min.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.tbx_acc_z_min.Location = new System.Drawing.Point(364, 384);
+            this.tbx_acc_z_min.Name = "tbx_acc_z_min";
+            this.tbx_acc_z_min.Size = new System.Drawing.Size(81, 27);
+            this.tbx_acc_z_min.TabIndex = 153;
+            // 
+            // label28
+            // 
+            this.label28.AutoSize = true;
+            this.label28.Font = new System.Drawing.Font("Verdana", 12F);
+            this.label28.Location = new System.Drawing.Point(19, 393);
+            this.label28.Name = "label28";
+            this.label28.Size = new System.Drawing.Size(98, 18);
+            this.label28.TabIndex = 152;
+            this.label28.Text = "Acc_Z_Max";
+            // 
+            // tbx_acc_z_max
+            // 
+            this.tbx_acc_z_max.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.tbx_acc_z_max.Location = new System.Drawing.Point(148, 384);
+            this.tbx_acc_z_max.Name = "tbx_acc_z_max";
+            this.tbx_acc_z_max.Size = new System.Drawing.Size(81, 27);
+            this.tbx_acc_z_max.TabIndex = 151;
+            // 
+            // label29
+            // 
+            this.label29.AutoSize = true;
+            this.label29.Font = new System.Drawing.Font("Verdana", 12F);
+            this.label29.Location = new System.Drawing.Point(235, 360);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(94, 18);
+            this.label29.TabIndex = 150;
+            this.label29.Text = "Acc_Y_Min";
+            // 
+            // tbx_acc_y_min
+            // 
+            this.tbx_acc_y_min.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.tbx_acc_y_min.Location = new System.Drawing.Point(364, 351);
+            this.tbx_acc_y_min.Name = "tbx_acc_y_min";
+            this.tbx_acc_y_min.Size = new System.Drawing.Size(81, 27);
+            this.tbx_acc_y_min.TabIndex = 149;
+            // 
+            // label30
+            // 
+            this.label30.AutoSize = true;
+            this.label30.Font = new System.Drawing.Font("Verdana", 12F);
+            this.label30.Location = new System.Drawing.Point(19, 360);
+            this.label30.Name = "label30";
+            this.label30.Size = new System.Drawing.Size(98, 18);
+            this.label30.TabIndex = 148;
+            this.label30.Text = "Acc_Y_Max";
+            // 
+            // tbx_acc_y_max
+            // 
+            this.tbx_acc_y_max.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.tbx_acc_y_max.Location = new System.Drawing.Point(148, 351);
+            this.tbx_acc_y_max.Name = "tbx_acc_y_max";
+            this.tbx_acc_y_max.Size = new System.Drawing.Size(81, 27);
+            this.tbx_acc_y_max.TabIndex = 147;
+            // 
+            // label31
+            // 
+            this.label31.AutoSize = true;
+            this.label31.Font = new System.Drawing.Font("Verdana", 12F);
+            this.label31.Location = new System.Drawing.Point(235, 327);
+            this.label31.Name = "label31";
+            this.label31.Size = new System.Drawing.Size(94, 18);
+            this.label31.TabIndex = 146;
+            this.label31.Text = "Acc_X_Min";
+            // 
+            // tbx_acc_x_min
+            // 
+            this.tbx_acc_x_min.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.tbx_acc_x_min.Location = new System.Drawing.Point(364, 318);
+            this.tbx_acc_x_min.Name = "tbx_acc_x_min";
+            this.tbx_acc_x_min.Size = new System.Drawing.Size(81, 27);
+            this.tbx_acc_x_min.TabIndex = 145;
+            // 
+            // label32
+            // 
+            this.label32.AutoSize = true;
+            this.label32.Font = new System.Drawing.Font("Verdana", 12F);
+            this.label32.Location = new System.Drawing.Point(19, 327);
+            this.label32.Name = "label32";
+            this.label32.Size = new System.Drawing.Size(98, 18);
+            this.label32.TabIndex = 144;
+            this.label32.Text = "Acc_X_Max";
+            // 
+            // tbx_acc_x_max
+            // 
+            this.tbx_acc_x_max.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.tbx_acc_x_max.Location = new System.Drawing.Point(148, 318);
+            this.tbx_acc_x_max.Name = "tbx_acc_x_max";
+            this.tbx_acc_x_max.Size = new System.Drawing.Size(81, 27);
+            this.tbx_acc_x_max.TabIndex = 143;
+            // 
+            // cbxSleeve
+            // 
+            this.cbxSleeve.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.cbxSleeve.FormattingEnabled = true;
+            this.cbxSleeve.Items.AddRange(new object[] {
+            "SS",
+            "FT",
+            "KP",
+            "NP5"});
+            this.cbxSleeve.Location = new System.Drawing.Point(148, 531);
+            this.cbxSleeve.Name = "cbxSleeve";
+            this.cbxSleeve.Size = new System.Drawing.Size(81, 24);
+            this.cbxSleeve.TabIndex = 167;
+            this.cbxSleeve.SelectedIndexChanged += new System.EventHandler(this.cbxSleeve_SelectedIndexChanged);
+            // 
+            // label33
+            // 
+            this.label33.AutoSize = true;
+            this.label33.Font = new System.Drawing.Font("Verdana", 12F);
+            this.label33.Location = new System.Drawing.Point(19, 534);
+            this.label33.Name = "label33";
+            this.label33.Size = new System.Drawing.Size(115, 18);
+            this.label33.TabIndex = 168;
+            this.label33.Text = "Sleeve Name";
+            // 
+            // label34
+            // 
+            this.label34.AutoSize = true;
+            this.label34.Font = new System.Drawing.Font("Verdana", 12F);
+            this.label34.Location = new System.Drawing.Point(235, 534);
+            this.label34.Name = "label34";
+            this.label34.Size = new System.Drawing.Size(30, 18);
+            this.label34.TabIndex = 169;
+            this.label34.Text = "SN";
+            // 
+            // tbxSn
+            // 
+            this.tbxSn.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.tbxSn.Location = new System.Drawing.Point(274, 531);
+            this.tbxSn.Name = "tbxSn";
+            this.tbxSn.Size = new System.Drawing.Size(171, 27);
+            this.tbxSn.TabIndex = 170;
+            this.tbxSn.Text = "22-C-DE3-001";
+            // 
+            // btnOpenManage
+            // 
+            this.btnOpenManage.Font = new System.Drawing.Font("Verdana", 12F);
+            this.btnOpenManage.Location = new System.Drawing.Point(463, 689);
+            this.btnOpenManage.Name = "btnOpenManage";
+            this.btnOpenManage.Size = new System.Drawing.Size(194, 28);
+            this.btnOpenManage.TabIndex = 171;
+            this.btnOpenManage.Text = "管理工單";
+            this.btnOpenManage.UseVisualStyleBackColor = true;
+            this.btnOpenManage.Click += new System.EventHandler(this.btnOpenManage_Click);
+            // 
+            // btnConfigFW
+            // 
+            this.btnConfigFW.Font = new System.Drawing.Font("Verdana", 12F);
+            this.btnConfigFW.ForeColor = System.Drawing.Color.Navy;
+            this.btnConfigFW.Location = new System.Drawing.Point(464, 646);
+            this.btnConfigFW.Name = "btnConfigFW";
+            this.btnConfigFW.Size = new System.Drawing.Size(130, 27);
+            this.btnConfigFW.TabIndex = 172;
+            this.btnConfigFW.Text = "Conf FW Data";
+            this.btnConfigFW.UseVisualStyleBackColor = true;
+            this.btnConfigFW.Click += new System.EventHandler(this.btnConfigFW_Click);
+            // 
+            // btnShipMode
+            // 
+            this.btnShipMode.Font = new System.Drawing.Font("Verdana", 12F);
+            this.btnShipMode.ForeColor = System.Drawing.Color.Navy;
+            this.btnShipMode.Location = new System.Drawing.Point(464, 735);
+            this.btnShipMode.Name = "btnShipMode";
+            this.btnShipMode.Size = new System.Drawing.Size(103, 27);
+            this.btnShipMode.TabIndex = 173;
+            this.btnShipMode.Text = "Ship Mode";
+            this.btnShipMode.UseVisualStyleBackColor = true;
+            this.btnShipMode.Click += new System.EventHandler(this.btnShipMode_Click);
+            // 
+            // tbxHousing
+            // 
+            this.tbxHousing.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.tbxHousing.Location = new System.Drawing.Point(597, 531);
+            this.tbxHousing.Name = "tbxHousing";
+            this.tbxHousing.Size = new System.Drawing.Size(271, 27);
+            this.tbxHousing.TabIndex = 177;
+            this.tbxHousing.Text = "v8.0-02";
+            // 
+            // label35
+            // 
+            this.label35.AutoSize = true;
+            this.label35.Font = new System.Drawing.Font("Verdana", 12F);
+            this.label35.Location = new System.Drawing.Point(460, 534);
+            this.label35.Name = "label35";
+            this.label35.Size = new System.Drawing.Size(140, 18);
+            this.label35.TabIndex = 176;
+            this.label35.Text = "Housing Version";
+            // 
+            // label36
+            // 
+            this.label36.AutoSize = true;
+            this.label36.Font = new System.Drawing.Font("Verdana", 12F);
+            this.label36.Location = new System.Drawing.Point(19, 562);
+            this.label36.Name = "label36";
+            this.label36.Size = new System.Drawing.Size(106, 18);
+            this.label36.TabIndex = 175;
+            this.label36.Text = "PCB Version";
+            // 
+            // tbxPCB
+            // 
+            this.tbxPCB.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.tbxPCB.Location = new System.Drawing.Point(148, 560);
+            this.tbxPCB.Name = "tbxPCB";
+            this.tbxPCB.Size = new System.Drawing.Size(82, 27);
+            this.tbxPCB.TabIndex = 178;
+            this.tbxPCB.Text = "9.1";
+            // 
+            // btnStatus
+            // 
+            this.btnStatus.Font = new System.Drawing.Font("Verdana", 12F);
+            this.btnStatus.ForeColor = System.Drawing.Color.Navy;
+            this.btnStatus.Location = new System.Drawing.Point(600, 646);
+            this.btnStatus.Name = "btnStatus";
+            this.btnStatus.Size = new System.Drawing.Size(80, 27);
+            this.btnStatus.TabIndex = 179;
+            this.btnStatus.Text = "Status";
+            this.btnStatus.UseVisualStyleBackColor = true;
+            this.btnStatus.Click += new System.EventHandler(this.btnStatus_Click);
+            // 
+            // btnDump
+            // 
+            this.btnDump.Font = new System.Drawing.Font("Verdana", 12F);
+            this.btnDump.ForeColor = System.Drawing.Color.Navy;
+            this.btnDump.Location = new System.Drawing.Point(686, 646);
+            this.btnDump.Name = "btnDump";
+            this.btnDump.Size = new System.Drawing.Size(109, 27);
+            this.btnDump.TabIndex = 180;
+            this.btnDump.Text = "Dump Data";
+            this.btnDump.UseVisualStyleBackColor = true;
+            this.btnDump.Click += new System.EventHandler(this.btnDump_Click);
+            // 
+            // tbxBatch
+            // 
+            this.tbxBatch.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.tbxBatch.Location = new System.Drawing.Point(292, 560);
+            this.tbxBatch.Name = "tbxBatch";
+            this.tbxBatch.Size = new System.Drawing.Size(152, 27);
+            this.tbxBatch.TabIndex = 182;
+            // 
+            // label37
+            // 
+            this.label37.AutoSize = true;
+            this.label37.Font = new System.Drawing.Font("Verdana", 12F);
+            this.label37.Location = new System.Drawing.Point(235, 564);
+            this.label37.Name = "label37";
+            this.label37.Size = new System.Drawing.Size(54, 18);
+            this.label37.TabIndex = 181;
+            this.label37.Text = "Batch";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(189)))), ((int)(((byte)(211)))), ((int)(((byte)(225)))));
-            this.ClientSize = new System.Drawing.Size(1651, 699);
+            this.ClientSize = new System.Drawing.Size(1155, 758);
+            this.Controls.Add(this.tbxBatch);
+            this.Controls.Add(this.label37);
+            this.Controls.Add(this.btnDump);
+            this.Controls.Add(this.btnStatus);
+            this.Controls.Add(this.tbxPCB);
+            this.Controls.Add(this.tbxHousing);
+            this.Controls.Add(this.label35);
+            this.Controls.Add(this.label36);
+            this.Controls.Add(this.btnShipMode);
+            this.Controls.Add(this.btnConfigFW);
+            this.Controls.Add(this.btnOpenManage);
+            this.Controls.Add(this.tbxSn);
+            this.Controls.Add(this.label34);
+            this.Controls.Add(this.label33);
+            this.Controls.Add(this.cbxSleeve);
+            this.Controls.Add(this.label21);
+            this.Controls.Add(this.tbx_gyro_z_min);
+            this.Controls.Add(this.label22);
+            this.Controls.Add(this.tbx_gyro_z_max);
+            this.Controls.Add(this.label23);
+            this.Controls.Add(this.tbx_gyro_y_min);
+            this.Controls.Add(this.label24);
+            this.Controls.Add(this.tbx_gyro_y_max);
+            this.Controls.Add(this.label25);
+            this.Controls.Add(this.tbx_gyro_x_min);
+            this.Controls.Add(this.label26);
+            this.Controls.Add(this.tbx_gyro_x_max);
+            this.Controls.Add(this.label27);
+            this.Controls.Add(this.tbx_acc_z_min);
+            this.Controls.Add(this.label28);
+            this.Controls.Add(this.tbx_acc_z_max);
+            this.Controls.Add(this.label29);
+            this.Controls.Add(this.tbx_acc_y_min);
+            this.Controls.Add(this.label30);
+            this.Controls.Add(this.tbx_acc_y_max);
+            this.Controls.Add(this.label31);
+            this.Controls.Add(this.tbx_acc_x_min);
+            this.Controls.Add(this.label32);
+            this.Controls.Add(this.tbx_acc_x_max);
+            this.Controls.Add(this.lbl_charge_curr);
+            this.Controls.Add(this.label20);
             this.Controls.Add(this.btn_clear_com);
             this.Controls.Add(this.label18);
             this.Controls.Add(this.btn_clr_pcb);
@@ -618,6 +1093,7 @@
             this.Controls.Add(this.button6);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.chart2);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.Text = "Main";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
@@ -679,6 +1155,47 @@
         private System.Windows.Forms.Button btn_clear_com;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart2;
         private System.Windows.Forms.Timer timer_chk_COM;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.Label lbl_charge_curr;
+        private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.TextBox tbx_gyro_z_min;
+        private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.TextBox tbx_gyro_z_max;
+        private System.Windows.Forms.Label label23;
+        private System.Windows.Forms.TextBox tbx_gyro_y_min;
+        private System.Windows.Forms.Label label24;
+        private System.Windows.Forms.TextBox tbx_gyro_y_max;
+        private System.Windows.Forms.Label label25;
+        private System.Windows.Forms.TextBox tbx_gyro_x_min;
+        private System.Windows.Forms.Label label26;
+        private System.Windows.Forms.TextBox tbx_gyro_x_max;
+        private System.Windows.Forms.Label label27;
+        private System.Windows.Forms.TextBox tbx_acc_z_min;
+        private System.Windows.Forms.Label label28;
+        private System.Windows.Forms.TextBox tbx_acc_z_max;
+        private System.Windows.Forms.Label label29;
+        private System.Windows.Forms.TextBox tbx_acc_y_min;
+        private System.Windows.Forms.Label label30;
+        private System.Windows.Forms.TextBox tbx_acc_y_max;
+        private System.Windows.Forms.Label label31;
+        private System.Windows.Forms.TextBox tbx_acc_x_min;
+        private System.Windows.Forms.Label label32;
+        private System.Windows.Forms.TextBox tbx_acc_x_max;
+        private System.Windows.Forms.ComboBox cbxSleeve;
+        private System.Windows.Forms.Label label33;
+        private System.Windows.Forms.Label label34;
+        private System.Windows.Forms.TextBox tbxSn;
+        private System.Windows.Forms.Button btnOpenManage;
+        private System.Windows.Forms.Button btnConfigFW;
+        private System.Windows.Forms.Button btnShipMode;
+        private System.Windows.Forms.TextBox tbxHousing;
+        private System.Windows.Forms.Label label35;
+        private System.Windows.Forms.Label label36;
+        private System.Windows.Forms.TextBox tbxPCB;
+        private System.Windows.Forms.Button btnStatus;
+        private System.Windows.Forms.Button btnDump;
+        private System.Windows.Forms.TextBox tbxBatch;
+        private System.Windows.Forms.Label label37;
     }
 }
 
