@@ -1567,43 +1567,47 @@ namespace FFT_DOSE
                 await Task.Delay(1);
                 if (boolMountingSwitch)
                 {
+                    Thread.Sleep(2000);
+                    UTF8bytes = Encoding.UTF8.GetBytes("#ASS_START" + Environment.NewLine);
+                    RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                    Thread.Sleep(delay_time);
+
+                    //等待二秒
+                    Thread.Sleep(2000);             
+                    #region 移動PLC
+                    try
+                    {
+                        List<byte> list = new List<byte>();
+                        list.Add(0x01);
+                        list.Add(0x05);
+                        list.Add(0x08);
+                        list.Add(0x02);
+                        list.Add(0xFF);
+                        list.Add(0x00);
+                        byte[] array = list.ToArray();
+                        byte[] Crc_data = CRC16LH(array);
+                        list.Add(Crc_data[0]);
+                        list.Add(Crc_data[1]);
+                        byte[] all_array = list.ToArray();
+                        RS232_PLC.Write(all_array, 0, all_array.Length);
+                    }
+                    catch
+                    {
+                        MessageBox.Show("PLC Com Port Error!!");
+                    }
+                    #endregion
                     break;
                 }
                 _counter++;
                 if (_counter == 3000)
                 {
+                    UTF8bytes = Encoding.UTF8.GetBytes("#ASS_STOP" + Environment.NewLine);
+                    RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                    Thread.Sleep(delay_time);
+                    MessageBox.Show("超過亖秒沒按下Mounting Switch, 請重測試!!");
                     break;
                 }
             }
-
-            Thread.Sleep(500);
-
-            UTF8bytes = Encoding.UTF8.GetBytes("#ASS_START" + Environment.NewLine);
-            RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-            Thread.Sleep(delay_time);
-            Thread.Sleep(2000);
-            #region 移動PLC
-            try
-            {
-                List<byte> list = new List<byte>();
-                list.Add(0x01);
-                list.Add(0x05);
-                list.Add(0x08);
-                list.Add(0x02);
-                list.Add(0xFF);
-                list.Add(0x00);
-                byte[] array = list.ToArray();
-                byte[] Crc_data = CRC16LH(array);
-                list.Add(Crc_data[0]);
-                list.Add(Crc_data[1]);
-                byte[] all_array = list.ToArray();
-                RS232_PLC.Write(all_array, 0, all_array.Length);
-            }
-            catch
-            {
-                MessageBox.Show("PLC Com Port Error!!");
-            }
-            #endregion
 
             //#ASS_STOP?
         }
