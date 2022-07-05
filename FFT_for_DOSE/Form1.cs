@@ -23,6 +23,18 @@ namespace FFT_DOSE
 {
     public partial class Form1 : Form
     {
+        byte[] UTF8bytes;
+        // Define some variables
+        int numberOfPointsInChart = 30;
+        int newX = 0;
+
+        int charge_max = 0;
+
+        string batchNum = "", pcbVer = "", housingVer = "", deviceID = "", bleID = "", SN = "", fwVersion = "", sleeveName = "", buildDate = ""
+             , snMin = "", snMax = "", assCheck, accXmax, accXmin, accYmax, accYmin, accZmax, accZmin
+        , gyroXmax, gyroXmin, gyroYmax, gyroYmin, gyroZmax, gyroZmin, mouseXmax, mouseXmin, mouseYmax, mouseYmin, mouseSmax
+        , mouseSmin, mouseFmax, mouseFmin, mouseImax, mouseImin, IRmax, IRmin, batterymax, batterymin, mountingSwitch;
+
         public bool showLogForm { get; set; }
 
         MethodInvoker miCreateMaxSN;
@@ -103,8 +115,6 @@ namespace FFT_DOSE
                 { tbx_batt_max.Text = temp_num; }
                 if (temp_item == "Battery_Min")
                 { tbx_batt_min.Text = temp_num; }
-
-
                 //acc----------------------------------
                 if (temp_item == "Acc_X_Max")
                 { tbx_acc_x_max.Text = temp_num; }
@@ -138,11 +148,8 @@ namespace FFT_DOSE
                 { tbx_gyro_z_min.Text = temp_num; }
             }
             #endregion
-
             cbxSleeve.SelectedIndex = 0;
-
             createSnMax();
-
             #region get select data
             try
             {
@@ -184,26 +191,282 @@ namespace FFT_DOSE
                 MessageBox.Show("An error has occurred. Please check the COM PORT or other problems.");
             }
             #endregion
+            loadBatch();
+        }
+
+        private async void btn_ass_chk_Click(object sender, EventArgs e)
+        {
+            if (sleeveName != "" && pcbVer != "" && housingVer != "")
+            {
+                #region ASS_CHECK
+                //#RE_ASS_MOUNTING
+                //#ASS_CHECK
+                //#ASS_MOUNTING
+                //#ASS_START
+                //........
+                //#ASS_STOP
+                charge_max = 0;
+                strFeedbackDose = "";
+
+                ////Open Power
+                //formattedIO.WriteLine("OUTPut 1");
+                //Console.WriteLine("Current returned: {0}", str_Response);
+                //Thread.Sleep(2000);
+
+                RS232_DOSE.Close();
+                RS232_DOSE.Dispose();
+                RS232_DOSE.PortName = GetPortInformation_for_DOSE_COM();
+                RS232_DOSE.Open();
+
+                int delay_time = 100;
+
+                byte[] UTF8bytes = Encoding.UTF8.GetBytes("#RETEST" + Environment.NewLine);
+                RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                Thread.Sleep(delay_time);
+
+                UTF8bytes = Encoding.UTF8.GetBytes("#RE_ASS_MOUNTING" + Environment.NewLine);
+                RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                Thread.Sleep(delay_time);
+
+                UTF8bytes = Encoding.UTF8.GetBytes("#ASS_CHECK" + Environment.NewLine);
+                RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                Thread.Sleep(delay_time);
+
+                UTF8bytes = Encoding.UTF8.GetBytes("#ASS_MOUNTING" + Environment.NewLine);
+                RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                Thread.Sleep(delay_time);
+
+                int _counter = 0;
+                while (true)
+                {
+                    await Task.Delay(1);
+                    if (boolMountingSwitch)
+                    {
+                        Thread.Sleep(4000); //245
+                        //690422
+                        UTF8bytes = Encoding.UTF8.GetBytes("#ASS_START" + Environment.NewLine);
+                        RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                        Thread.Sleep(delay_time);
+
+                        //等待二秒                      
+                        #region 移動PLC
+                        try
+                        {
+                            List<byte> list = new List<byte>();
+                            list.Add(0x01);
+                            list.Add(0x05);
+                            list.Add(0x08);
+                            list.Add(0x02);
+                            list.Add(0xFF);
+                            list.Add(0x00);
+                            byte[] array = list.ToArray();
+                            byte[] Crc_data = CRC16LH(array);
+                            list.Add(Crc_data[0]);
+                            list.Add(Crc_data[1]);
+                            byte[] all_array = list.ToArray();
+                            RS232_PLC.Write(all_array, 0, all_array.Length);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("PLC Com Port Error!!");
+                            LoadPlcCom();
+                        }
+                        #endregion
+                        break;
+                    }
+                    _counter++;
+                    if (_counter == 3000)
+                    {
+                        UTF8bytes = Encoding.UTF8.GetBytes("#ASS_STOP" + Environment.NewLine);
+                        RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                        Thread.Sleep(delay_time);
+                        MessageBox.Show("超過亖秒沒按下Mounting Switch, 請重測試!!");
+                        break;
+                    }
+                }
+                #endregion
+
+                #region  取得要寫入的SN
+                strSQL = "select TOP 1 sn from snData order by sn desc"; //取得SN最大值
+                                                                         //執行SQL
+                string _snMax = accessHelper.readData(strSQL);
+                intNextSn = Convert.ToInt32(_snMax) + 1;
+                _snMax = intNextSn.ToString().PadLeft(7, '0');
+                if (_snMax != "-1")
+                {
+                    SN = "D" + _snMax;
+                }
+                else
+                {
+                    MessageBox.Show("查詢失敗");
+                }
+                #endregion
+                batchNum = cbxBatch.SelectedItem.ToString();
+                if (Convert.ToInt32(_snMax) <= Convert.ToInt32(snMax))
+                {
+                    #region 寫入FW Conf
+                    //Date
+                    buildDate = DateTime.Now.ToString("yyyy/MM/dd");
+
+                    RS232_DOSE.Close();
+                    RS232_DOSE.Dispose();
+                    RS232_DOSE.PortName = GetPortInformation_for_DOSE_COM();
+                    RS232_DOSE.Open();
+                    //#SET_CONFIG_DATA 
+                    //Mounted_Sleeve:       
+                    UTF8bytes = Encoding.UTF8.GetBytes("#SET_CONFIG_DATA" + Environment.NewLine);
+                    RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                    Thread.Sleep(500);
+
+                    UTF8bytes = Encoding.UTF8.GetBytes("Housing_Version:" + housingVer + Environment.NewLine);
+                    RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                    Thread.Sleep(delay_time2);
+
+                    UTF8bytes = Encoding.UTF8.GetBytes("PCBA_Version:" + pcbVer + Environment.NewLine);
+                    RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                    Thread.Sleep(delay_time2);
+
+                    UTF8bytes = Encoding.UTF8.GetBytes("Batch_ID:" + batchNum + Environment.NewLine);
+                    RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                    Thread.Sleep(delay_time2);
+
+                    UTF8bytes = Encoding.UTF8.GetBytes("Build_Date:" + buildDate + Environment.NewLine);
+                    RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                    Thread.Sleep(delay_time2);
+
+                    UTF8bytes = Encoding.UTF8.GetBytes("Mounted_Sleeve:" + sleeveName + Environment.NewLine);
+                    RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                    Thread.Sleep(delay_time2);
+
+                    UTF8bytes = Encoding.UTF8.GetBytes("Assembly_Serial_Number:" + SN + Environment.NewLine);
+                    RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                    Thread.Sleep(delay_time2);
+
+                    UTF8bytes = Encoding.UTF8.GetBytes("#CONFIG_END" + Environment.NewLine);
+                    RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                    Thread.Sleep(delay_time2);
+                    #endregion
+
+                    #region 回傳STATIS
+
+                    #endregion
+
+                    #region dump_data 寫入txt
+                    WriteTxt = true;
+                    SW = new StreamWriter(@"C:\DET_DOSE\" + SN + ".txt");
+                    try
+                    {
+                        RS232_DOSE.Close();
+                        RS232_DOSE.Dispose();
+                        RS232_DOSE.PortName = GetPortInformation_for_DOSE_COM();
+                        RS232_DOSE.Open();
+
+                        UTF8bytes = Encoding.UTF8.GetBytes("#DUMP_DATA" + Environment.NewLine);
+                        RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                        Thread.Sleep(100);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("ComPort Error!");
+                    }
+                    #endregion
+
+                    #region Shipping Mode
+                    try
+                    {
+                        //UTF8bytes = Encoding.UTF8.GetBytes("#SHIP_MODE" + Environment.NewLine);
+                        //RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                        //Thread.Sleep(300);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("ComPort Error!");
+                    }
+                    #endregion
+                }
+                else
+                {
+                    MessageBox.Show("此批號已完成");
+                }
+            }
+            else
+            {
+                MessageBox.Show("批號讀取錯誤");
+            }
+        }
+
+        private void cbxBatch_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                //由批號取得 sleeveName, PcbVer, housingVer, snMin, snMax
+                //SQL語法：        
+                DataTable dt_selectData = accessHelper.GetDataTable("select sleeveName,pcbVersion,housingVersion,snMin,snMax from batchData");
+                for (int i = 0; i < dt_selectData.Rows.Count; i++)
+                {
+                    sleeveName = dt_selectData.Rows[i][0].ToString();
+                    pcbVer = dt_selectData.Rows[i][1].ToString();
+                    housingVer = dt_selectData.Rows[i][2].ToString();
+                    snMin = dt_selectData.Rows[i][3].ToString();
+                    snMax = dt_selectData.Rows[i][4].ToString();
+                }
+            }
+            catch
+            {
+                MessageBox.Show("載入批號相關資訊");
+            }
+        }
+
+        void loadBatch()
+        {
+            //Batch的載入還需要透過判斷現有SN是否已在某未完成Batch, 若是則只能載入此batch
+
+
+            //初始化
+            cbx_plc.Items.Clear();
+            cbx_power.Items.Clear();
+            #region get save data            
+            DataTable dt = accessHelper.GetDataTable("select DISTINCT batchNum from batchData");
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                string str_dt = dt.Rows[i][0].ToString();
+                cbxBatch.Items.Add(new ComboboxItem(str_dt, str_dt));
+            }
+            try
+            {
+                cbxBatch.SelectedIndex = 0;
+            }
+            catch
+            {
+                MessageBox.Show("不存在任何批號");
+            }
+            #endregion
         }
 
         private void createSnMax()
         {
-            ////回傳SN最大值
-            ////SQL語法：                    
-            //strSQL = "select TOP 1 sn from snData order by sn desc";
+            try
+            {
+                //回傳SN最大值
+                //SQL語法：                    
+                strSQL = "select TOP 1 sn from snData order by sn desc"; //取得SN最大值
+                //執行SQL
+                string snMax = accessHelper.readData(strSQL);
+                intNextSn = Convert.ToInt32(snMax) + 1;
+                snMax = intNextSn.ToString().PadLeft(7, '0');
+                if (snMax != "-1")
+                {
+                    tbxSn.Text = "D" + snMax;
+                }
+                else
+                {
+                    MessageBox.Show("查詢失敗");
+                }
+            }
+            catch
+            {
 
-            ////執行SQL
-            //string snMax = accessHelper.readData(strSQL);
-            //intNextSn = Convert.ToInt32(snMax) + 1;
-            //snMax = intNextSn.ToString().PadLeft(3, '0');
-            //if (snMax != "-1")
-            //{
-            //  //  tbxSn.Text = "DV-" + cbxSleeve.Text + "-" + snMax;
-            //}
-            //else
-            //{
-            //    MessageBox.Show("查詢失敗");
-            //}
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -223,68 +486,6 @@ namespace FFT_DOSE
             {
                 MessageBox.Show("打开端口错误");
             }
-        }
-
-        /// <summary>
-        /// 低字节在前
-        /// </summary>
-        /// <param name="pDataBytes"></param>
-        /// <returns></returns>
-        static byte[] CRC16LH(byte[] pDataBytes)
-        {
-            ushort crc = 0xffff;
-            ushort polynom = 0xA001;
-
-            for (int i = 0; i < pDataBytes.Length; i++)
-            {
-                crc ^= pDataBytes[i];
-                for (int j = 0; j < 8; j++)
-                {
-                    if ((crc & 0x01) == 0x01)
-                    {
-                        crc >>= 1;
-                        crc ^= polynom;
-                    }
-                    else
-                    {
-                        crc >>= 1;
-                    }
-                }
-            }
-
-            byte[] result = BitConverter.GetBytes(crc);
-            return result;
-        }
-
-        /// <summary>
-        /// 高字节在前
-        /// </summary>
-        /// <param name="pDataBytes"></param>
-        /// <returns></returns>
-        static byte[] CRC16HL(byte[] pDataBytes)
-        {
-            ushort crc = 0xffff;
-            ushort polynom = 0xA001;
-
-            for (int i = 0; i < pDataBytes.Length; i++)
-            {
-                crc ^= pDataBytes[i];
-                for (int j = 0; j < 8; j++)
-                {
-                    if ((crc & 0x01) == 0x01)
-                    {
-                        crc >>= 1;
-                        crc ^= polynom;
-                    }
-                    else
-                    {
-                        crc >>= 1;
-                    }
-                }
-            }
-
-            byte[] result = BitConverter.GetBytes(crc).Reverse().ToArray();
-            return result;
         }
 
         private void serialPort1_DataReceived(object sender, SerialDataReceivedEventArgs e)
@@ -552,7 +753,8 @@ namespace FFT_DOSE
                     serial.BaudRate = 115200;
                     serial.DataBits = 8;
                     serial.Parity = Ivi.Visa.SerialParity.None;
-                    serial.FlowControl = SerialFlowControlModes.DtrDsr;
+                    //  serial.FlowControl = SerialFlowControlModes.DtrDsr;
+                    serial.FlowControl = SerialFlowControlModes.None;
 
                     // Send the *IDN? and read the response as strings
                     formattedIO = new MessageBasedFormattedIO(session);
@@ -592,7 +794,7 @@ namespace FFT_DOSE
                     formattedIO.WriteLine("SYST:REM");
                     Thread.Sleep(100);
                 }
-                catch
+                catch (Exception ex)
                 {
                     MessageBox.Show("POWER Error!");
                 }
@@ -625,7 +827,7 @@ namespace FFT_DOSE
                     MessageBox.Show("Dose Com port Error!");
                 }
 
-                byte[] UTF8bytes = Encoding.UTF8.GetBytes("#SET_ASS_TH" + Environment.NewLine);
+                UTF8bytes = Encoding.UTF8.GetBytes("#SET_ASS_TH" + Environment.NewLine);
                 RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
                 Thread.Sleep(1000);
 
@@ -828,10 +1030,6 @@ namespace FFT_DOSE
             }
         }
 
-        string batchNum = "", pcbVer = "", housingVer = "", deviceID = "", bleID = "", SN = "", sleeveName = "", buildDate = "", assCheck, accXmax, accXmin, accYmax, accYmin, accZmax, accZmin
-       , gyroXmax, gyroXmin, gyroYmax, gyroYmin, gyroZmax, gyroZmin, mouseXmax, mouseXmin, mouseYmax, mouseYmin, mouseSmax
-       , mouseSmin, mouseFmax, mouseFmin, mouseImax, mouseImin, IRmax, IRmin, batterymax, batterymin, mountingSwitch;
-
         bool WriteTxt = false;
         StreamWriter SW;
         private void btnDump_Click(object sender, EventArgs e)
@@ -891,8 +1089,9 @@ namespace FFT_DOSE
         {
             try
             {
+                #region 寫入FW Conf
                 SN = tbxSn.Text;
-                batchNum = tbxBatch.Text;
+                batchNum = cbxBatch.SelectedItem.ToString();
                 pcbVer = tbxPCB.Text;
                 housingVer = tbxHousing.Text;
                 //Date
@@ -935,7 +1134,7 @@ namespace FFT_DOSE
                 UTF8bytes = Encoding.UTF8.GetBytes("#CONFIG_END" + Environment.NewLine);
                 RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
                 Thread.Sleep(delay_time2);
-
+                #endregion
             }
             catch (Exception ex)
             {
@@ -1137,7 +1336,7 @@ namespace FFT_DOSE
                     {
                         //寫入資料庫
                         //SQL語法：       
-                        strSQL = "insert into snData(sn,deviceID,bleID,batchNum,sleeveName,buildDate,pcbVersion,housingVersion) VALUES(@sn,@deviceID,@bleID,@batchNum,@sleeveName,@buildDate,@pcbVersion,@housingVersion)";
+                        strSQL = "insert into snData(sn,deviceID,bleID,batchNum,fwVersion,sleeveName,buildDate,pcbVersion,housingVersion) VALUES(@sn,@deviceID,@bleID,@batchNum,@fwVersion,@sleeveName,@buildDate,@pcbVersion,@housingVersion)";
                         if (string.IsNullOrEmpty(strSQL) == false)
                         {
                             //添加參數
@@ -1146,6 +1345,7 @@ namespace FFT_DOSE
                                             new OleDbParameter("@deviceID",deviceID),
                                             new OleDbParameter("@bleID",bleID),
                                             new OleDbParameter("@batchNum",batchNum),
+                                            new OleDbParameter("@fwVersion",fwVersion),
                                             new OleDbParameter("@sleeveName",sleeveName),
                                             new OleDbParameter("@buildDate",buildDate),
                                             new OleDbParameter("@pcbVersion",pcbVer),
@@ -1222,7 +1422,7 @@ namespace FFT_DOSE
                                 {
                                     try
                                     {
-                                        UTF8bytes = Encoding.UTF8.GetBytes("#SET_CONFIG_DATA" + Environment.NewLine);
+                                        byte[] UTF8bytes = Encoding.UTF8.GetBytes("#SET_CONFIG_DATA" + Environment.NewLine);
                                         RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
                                         Thread.Sleep(delay_time2);
 
@@ -1353,7 +1553,7 @@ namespace FFT_DOSE
                         #region Config寫入FW
                         if (assCheck == "Pass")
                         {
-                            UTF8bytes = Encoding.UTF8.GetBytes("#SET_CONFIG_DATA" + Environment.NewLine);
+                            byte[] UTF8bytes = Encoding.UTF8.GetBytes("#SET_CONFIG_DATA" + Environment.NewLine);
                             RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
                             Thread.Sleep(delay_time2);
 
@@ -1455,6 +1655,11 @@ namespace FFT_DOSE
 
         private void cbx_plc_SelectedIndexChanged(object sender, EventArgs e)
         {
+            LoadPlcCom();
+        }
+
+        private void LoadPlcCom()
+        {
             try
             {
 
@@ -1515,102 +1720,7 @@ namespace FFT_DOSE
             }
         }
 
-        byte[] UTF8bytes;
         bool boolMountingSwitch = false;
-        private async void btn_ass_chk_Click(object sender, EventArgs e)
-        {
-            SN = tbxSn.Text;
-            batchNum = tbxBatch.Text;
-            pcbVer = tbxPCB.Text;
-            housingVer = tbxHousing.Text;            
-
-            //#RE_ASS_MOUNTING
-            //#ASS_CHECK
-            //#ASS_MOUNTING
-            //#ASS_START
-            //........
-            //#ASS_STOP
-            charge_max = 0;
-            strFeedbackDose = "";
-
-            ////Open Power
-            //formattedIO.WriteLine("OUTPut 1");
-            //Console.WriteLine("Current returned: {0}", str_Response);
-            //Thread.Sleep(2000);
-
-            RS232_DOSE.Close();
-            RS232_DOSE.Dispose();
-            RS232_DOSE.PortName = GetPortInformation_for_DOSE_COM();
-            RS232_DOSE.Open();
-
-            int delay_time = 100;
-
-            UTF8bytes = Encoding.UTF8.GetBytes("#RETEST" + Environment.NewLine);
-            RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-            Thread.Sleep(delay_time);
-
-            UTF8bytes = Encoding.UTF8.GetBytes("#RE_ASS_MOUNTING" + Environment.NewLine);
-            RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-            Thread.Sleep(delay_time);
-
-            UTF8bytes = Encoding.UTF8.GetBytes("#ASS_CHECK" + Environment.NewLine);
-            RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-            Thread.Sleep(delay_time);
-
-            UTF8bytes = Encoding.UTF8.GetBytes("#ASS_MOUNTING" + Environment.NewLine);
-            RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-            Thread.Sleep(delay_time);
-
-            int _counter = 0;
-            while (true)
-            {
-                await Task.Delay(1);
-                if (boolMountingSwitch)
-                {
-                    Thread.Sleep(2000);
-                    UTF8bytes = Encoding.UTF8.GetBytes("#ASS_START" + Environment.NewLine);
-                    RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                    Thread.Sleep(delay_time);
-
-                    //等待二秒
-                    Thread.Sleep(2000);             
-                    #region 移動PLC
-                    try
-                    {
-                        List<byte> list = new List<byte>();
-                        list.Add(0x01);
-                        list.Add(0x05);
-                        list.Add(0x08);
-                        list.Add(0x02);
-                        list.Add(0xFF);
-                        list.Add(0x00);
-                        byte[] array = list.ToArray();
-                        byte[] Crc_data = CRC16LH(array);
-                        list.Add(Crc_data[0]);
-                        list.Add(Crc_data[1]);
-                        byte[] all_array = list.ToArray();
-                        RS232_PLC.Write(all_array, 0, all_array.Length);
-                    }
-                    catch
-                    {
-                        MessageBox.Show("PLC Com Port Error!!");
-                    }
-                    #endregion
-                    break;
-                }
-                _counter++;
-                if (_counter == 3000)
-                {
-                    UTF8bytes = Encoding.UTF8.GetBytes("#ASS_STOP" + Environment.NewLine);
-                    RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                    Thread.Sleep(delay_time);
-                    MessageBox.Show("超過亖秒沒按下Mounting Switch, 請重測試!!");
-                    break;
-                }
-            }
-
-            //#ASS_STOP?
-        }
 
         private void btn_ttl_send_Click(object sender, EventArgs e)
         {
@@ -1693,11 +1803,6 @@ namespace FFT_DOSE
         }
         #endregion
 
-        // Define some variables
-        int numberOfPointsInChart = 30;
-        int newX = 0;
-
-        int charge_max = 0;
         private void timerRealTimeData_Tick(object sender, EventArgs e)
         {
             try
@@ -1937,29 +2042,68 @@ namespace FFT_DOSE
             sleeveName = cbxSleeve.SelectedItem.ToString();
         }
 
-        //string UpdateDataBase(string tableNale, string setItem, string setItemValue, string whereItem, string whereItemValue)
-        //  {
-        //      //SQL語法：                    
-        //      strSQL = "UPDATE " + tableNale + " set " + setItem + " =@setItem where " + whereItem + " = @whereItem";
-        //      if (string.IsNullOrEmpty(strSQL) == false)
-        //      {
-        //          //添加參數
-        //          OleDbParameter[] pars = new OleDbParameter[] {
-        //                                      new OleDbParameter("@setItem",setItemValue),
-        //                                      new OleDbParameter("@whereItem",whereItemValue)
-        //                                                          };
-        //          //執行SQL
-        //          string errorInfo = accessHelper.ExecSql(strSQL, pars);
-        //          if (errorInfo.Length != 0)
-        //          {
-        //              return "fail";
-        //          }
-        //          else
-        //          {
-        //              return "pass";
-        //          }
-        //      }
-        //      return "fail";
-        //  }
+        #region CRC
+        /// <summary>
+        /// 低字节在前
+        /// </summary>
+        /// <param name="pDataBytes"></param>
+        /// <returns></returns>
+        static byte[] CRC16LH(byte[] pDataBytes)
+        {
+            ushort crc = 0xffff;
+            ushort polynom = 0xA001;
+
+            for (int i = 0; i < pDataBytes.Length; i++)
+            {
+                crc ^= pDataBytes[i];
+                for (int j = 0; j < 8; j++)
+                {
+                    if ((crc & 0x01) == 0x01)
+                    {
+                        crc >>= 1;
+                        crc ^= polynom;
+                    }
+                    else
+                    {
+                        crc >>= 1;
+                    }
+                }
+            }
+
+            byte[] result = BitConverter.GetBytes(crc);
+            return result;
+        }
+
+        /// <summary>
+        /// 高字节在前
+        /// </summary>
+        /// <param name="pDataBytes"></param>
+        /// <returns></returns>
+        static byte[] CRC16HL(byte[] pDataBytes)
+        {
+            ushort crc = 0xffff;
+            ushort polynom = 0xA001;
+
+            for (int i = 0; i < pDataBytes.Length; i++)
+            {
+                crc ^= pDataBytes[i];
+                for (int j = 0; j < 8; j++)
+                {
+                    if ((crc & 0x01) == 0x01)
+                    {
+                        crc >>= 1;
+                        crc ^= polynom;
+                    }
+                    else
+                    {
+                        crc >>= 1;
+                    }
+                }
+            }
+
+            byte[] result = BitConverter.GetBytes(crc).Reverse().ToArray();
+            return result;
+        }
+        #endregion
     }
 }

@@ -122,8 +122,8 @@
             this.tbxPCB = new System.Windows.Forms.TextBox();
             this.btnStatus = new System.Windows.Forms.Button();
             this.btnDump = new System.Windows.Forms.Button();
-            this.tbxBatch = new System.Windows.Forms.TextBox();
             this.label37 = new System.Windows.Forms.Label();
+            this.cbxBatch = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.chart2)).BeginInit();
             this.SuspendLayout();
             // 
@@ -845,9 +845,9 @@
             this.cbxSleeve.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.cbxSleeve.FormattingEnabled = true;
             this.cbxSleeve.Items.AddRange(new object[] {
-            "SS",
-            "FT",
-            "KP",
+            "SS ",
+            "FT ",
+            "KP ",
             "NP5"});
             this.cbxSleeve.Location = new System.Drawing.Point(148, 531);
             this.cbxSleeve.Name = "cbxSleeve";
@@ -882,7 +882,7 @@
             this.tbxSn.Name = "tbxSn";
             this.tbxSn.Size = new System.Drawing.Size(171, 27);
             this.tbxSn.TabIndex = 170;
-            this.tbxSn.Text = "22-C-DE3-001";
+            this.tbxSn.Text = "22-C-DA2-001";
             // 
             // btnOpenManage
             // 
@@ -981,14 +981,6 @@
             this.btnDump.UseVisualStyleBackColor = true;
             this.btnDump.Click += new System.EventHandler(this.btnDump_Click);
             // 
-            // tbxBatch
-            // 
-            this.tbxBatch.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.tbxBatch.Location = new System.Drawing.Point(292, 560);
-            this.tbxBatch.Name = "tbxBatch";
-            this.tbxBatch.Size = new System.Drawing.Size(152, 27);
-            this.tbxBatch.TabIndex = 182;
-            // 
             // label37
             // 
             this.label37.AutoSize = true;
@@ -999,13 +991,23 @@
             this.label37.TabIndex = 181;
             this.label37.Text = "Batch";
             // 
+            // cbxBatch
+            // 
+            this.cbxBatch.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.cbxBatch.FormattingEnabled = true;
+            this.cbxBatch.Location = new System.Drawing.Point(295, 562);
+            this.cbxBatch.Name = "cbxBatch";
+            this.cbxBatch.Size = new System.Drawing.Size(150, 24);
+            this.cbxBatch.TabIndex = 183;
+            this.cbxBatch.SelectedIndexChanged += new System.EventHandler(this.cbxBatch_SelectedIndexChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(189)))), ((int)(((byte)(211)))), ((int)(((byte)(225)))));
             this.ClientSize = new System.Drawing.Size(1155, 758);
-            this.Controls.Add(this.tbxBatch);
+            this.Controls.Add(this.cbxBatch);
             this.Controls.Add(this.label37);
             this.Controls.Add(this.btnDump);
             this.Controls.Add(this.btnStatus);
@@ -1194,8 +1196,8 @@
         private System.Windows.Forms.TextBox tbxPCB;
         private System.Windows.Forms.Button btnStatus;
         private System.Windows.Forms.Button btnDump;
-        private System.Windows.Forms.TextBox tbxBatch;
         private System.Windows.Forms.Label label37;
+        private System.Windows.Forms.ComboBox cbxBatch;
     }
 }
 

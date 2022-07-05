@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="access.cs" />
     <Compile Include="AccessHelper.cs" />
+    <Compile Include="ComBoxItem.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

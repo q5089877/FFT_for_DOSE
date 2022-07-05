@@ -87,10 +87,10 @@ namespace FFT_For_DOSE
                 string batchNum = tbx_lot.Text;
                 string makeTotal = tbx_make_total.Text;
                 string sleeveName = cbxSleeve.SelectedItem.ToString();
-                string pcbVersing = tbxPCB.Text;
-                string housingVersing = tbxHousing.Text;
+                string pcbVersion = tbxPCB.Text;
+                string housingVersion = tbxHousing.Text;
 
-                if (moNum == "" || batchNum == "" || makeTotal == "" || sleeveName == "" || pcbVersing == "" || housingVersing == "")
+                if (moNum == "" || batchNum == "" || makeTotal == "" || sleeveName == "" || pcbVersion == "" || housingVersion == "")
                 {
                     MessageBox.Show("資料不可為空值");
                 }
@@ -123,12 +123,44 @@ namespace FFT_For_DOSE
                                 //add MO pass, then add batchData
                                 strSQL = string.Format("select * from batchData where batchNum = '{0}'", batchNum); //檢查batchNum
                                 string checkBatchNum = accessHelper.readData(strSQL);
+
+                                strSQL = "select TOP 1 sn from snData order by sn desc"; //取得SN最大值
+                                string getLastSn = accessHelper.readData(strSQL);
+
+
+
+                               
+
+                                ////執行SQL
+                                //string snMax = accessHelper.readData(strSQL);
+                                //intNextSn = Convert.ToInt32(snMax) + 1;
+                                //snMax = intNextSn.ToString().PadLeft(7, '0');
+                                //if (snMax != "-1")
+                                //{
+                                //    tbxSn.Text = "D" + snMax;
+                                //}
+                                //else
+                                //{
+                                //    MessageBox.Show("查詢失敗");
+                                //}
+
+
+
+
+
+
+
+
+
+
+                                string snMin = Convert.ToString(Convert.ToUInt32(getLastSn) + 1);
+                                string snMax = Convert.ToString(Convert.ToUInt32(makeTotal) + Convert.ToUInt32(snMin)-1);
                                 if (checkBatchNum == "-1")//MO不存在   
                                 {
                                     #region 寫入
                                     //SQL語法：       
-                                    strSQL = "insert into batchData(batchNum,moNum,total,sleeveName,pcbVersion,housingVersion)" +
-                                    " VALUES(@batchNum,@moNum,@total,@sleeveName,@pcbVersion,@housingVersion)";
+                                    strSQL = "insert into batchData(batchNum,moNum,total,sleeveName,pcbVersion,housingVersion,snMin,snMax)" +
+                                    " VALUES(@batchNum,@moNum,@total,@sleeveName,@pcbVersion,@housingVersion,@snMin,@snMax)";
                                     if (string.IsNullOrEmpty(strSQL) == false)
                                     {
                                         //添加參數
@@ -137,8 +169,10 @@ namespace FFT_For_DOSE
                                             new OleDbParameter("@moNum",moNum),
                                             new OleDbParameter("@total",makeTotal),
                                             new OleDbParameter("@sleeveName",sleeveName),
-                                            new OleDbParameter("@pcbVersion",pcbVersing),
-                                            new OleDbParameter("@housingVersion",housingVersing)
+                                            new OleDbParameter("@pcbVersion",pcbVersion),
+                                            new OleDbParameter("@housingVersion",housingVersion),
+                                            new OleDbParameter("@snMin",snMin),
+                                            new OleDbParameter("@snMax",snMax)
                                     };
                                         //執行SQL
                                         string errorInfo2 = accessHelper.ExecSql(strSQL, pars2);
@@ -178,12 +212,12 @@ namespace FFT_For_DOSE
         {
             try
             {
-                ////刪除Batch
-                //string strSQL = string.Format("DELETE FROM batchData where batchNum ='{0}'", cbxMO.SelectedItem.ToString());
-                //string delResult = accessHelper.ExecSql(strSQL);
-                //刪除MO
-                string strSQL = string.Format("DELETE FROM moData where moNum ='{0}'", cbxMO.SelectedItem.ToString());
+                //刪除Batch
+                string strSQL = string.Format("DELETE FROM batchData where moNum ='{0}'", cbxMO.SelectedItem.ToString());
                 string delResult = accessHelper.ExecSql(strSQL);
+                //刪除MO
+                strSQL = string.Format("DELETE FROM moData where moNum ='{0}'", cbxMO.SelectedItem.ToString());
+                delResult = accessHelper.ExecSql(strSQL);
                 if (delResult != "")
                 {
                     MessageBox.Show("刪除失敗，其它資料表包含相關資料!!");
@@ -191,6 +225,10 @@ namespace FFT_For_DOSE
                 else
                 {
                     MessageBox.Show("刪除 " + cbxMO.SelectedItem.ToString() + " 完成");
+
+                    loadNullGrid();
+
+
                 }
                 reLoadMoNum();
             }
@@ -262,29 +300,32 @@ namespace FFT_For_DOSE
         {
             dataGV.DataSource = dtForGrid;
             dataGV.Columns["id"].Visible = false;
-            dataGV.Columns["batchNum"].HeaderText = "批號";
             dataGV.Columns["moNum"].HeaderText = "工單號碼";
+            dataGV.Columns["batchNum"].HeaderText = "批號";
             dataGV.Columns["total"].HeaderText = "數量";
             dataGV.Columns["sleeveName"].HeaderText = "袖套名稱";
             dataGV.Columns["pcbVersion"].HeaderText = "PCB版本";
             dataGV.Columns["housingVersion"].HeaderText = "外殼版本";
+            dataGV.Columns["SnMin"].HeaderText = "Sn最小值";
+            dataGV.Columns["SnMax"].HeaderText = "Sn最大值";
 
-
-            dataGV.Columns["batchNum"].Width = 120;
             dataGV.Columns["moNum"].Width = 120;
+            dataGV.Columns["batchNum"].Width = 120;
             dataGV.Columns["total"].Width = 100;
             dataGV.Columns["sleeveName"].Width = 120;
             dataGV.Columns["pcbVersion"].Width = 120;
             dataGV.Columns["housingVersion"].Width = 120;
+            dataGV.Columns["SnMin"].Width = 100;
+            dataGV.Columns["SnMax"].Width = 100;
 
-
-            dataGV.Columns["batchNum"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGV.Columns["moNum"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGV.Columns["batchNum"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGV.Columns["total"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGV.Columns["sleeveName"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGV.Columns["pcbVersion"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGV.Columns["housingVersion"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-
+            dataGV.Columns["SnMin"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGV.Columns["SnMax"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
         }
 
         #region ComboxItem
@@ -320,6 +361,13 @@ namespace FFT_For_DOSE
             string strSQL = string.Format("select * from batchData where moNum = '{0}'", cbxMO.SelectedItem.ToString()); //檢查MO
             dtForGrid = accessHelper.GetDataTable(strSQL);
             reLoadBatch();
+        }
+
+        void loadNullGrid()
+        {
+            DataTable dt = (DataTable)dataGV .DataSource;
+            dt.Rows.Clear();
+            dataGV.DataSource = dt;
         }
     }
 }

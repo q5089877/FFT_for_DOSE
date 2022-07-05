@@ -64,6 +64,7 @@
             this.tbx_password.PasswordChar = '*';
             this.tbx_password.Size = new System.Drawing.Size(191, 27);
             this.tbx_password.TabIndex = 59;
+            this.tbx_password.Text = "690422";
             // 
             // label2
             // 

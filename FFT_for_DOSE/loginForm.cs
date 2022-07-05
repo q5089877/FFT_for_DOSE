@@ -36,6 +36,8 @@ namespace FFT_For_DOSE
                 cbx_name.Items.Add(new ComboboxItem(str_dt, str_dt));
             }
             tbx_password.PasswordChar = '*';
+
+            cbx_name.SelectedIndex = 0;
         }
 
         private class ComboboxItem
