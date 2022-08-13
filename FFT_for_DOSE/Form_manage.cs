@@ -89,6 +89,8 @@ namespace FFT_For_DOSE
                 string sleeveName = cbxSleeve.SelectedItem.ToString();
                 string pcbVersion = tbxPCB.Text;
                 string housingVersion = tbxHousing.Text;
+                string snMin;
+                string snMax;
 
                 if (moNum == "" || batchNum == "" || makeTotal == "" || sleeveName == "" || pcbVersion == "" || housingVersion == "")
                 {
@@ -124,37 +126,19 @@ namespace FFT_For_DOSE
                                 strSQL = string.Format("select * from batchData where batchNum = '{0}'", batchNum); //檢查batchNum
                                 string checkBatchNum = accessHelper.readData(strSQL);
 
-                                strSQL = "select TOP 1 sn from snData order by sn desc"; //取得SN最大值
-                                string getLastSn = accessHelper.readData(strSQL);
+                                try
+                                {
+                                    strSQL = "select TOP 1 sn from snData order by sn desc"; //取得SN最大值
+                                    string getLastSn = accessHelper.readData(strSQL);
+                                    snMin = Convert.ToString(Convert.ToUInt32(getLastSn) + 1);
+                                    snMax = Convert.ToString(Convert.ToUInt32(makeTotal) + Convert.ToUInt32(snMin) - 1);                                 
+                                }
+                                catch
+                                {
+                                    snMin = "0";
+                                    snMax = Convert.ToString(Convert.ToUInt32(makeTotal) + Convert.ToUInt32("0")) ;
+                                }
 
-
-
-                               
-
-                                ////執行SQL
-                                //string snMax = accessHelper.readData(strSQL);
-                                //intNextSn = Convert.ToInt32(snMax) + 1;
-                                //snMax = intNextSn.ToString().PadLeft(7, '0');
-                                //if (snMax != "-1")
-                                //{
-                                //    tbxSn.Text = "D" + snMax;
-                                //}
-                                //else
-                                //{
-                                //    MessageBox.Show("查詢失敗");
-                                //}
-
-
-
-
-
-
-
-
-
-
-                                string snMin = Convert.ToString(Convert.ToUInt32(getLastSn) + 1);
-                                string snMax = Convert.ToString(Convert.ToUInt32(makeTotal) + Convert.ToUInt32(snMin)-1);
                                 if (checkBatchNum == "-1")//MO不存在   
                                 {
                                     #region 寫入
@@ -201,9 +185,10 @@ namespace FFT_For_DOSE
                     #endregion
                 }
             }
-            catch
+            catch (Exception ex)
             {
                 MessageBox.Show("發生錯誤!!");
+                MessageBox.Show(ex.ToString());
             }
             reLoadMoNum();
         }
@@ -365,7 +350,7 @@ namespace FFT_For_DOSE
 
         void loadNullGrid()
         {
-            DataTable dt = (DataTable)dataGV .DataSource;
+            DataTable dt = (DataTable)dataGV.DataSource;
             dt.Rows.Clear();
             dataGV.DataSource = dt;
         }

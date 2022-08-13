@@ -137,11 +137,10 @@
             this.cbxSleeve.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.cbxSleeve.FormattingEnabled = true;
             this.cbxSleeve.Items.AddRange(new object[] {
-            "FlexPen",
-            "KwiPen",
-            "SoloSTAR",
-            "NovoPen4_5",
-            "NovoPen Echo"});
+            "FP",
+            "KP",
+            "SS",
+            "NP"});
             this.cbxSleeve.Location = new System.Drawing.Point(98, 54);
             this.cbxSleeve.Name = "cbxSleeve";
             this.cbxSleeve.Size = new System.Drawing.Size(191, 24);

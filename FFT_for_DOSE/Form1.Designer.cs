@@ -451,9 +451,9 @@
             // 
             this.btn_set_th.Font = new System.Drawing.Font("Verdana", 12F);
             this.btn_set_th.ForeColor = System.Drawing.Color.Navy;
-            this.btn_set_th.Location = new System.Drawing.Point(22, 602);
+            this.btn_set_th.Location = new System.Drawing.Point(12, 674);
             this.btn_set_th.Name = "btn_set_th";
-            this.btn_set_th.Size = new System.Drawing.Size(423, 38);
+            this.btn_set_th.Size = new System.Drawing.Size(143, 38);
             this.btn_set_th.TabIndex = 103;
             this.btn_set_th.Text = "#SET_ASS_TH";
             this.btn_set_th.UseVisualStyleBackColor = true;
@@ -463,9 +463,9 @@
             // 
             this.btn_ass_chk.Font = new System.Drawing.Font("Verdana", 12F);
             this.btn_ass_chk.ForeColor = System.Drawing.Color.Navy;
-            this.btn_ass_chk.Location = new System.Drawing.Point(22, 646);
+            this.btn_ass_chk.Location = new System.Drawing.Point(161, 600);
             this.btn_ass_chk.Name = "btn_ass_chk";
-            this.btn_ass_chk.Size = new System.Drawing.Size(423, 38);
+            this.btn_ass_chk.Size = new System.Drawing.Size(284, 110);
             this.btn_ass_chk.TabIndex = 104;
             this.btn_ass_chk.Text = "#ASS_CHECK";
             this.btn_ass_chk.UseVisualStyleBackColor = true;
@@ -574,9 +574,9 @@
             // 
             this.btn_clear_com.Font = new System.Drawing.Font("Verdana", 12F);
             this.btn_clear_com.ForeColor = System.Drawing.Color.Navy;
-            this.btn_clear_com.Location = new System.Drawing.Point(22, 689);
+            this.btn_clear_com.Location = new System.Drawing.Point(12, 718);
             this.btn_clear_com.Name = "btn_clear_com";
-            this.btn_clear_com.Size = new System.Drawing.Size(423, 38);
+            this.btn_clear_com.Size = new System.Drawing.Size(433, 38);
             this.btn_clear_com.TabIndex = 139;
             this.btn_clear_com.Text = "Clear ComPort";
             this.btn_clear_com.UseVisualStyleBackColor = true;
@@ -849,7 +849,7 @@
             "FT ",
             "KP ",
             "NP5"});
-            this.cbxSleeve.Location = new System.Drawing.Point(148, 531);
+            this.cbxSleeve.Location = new System.Drawing.Point(134, 531);
             this.cbxSleeve.Name = "cbxSleeve";
             this.cbxSleeve.Size = new System.Drawing.Size(81, 24);
             this.cbxSleeve.TabIndex = 167;
@@ -859,7 +859,7 @@
             // 
             this.label33.AutoSize = true;
             this.label33.Font = new System.Drawing.Font("Verdana", 12F);
-            this.label33.Location = new System.Drawing.Point(19, 534);
+            this.label33.Location = new System.Drawing.Point(5, 534);
             this.label33.Name = "label33";
             this.label33.Size = new System.Drawing.Size(115, 18);
             this.label33.TabIndex = 168;
@@ -871,16 +871,16 @@
             this.label34.Font = new System.Drawing.Font("Verdana", 12F);
             this.label34.Location = new System.Drawing.Point(235, 534);
             this.label34.Name = "label34";
-            this.label34.Size = new System.Drawing.Size(30, 18);
+            this.label34.Size = new System.Drawing.Size(79, 18);
             this.label34.TabIndex = 169;
-            this.label34.Text = "SN";
+            this.label34.Text = "NEXT SN";
             // 
             // tbxSn
             // 
             this.tbxSn.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.tbxSn.Location = new System.Drawing.Point(274, 531);
+            this.tbxSn.Location = new System.Drawing.Point(323, 531);
             this.tbxSn.Name = "tbxSn";
-            this.tbxSn.Size = new System.Drawing.Size(171, 27);
+            this.tbxSn.Size = new System.Drawing.Size(122, 27);
             this.tbxSn.TabIndex = 170;
             this.tbxSn.Text = "22-C-DA2-001";
             // 
@@ -942,7 +942,7 @@
             // 
             this.label36.AutoSize = true;
             this.label36.Font = new System.Drawing.Font("Verdana", 12F);
-            this.label36.Location = new System.Drawing.Point(19, 562);
+            this.label36.Location = new System.Drawing.Point(5, 562);
             this.label36.Name = "label36";
             this.label36.Size = new System.Drawing.Size(106, 18);
             this.label36.TabIndex = 175;
@@ -951,7 +951,7 @@
             // tbxPCB
             // 
             this.tbxPCB.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.tbxPCB.Location = new System.Drawing.Point(148, 560);
+            this.tbxPCB.Location = new System.Drawing.Point(134, 560);
             this.tbxPCB.Name = "tbxPCB";
             this.tbxPCB.Size = new System.Drawing.Size(82, 27);
             this.tbxPCB.TabIndex = 178;
@@ -1006,7 +1006,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(189)))), ((int)(((byte)(211)))), ((int)(((byte)(225)))));
-            this.ClientSize = new System.Drawing.Size(1155, 758);
+            this.ClientSize = new System.Drawing.Size(1155, 772);
             this.Controls.Add(this.cbxBatch);
             this.Controls.Add(this.label37);
             this.Controls.Add(this.btnDump);
