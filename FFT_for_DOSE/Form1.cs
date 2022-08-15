@@ -31,9 +31,9 @@ namespace FFT_DOSE
         int newX = 0;
 
         int charge_max = 0;
-
+        string StrSleeveName;
         string batchNum = "", pcbVer = "", housingVer = "", deviceID = "", bleID = "", SN = "", fwVersion = "", sleeveName = "", buildDate = ""
-             , snMin = "", snMax = "", assCheck, accXmax, accXmin, accYmax, accYmin, accZmax, accZmin
+             , assCheck, accXmax, accXmin, accYmax, accYmin, accZmax, accZmin
         , gyroXmax, gyroXmin, gyroYmax, gyroYmin, gyroZmax, gyroZmin, mouseXmax, mouseXmin, mouseYmax, mouseYmin, mouseSmax
         , mouseSmin, mouseFmax, mouseFmin, mouseImax, mouseImin, IRmax, IRmin, batterymax, batterymin, mountingSwitch;
 
@@ -83,9 +83,7 @@ namespace FFT_DOSE
             showLogForm = false;
             mi_pcb_feedback = new MethodInvoker(Update_pcb_feedback);
             GetPortInformation();
-
             //     access_data = new DBConn();
-
             //初始化上一次選擇
             #region get save data            
             DataTable dt = accessHelper.GetDataTable("select * from saveData");
@@ -158,7 +156,7 @@ namespace FFT_DOSE
             }
             #endregion
             cbxSleeve.SelectedIndex = 0;
-            createSnMax();
+            CreateSnMax();
             #region get select data
             try
             {
@@ -210,10 +208,10 @@ namespace FFT_DOSE
                 strSQL = string.Format("select sleeveName from batchData where batchNum = '{0}'", cbxBatch.SelectedItem.ToString()); //取得sleeveName                                                                                 
                 sleeveName = accessHelper.readData(strSQL);//執行SQL
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
-            }           
+            }
 
             if (sleeveName != "" && pcbVer != "" && housingVer != "")
             {
@@ -305,20 +303,26 @@ namespace FFT_DOSE
                 }
                 #endregion
 
-                #region  取得要寫入的SN
-                strSQL = "select TOP 1 sn from snData order by sn desc"; //取得SN最大值
-                                                                         //執行SQL
-                string _snMax = accessHelper.readData(strSQL);
-                intNextSn = Convert.ToInt32(_snMax) + 1;
-                _snMax = intNextSn.ToString().PadLeft(7, '0');
-                if (_snMax == "-1")
+                #region  取得要寫入的SN 由批號取得sleeve, 再由sleeve取得SN最大值
+                //strSQL = string.Format("SELECT MAX(snData.sn) FROM snData where (SELECT snData.sleeveName from snData where snData.batchNum = '{0}')", cbxBatch.SelectedItem.ToString()); //取得SN最大值                                                                                                                    
+                //string _snMax = accessHelper.readData(strSQL);//執行SQL
+                //intNextSn = Convert.ToInt32(_snMax) + 1;
+                //_snMax = intNextSn.ToString().PadLeft(7, '0');
+
+                //strSQL = string.Format("SELECT batchData.sleeveName from batchData where batchData.batchNum = '{0}'", cbxBatch.SelectedItem.ToString()); //取得sleeveName
+                //StrSleeveName = accessHelper.readData(strSQL);//執行SQL
+                strSQL = string.Format("SELECT total FROM batchData where batchNum = '{0}'", cbxBatch.SelectedItem.ToString()); //取得批號總數
+                string strTotal = accessHelper.readData(strSQL);//執行SQL
+                int intTotal = Convert.ToInt32(strTotal);
+                if (strTotal == "-1")
                 {
                     MessageBox.Show("查詢失敗");
                 }
                 #endregion
 
                 batchNum = cbxBatch.SelectedItem.ToString();
-                if (Convert.ToInt32(_snMax) <= Convert.ToInt32(snMax))
+                int _completed = getCompletedNumForBatch(); //取得此批完成的數量
+                if (Convert.ToInt32(_completed) <= intTotal) //判斷總數小於等於批號數量
                 {
 
                     #region 寫入資料庫
@@ -511,16 +515,15 @@ namespace FFT_DOSE
         {
             try
             {
-                //由批號取得 sleeveName, PcbVer, housingVer, snMin, snMax
+                //由批號取得 sleeveName, PcbVer, housingVer
                 //SQL語法：        
-                DataTable dt_selectData = accessHelper.GetDataTable("select sleeveName,pcbVersion,housingVersion,snMin,snMax from batchData");
+                DataTable dt_selectData = accessHelper.GetDataTable("select sleeveName,pcbVersion,housingVersion from batchData");
                 for (int i = 0; i < dt_selectData.Rows.Count; i++)
                 {
                     sleeveName = dt_selectData.Rows[i][0].ToString();
                     pcbVer = dt_selectData.Rows[i][1].ToString();
                     housingVer = dt_selectData.Rows[i][2].ToString();
-                    snMin = dt_selectData.Rows[i][3].ToString();
-                    snMax = dt_selectData.Rows[i][4].ToString();
+                    CreateSnMax();
                 }
             }
             catch
@@ -555,29 +558,35 @@ namespace FFT_DOSE
             #endregion
         }
 
-        private void createSnMax()
+        private void CreateSnMax() //創造下一個SN
         {
             try
             {
                 //回傳SN最大值
-                //SQL語法：                    
-                strSQL = "select TOP 1 sn from snData order by sn desc"; //取得SN最大值
-                //執行SQL
-                string snMax = accessHelper.readData(strSQL);
-                intNextSn = Convert.ToInt32(snMax) + 1;
-                snMax = intNextSn.ToString().PadLeft(7, '0');
-                if (snMax != "-1")
+                //SQL語法：                                    
+                // strSQL = string.Format("SELECT MAX(snData.sn) FROM snData where snData.sleeveName = (SELECT batchData.sleeveName from batchData where batchData.batchNum = '{0}')", cbxBatch.SelectedItem.ToString()); //取得SN最大值
+                strSQL = string.Format("SELECT batchData.sleeveName from batchData where batchData.batchNum = '{0}'", cbxBatch.SelectedItem.ToString()); //取得sleeveName
+                StrSleeveName = accessHelper.readData(strSQL);//執行SQL
+
+                strSQL = string.Format("SELECT MAX(snData.sn) FROM snData where snData.sleeveName = '{0}'", StrSleeveName); //取得SN最大值
+
+                string _snMax = accessHelper.readData(strSQL);//執行SQL
+                intNextSn = Convert.ToInt32(_snMax) + 1;
+
+                _snMax = intNextSn.ToString().PadLeft(7, '0');
+
+                if (_snMax != "-1")
                 {
-                    tbxSn.Text = "D" + snMax;
+                    tbxSn.Text = StrSleeveName + _snMax;
                 }
                 else
                 {
                     MessageBox.Show("查詢失敗");
                 }
             }
-            catch
+            catch (Exception EX)
             {
-
+                MessageBox.Show(EX.ToString());
             }
         }
 
@@ -670,6 +679,22 @@ namespace FFT_DOSE
             list.Add(Crc_data[1]);
             byte[] all_array = list.ToArray();
             RS232_PLC.Write(all_array, 0, all_array.Length);
+        }
+
+        int getCompletedNumForBatch()
+        {
+            strSQL = string.Format("SELECT count(*) from deviceData where sleeve = '{0}' and batchNum = '{1}' and assCheck = '{2}'",
+            StrSleeveName, cbxBatch.SelectedItem.ToString(), "Pass"); //取得sleeveName
+            string _return = accessHelper.readData(strSQL);//執行SQL
+            int intTemp = Convert.ToInt32(_return);
+            try
+            {
+                return intTemp;
+            }
+            catch
+            {
+                return -1;
+            }
         }
 
         public string GetPortInformation()
@@ -1299,19 +1324,8 @@ namespace FFT_DOSE
                     if (checkDeviceID == "-1")//deviceID不存在                    
                     {
                         #region 取得要寫入的SN
-                        strSQL = "select TOP 1 sn from snData order by sn desc"; //取得SN最大值
-                                                                                 //執行SQL
-                        string _snMax = accessHelper.readData(strSQL);
-                        intNextSn = Convert.ToInt32(_snMax) + 1;
-                        _snMax = intNextSn.ToString().PadLeft(7, '0');
-                        if (_snMax != "-1")
-                        {
-                            SN = _snMax.ToString().PadLeft(7, '0');
-                        }
-                        else
-                        {
-                            MessageBox.Show("查詢失敗");
-                        }
+
+
                         #endregion
                     }
                     else //取得舊有SN
@@ -1450,7 +1464,7 @@ namespace FFT_DOSE
 
                 if (inData.Contains("ASS_CHECK") && inData.Contains("#") == false)
                 {
-                    boolAssCheck = true;
+                    boolAssCheck = true; //測試成功
                     assCheck = inData.Substring(inData.IndexOf("ASS_CHECK") + 11, 4);
 
                     //Date
@@ -1496,10 +1510,10 @@ namespace FFT_DOSE
                                 #region 寫入deviceData
 
                                 //SQL語法：       
-                                strSQL = "insert into deviceData(sn,sleeve,buildDate,assCheck,accXmax,accXmin,accYmax,accYmin,accZmax,accZmin," +
+                                strSQL = "insert into deviceData(sn,deviceID,batchNum,sleeve,buildDate,assCheck,accXmax,accXmin,accYmax,accYmin,accZmax,accZmin," +
                                     "gyroXmax,gyroXmin,gyroYmax,gyroYmin,mouseXmax,mouseXmin,mouseYmax,mouseYmin,mouseSmax,mouseSmin,mouseFmax,mouseFmin," +
                                     "mouseImax,mouseImin,IRmax,IRmin,batterymax,batterymin,mounting)" +
-                                    " VALUES(@sn,@sleeve,@buildDate,@assCheck,@accXmax,@accXmin,@accYmax,@accYmin,@accZmax,@accZmin," +
+                                    " VALUES(@sn,@deviceID,@batchNum,@sleeve,@buildDate,@assCheck,@accXmax,@accXmin,@accYmax,@accYmin,@accZmax,@accZmin," +
                                     "@gyroXmax,@gyroXmin,@gyroYmax,@gyroYmin,@mouseXmax,@mouseXmin,@mouseYmax,@mouseYmin,@mouseSmax,@mouseSmin,@mouseFmax," +
                                     "@mouseFmin,@mouseImax,@mouseImin,@IRmax,@IRmin,@batterymax,@batterymin,@mounting)";
                                 if (string.IsNullOrEmpty(strSQL) == false)
@@ -1507,6 +1521,8 @@ namespace FFT_DOSE
                                     //添加參數
                                     OleDbParameter[] pars2 = new OleDbParameter[] {
                                             new OleDbParameter("@sn",SN),
+                                            new OleDbParameter("@deviceID",deviceID),
+                                            new OleDbParameter("@batchNum",batchNum),
                                             new OleDbParameter("@sleeve",sleeveName),
                                             new OleDbParameter("@buildDate",buildDate),
                                             new OleDbParameter("@assCheck",assCheck),
@@ -1544,7 +1560,7 @@ namespace FFT_DOSE
                                     }
                                     else
                                     {
-                                        miCreateMaxSN = new MethodInvoker(this.createSnMax);
+                                        miCreateMaxSN = new MethodInvoker(this.CreateSnMax);
                                         this.BeginInvoke(miCreateMaxSN);
                                     }
                                 }
@@ -1636,10 +1652,10 @@ namespace FFT_DOSE
                         #region 寫入測試資料庫
 
                         //SQL語法：       
-                        strSQL = "insert into deviceData(sn,sleeve,buildDate,assCheck,accXmax,accXmin,accYmax,accYmin,accZmax,accZmin," +
+                        strSQL = "insert into deviceData(sn,sleeve,batchNum,buildDate,assCheck,accXmax,accXmin,accYmax,accYmin,accZmax,accZmin," +
                             "gyroXmax,gyroXmin,gyroYmax,gyroYmin,mouseXmax,mouseXmin,mouseYmax,mouseYmin,mouseSmax,mouseSmin,mouseFmax,mouseFmin," +
                             "mouseImax,mouseImin,IRmax,IRmin,batterymax,batterymin,mounting)" +
-                            " VALUES(@sn,@sleeve,@buildDate,@assCheck,@accXmax,@accXmin,@accYmax,@accYmin,@accZmax,@accZmin," +
+                            " VALUES(@sn,@sleeve,@batchNum,@buildDate,@assCheck,@accXmax,@accXmin,@accYmax,@accYmin,@accZmax,@accZmin," +
                             "@gyroXmax,@gyroXmin,@gyroYmax,@gyroYmin,@mouseXmax,@mouseXmin,@mouseYmax,@mouseYmin,@mouseSmax,@mouseSmin,@mouseFmax," +
                             "@mouseFmin,@mouseImax,@mouseImin,@IRmax,@IRmin,@batterymax,@batterymin,@mounting)";
                         if (string.IsNullOrEmpty(strSQL) == false)
@@ -1648,6 +1664,7 @@ namespace FFT_DOSE
                             OleDbParameter[] pars = new OleDbParameter[] {
                                             new OleDbParameter("@sn",SN), //intSnMax-1
                                             new OleDbParameter("@sleeve",sleeveName),
+                                            new OleDbParameter("@batchNum",batchNum),
                                             new OleDbParameter("@buildDate",buildDate),
                                             new OleDbParameter("@assCheck",assCheck),
                                             new OleDbParameter("@accXmax",accXmax),
@@ -2174,7 +2191,7 @@ namespace FFT_DOSE
 
         private void cbxSleeve_SelectedIndexChanged(object sender, EventArgs e)
         {
-            createSnMax();
+            // createSnMax();
             sleeveName = cbxSleeve.SelectedItem.ToString();
         }
 

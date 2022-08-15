@@ -887,7 +887,7 @@
             // btnOpenManage
             // 
             this.btnOpenManage.Font = new System.Drawing.Font("Verdana", 12F);
-            this.btnOpenManage.Location = new System.Drawing.Point(463, 689);
+            this.btnOpenManage.Location = new System.Drawing.Point(463, 679);
             this.btnOpenManage.Name = "btnOpenManage";
             this.btnOpenManage.Size = new System.Drawing.Size(194, 28);
             this.btnOpenManage.TabIndex = 171;
@@ -899,7 +899,7 @@
             // 
             this.btnConfigFW.Font = new System.Drawing.Font("Verdana", 12F);
             this.btnConfigFW.ForeColor = System.Drawing.Color.Navy;
-            this.btnConfigFW.Location = new System.Drawing.Point(464, 646);
+            this.btnConfigFW.Location = new System.Drawing.Point(920, 729);
             this.btnConfigFW.Name = "btnConfigFW";
             this.btnConfigFW.Size = new System.Drawing.Size(130, 27);
             this.btnConfigFW.TabIndex = 172;
@@ -911,9 +911,9 @@
             // 
             this.btnShipMode.Font = new System.Drawing.Font("Verdana", 12F);
             this.btnShipMode.ForeColor = System.Drawing.Color.Navy;
-            this.btnShipMode.Location = new System.Drawing.Point(464, 735);
+            this.btnShipMode.Location = new System.Drawing.Point(463, 713);
             this.btnShipMode.Name = "btnShipMode";
-            this.btnShipMode.Size = new System.Drawing.Size(103, 27);
+            this.btnShipMode.Size = new System.Drawing.Size(194, 27);
             this.btnShipMode.TabIndex = 173;
             this.btnShipMode.Text = "Ship Mode";
             this.btnShipMode.UseVisualStyleBackColor = true;
@@ -926,7 +926,6 @@
             this.tbxHousing.Name = "tbxHousing";
             this.tbxHousing.Size = new System.Drawing.Size(271, 27);
             this.tbxHousing.TabIndex = 177;
-            this.tbxHousing.Text = "v8.0-02";
             // 
             // label35
             // 
@@ -955,15 +954,14 @@
             this.tbxPCB.Name = "tbxPCB";
             this.tbxPCB.Size = new System.Drawing.Size(82, 27);
             this.tbxPCB.TabIndex = 178;
-            this.tbxPCB.Text = "9.1";
             // 
             // btnStatus
             // 
             this.btnStatus.Font = new System.Drawing.Font("Verdana", 12F);
             this.btnStatus.ForeColor = System.Drawing.Color.Navy;
-            this.btnStatus.Location = new System.Drawing.Point(600, 646);
+            this.btnStatus.Location = new System.Drawing.Point(463, 646);
             this.btnStatus.Name = "btnStatus";
-            this.btnStatus.Size = new System.Drawing.Size(80, 27);
+            this.btnStatus.Size = new System.Drawing.Size(194, 27);
             this.btnStatus.TabIndex = 179;
             this.btnStatus.Text = "Status";
             this.btnStatus.UseVisualStyleBackColor = true;
@@ -973,7 +971,7 @@
             // 
             this.btnDump.Font = new System.Drawing.Font("Verdana", 12F);
             this.btnDump.ForeColor = System.Drawing.Color.Navy;
-            this.btnDump.Location = new System.Drawing.Point(686, 646);
+            this.btnDump.Location = new System.Drawing.Point(806, 729);
             this.btnDump.Name = "btnDump";
             this.btnDump.Size = new System.Drawing.Size(109, 27);
             this.btnDump.TabIndex = 180;

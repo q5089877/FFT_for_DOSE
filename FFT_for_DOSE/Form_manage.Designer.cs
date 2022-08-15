@@ -137,7 +137,7 @@
             this.cbxSleeve.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.cbxSleeve.FormattingEnabled = true;
             this.cbxSleeve.Items.AddRange(new object[] {
-            "FP",
+            "FT",
             "KP",
             "SS",
             "NP"});

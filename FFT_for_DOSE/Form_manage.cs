@@ -89,8 +89,6 @@ namespace FFT_For_DOSE
                 string sleeveName = cbxSleeve.SelectedItem.ToString();
                 string pcbVersion = tbxPCB.Text;
                 string housingVersion = tbxHousing.Text;
-                string snMin;
-                string snMax;
 
                 if (moNum == "" || batchNum == "" || makeTotal == "" || sleeveName == "" || pcbVersion == "" || housingVersion == "")
                 {
@@ -130,21 +128,18 @@ namespace FFT_For_DOSE
                                 {
                                     strSQL = "select TOP 1 sn from snData order by sn desc"; //取得SN最大值
                                     string getLastSn = accessHelper.readData(strSQL);
-                                    snMin = Convert.ToString(Convert.ToUInt32(getLastSn) + 1);
-                                    snMax = Convert.ToString(Convert.ToUInt32(makeTotal) + Convert.ToUInt32(snMin) - 1);                                 
-                                }
+                                                                                         }
                                 catch
                                 {
-                                    snMin = "0";
-                                    snMax = Convert.ToString(Convert.ToUInt32(makeTotal) + Convert.ToUInt32("0")) ;
+                                 
                                 }
 
                                 if (checkBatchNum == "-1")//MO不存在   
                                 {
                                     #region 寫入
                                     //SQL語法：       
-                                    strSQL = "insert into batchData(batchNum,moNum,total,sleeveName,pcbVersion,housingVersion,snMin,snMax)" +
-                                    " VALUES(@batchNum,@moNum,@total,@sleeveName,@pcbVersion,@housingVersion,@snMin,@snMax)";
+                                    strSQL = "insert into batchData(batchNum,moNum,total,sleeveName,pcbVersion,housingVersion)" +
+                                    " VALUES(@batchNum,@moNum,@total,@sleeveName,@pcbVersion,@housingVersion)";
                                     if (string.IsNullOrEmpty(strSQL) == false)
                                     {
                                         //添加參數
@@ -154,9 +149,8 @@ namespace FFT_For_DOSE
                                             new OleDbParameter("@total",makeTotal),
                                             new OleDbParameter("@sleeveName",sleeveName),
                                             new OleDbParameter("@pcbVersion",pcbVersion),
-                                            new OleDbParameter("@housingVersion",housingVersion),
-                                            new OleDbParameter("@snMin",snMin),
-                                            new OleDbParameter("@snMax",snMax)
+                                            new OleDbParameter("@housingVersion",housingVersion)
+                                        
                                     };
                                         //執行SQL
                                         string errorInfo2 = accessHelper.ExecSql(strSQL, pars2);
@@ -291,8 +285,6 @@ namespace FFT_For_DOSE
             dataGV.Columns["sleeveName"].HeaderText = "袖套名稱";
             dataGV.Columns["pcbVersion"].HeaderText = "PCB版本";
             dataGV.Columns["housingVersion"].HeaderText = "外殼版本";
-            dataGV.Columns["SnMin"].HeaderText = "Sn最小值";
-            dataGV.Columns["SnMax"].HeaderText = "Sn最大值";
 
             dataGV.Columns["moNum"].Width = 120;
             dataGV.Columns["batchNum"].Width = 120;
@@ -300,8 +292,6 @@ namespace FFT_For_DOSE
             dataGV.Columns["sleeveName"].Width = 120;
             dataGV.Columns["pcbVersion"].Width = 120;
             dataGV.Columns["housingVersion"].Width = 120;
-            dataGV.Columns["SnMin"].Width = 100;
-            dataGV.Columns["SnMax"].Width = 100;
 
             dataGV.Columns["moNum"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGV.Columns["batchNum"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -309,8 +299,6 @@ namespace FFT_For_DOSE
             dataGV.Columns["sleeveName"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGV.Columns["pcbVersion"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGV.Columns["housingVersion"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGV.Columns["SnMin"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGV.Columns["SnMax"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
         }
 
         #region ComboxItem
