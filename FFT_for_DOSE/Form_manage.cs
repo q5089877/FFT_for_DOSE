@@ -124,22 +124,12 @@ namespace FFT_For_DOSE
                                 strSQL = string.Format("select * from batchData where batchNum = '{0}'", batchNum); //檢查batchNum
                                 string checkBatchNum = accessHelper.readData(strSQL);
 
-                                try
-                                {
-                                    strSQL = "select TOP 1 sn from snData order by sn desc"; //取得SN最大值
-                                    string getLastSn = accessHelper.readData(strSQL);
-                                                                                         }
-                                catch
-                                {
-                                 
-                                }
-
                                 if (checkBatchNum == "-1")//MO不存在   
                                 {
                                     #region 寫入
                                     //SQL語法：       
-                                    strSQL = "insert into batchData(batchNum,moNum,total,sleeveName,pcbVersion,housingVersion)" +
-                                    " VALUES(@batchNum,@moNum,@total,@sleeveName,@pcbVersion,@housingVersion)";
+                                    strSQL = "insert into batchData(batchNum,moNum,total,sleeveName,pcbVersion,housingVersion,finished)" +
+                                    " VALUES(@batchNum,@moNum,@total,@sleeveName,@pcbVersion,@housingVersion,@finished)";
                                     if (string.IsNullOrEmpty(strSQL) == false)
                                     {
                                         //添加參數
@@ -149,8 +139,9 @@ namespace FFT_For_DOSE
                                             new OleDbParameter("@total",makeTotal),
                                             new OleDbParameter("@sleeveName",sleeveName),
                                             new OleDbParameter("@pcbVersion",pcbVersion),
-                                            new OleDbParameter("@housingVersion",housingVersion)
-                                        
+                                            new OleDbParameter("@housingVersion",housingVersion),
+                                            new OleDbParameter("@finished","N")
+
                                     };
                                         //執行SQL
                                         string errorInfo2 = accessHelper.ExecSql(strSQL, pars2);
