@@ -34,7 +34,7 @@ namespace FFT_DOSE
         string StrSleeveName;
         string batchNum = "", pcbVer = "", housingVer = "", deviceID = "", bleID = "", nextSn = "", fwVersion = "", sleeveName = "", buildDate = ""
              , assCheck, accXmax = "2000", accXmin = "-2000", accYmax = "2000", accYmin = "-2000", accZmax = "2000", accZmin = "-2000"
-        , gyroXmax="", gyroXmin = "", gyroYmax = "", gyroYmin = "", gyroZmax = "", gyroZmin = "", mouseXmax = "", mouseXmin = "", mouseYmax = "", mouseYmin = "", mouseSmax = ""
+        , gyroXmax = "", gyroXmin = "", gyroYmax = "", gyroYmin = "", gyroZmax = "", gyroZmin = "", mouseXmax = "", mouseXmin = "", mouseYmax = "", mouseYmin = "", mouseSmax = ""
         , mouseSmin = "", mouseFmax = "", mouseFmin = "", mouseImax = "", mouseImin = "", IRmax = "", IRmin = "", batterymax = "", batterymin = "", mountingSwitch = "";
 
         public bool showLogForm { get; set; }
@@ -45,7 +45,7 @@ namespace FFT_DOSE
         static double chart_MAX = 250;
         static int int_interval = 300;
         string str_Response = "";
-        bool Send_ASS_CHECK = true;
+        bool CheckShipping = false;
         // DBConn access_data;
         string strFeedbackDose = "";
         MethodInvoker mi_pcb_feedback;
@@ -80,10 +80,13 @@ namespace FFT_DOSE
             printLabel printLabel1 = new printLabel();
             printLabel1.CrecatePCX();
 
+            //載入使用者名稱到下拉選單
+            loadUserName();
+
             showLogForm = false;
             mi_pcb_feedback = new MethodInvoker(Update_pcb_feedback);
             GetPortInformation();
-            //     access_data = new DBConn();
+          
             //初始化上一次選擇
             #region get save data            
             DataTable dt = accessHelper.GetDataTable("select * from saveData");
@@ -156,7 +159,7 @@ namespace FFT_DOSE
             }
             #endregion
             cbxSleeve.SelectedIndex = 0;
-            CreateSnMax();
+            createSnMax();
             #region get select data
             try
             {
@@ -196,14 +199,14 @@ namespace FFT_DOSE
             {
                 MessageBox.Show("An error has occurred. Please check the COM PORT or other problems.");
             }
-            #endregion            
-            loadBatch();
+            #endregion                       
         }
 
         private async void btn_ass_chk_Click(object sender, EventArgs e)
         {
             try
             {
+                CheckShipping = true;
                 strSQL = string.Format("select sleeveName from batchData where batchNum = '{0}'", cbxBatch.SelectedItem.ToString()); //取得sleeveName                                                                                 
                 sleeveName = accessHelper.readData(strSQL);//執行SQL
             }
@@ -436,13 +439,46 @@ namespace FFT_DOSE
 
                             #region 寫入shippingMode
                             //SQL語法：       
-                            strSQL = "insert into shippingMode(sn,shippingStatus,_current) VALUES(@sn,@shippingStatus,@_current)";
+                            strSQL = "insert into shippingMode(deviceID,sn,shippingStatus,_current) VALUES(@deviceID, @sn,@shippingStatus,@_current)";
                             if (string.IsNullOrEmpty(strSQL) == false)
                             {
                                 //添加參數
                                 OleDbParameter[] pars = new OleDbParameter[] {
+                                            new OleDbParameter("@deviceID",deviceID),
                                             new OleDbParameter("@sn",nextSn),
                                             new OleDbParameter("@shippingStatus","Fail"),
+                                            new OleDbParameter("@_current",FFTCureent.ToString())
+                                    };
+
+                                //執行SQL
+                                string errorInfo = accessHelper.ExecSql(strSQL, pars);
+                                if (errorInfo.Length != 0)
+                                {
+                                    MessageBox.Show("寫入失敗！" + errorInfo);
+                                }
+                                else
+                                {
+                                    Console.WriteLine("寫入成功! " + errorInfo);
+                                }
+                            }
+                            #endregion
+
+                            #endregion
+                        }
+                        else
+                        {
+                            #region shipping PASS  
+
+                            #region 寫入shippingMode
+                            //SQL語法：       
+                            strSQL = "insert into shippingMode(deviceID,sn,shippingStatus,_current) VALUES(@deviceID, @sn,@shippingStatus,@_current)";
+                            if (string.IsNullOrEmpty(strSQL) == false)
+                            {
+                                //添加參數
+                                OleDbParameter[] pars = new OleDbParameter[] {
+                                            new OleDbParameter("@deviceID",deviceID),
+                                            new OleDbParameter("@sn",nextSn),
+                                            new OleDbParameter("@shippingStatus","Pass"),
                                             new OleDbParameter("@_current",FFTCureent.ToString())
                                     };
 
@@ -460,37 +496,6 @@ namespace FFT_DOSE
                                     //UTF8bytes = Encoding.UTF8.GetBytes("#SHIP_MODE" + Environment.NewLine);
                                     //RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
                                     //Thread.Sleep(delay_time2);
-                                }
-                            }
-                            #endregion
-
-                            #endregion
-                        }
-                        else
-                        {
-                            #region shipping PASS  
-
-                            #region 寫入shippingMode
-                            //SQL語法：       
-                            strSQL = "insert into shippingMode(sn,shippingStatus,_current) VALUES(@sn,@shippingStatus,@_current)";
-                            if (string.IsNullOrEmpty(strSQL) == false)
-                            {
-                                //添加參數
-                                OleDbParameter[] pars = new OleDbParameter[] {
-                                            new OleDbParameter("@sn",nextSn),
-                                            new OleDbParameter("@shippingStatus","Pass"),
-                                            new OleDbParameter("@_current",FFTCureent.ToString())
-                                    };
-
-                                //執行SQL
-                                string errorInfo = accessHelper.ExecSql(strSQL, pars);
-                                if (errorInfo.Length != 0)
-                                {
-                                    MessageBox.Show("寫入失敗！" + errorInfo);
-                                }
-                                else
-                                {
-                                    Console.WriteLine("寫入成功! " + errorInfo);
                                 }
                             }
                             #endregion
@@ -582,35 +587,15 @@ namespace FFT_DOSE
             }
         }
 
-        private void cbxBatch_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            try
-            {
-                //由批號取得 sleeveName, PcbVer, housingVer
-                //SQL語法：        
-                strSQL = string.Format("select sleeveName,pcbVersion,housingVersion,total from batchData where batchNum = '{0}'", cbxBatch.SelectedItem.ToString());
-                DataTable dt_selectData = accessHelper.GetDataTable(strSQL);
-                for (int i = 0; i < dt_selectData.Rows.Count; i++)
-                {
-                    sleeveName = dt_selectData.Rows[i][0].ToString();
-                    pcbVer = dt_selectData.Rows[i][1].ToString();
-                    housingVer = dt_selectData.Rows[i][2].ToString();
-                    lblBatTotal.Text = dt_selectData.Rows[i][3].ToString(); //批號總數
-                    CreateSnMax(); //產生下一個最大SN
-                    int _num = getCompletedNumForBatch(); //取得完成數量
 
-                }
-            }
-            catch
-            {
-                MessageBox.Show("載入批號相關資訊");
-            }
-        }
 
+        #region Function集中處
         //戴入未完成批號
         void loadBatch()
         {
+            cbxBatch.Enabled = true;
             //戴入未完成批號
+            cbxBatch.Items.Clear();
             #region get save data            
             DataTable dt = accessHelper.GetDataTable("select batchNum from batchData where finished = 'N'");
             for (int i = 0; i < dt.Rows.Count; i++)
@@ -618,19 +603,49 @@ namespace FFT_DOSE
                 string str_dt = dt.Rows[i][0].ToString();
                 cbxBatch.Items.Add(new ComboboxItem(str_dt, str_dt));
             }
-            try
-            {
-                cbxBatch.SelectedIndex = 0; //初始化批號選擇
-                getCompletedNumForBatch(); //完成數量
-            }
-            catch
-            {
-                MessageBox.Show("不存在任何批號");
-            }
             #endregion          
         }
 
-        private void CreateSnMax() //創造下一個SN
+        private void btnLogin_Click(object sender, EventArgs e)
+        {
+            if ((tbxPassword.Text.Length > 3) && (tbxPassword.Text != ""))
+            {
+                //此判斷帳號密碼是否正確
+                string str_sql = string.Format("SELECT pass_word FROM _user where user_name = '{0}'", cbx_name.SelectedItem.ToString());
+                string pass_word = accessHelper.readData(str_sql);
+
+                if (pass_word != "-2")
+                {
+                    //帳號密碼存在，比對密碼
+                    if (pass_word == tbxPassword.Text)
+                    {
+                        //登入成功;
+                        try
+                        {
+                            loadBatch();
+                        }
+                        catch
+                        {
+                            MessageBox.Show("登入失敗");
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("登入失敗");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("登入失敗");
+                }
+            }
+            else
+            {
+                MessageBox.Show("密碼長度不足");
+            }
+        }
+
+        private void createSnMax() //創造下一個SN
         {
             try
             {
@@ -656,7 +671,6 @@ namespace FFT_DOSE
                     {
                         nextSn = StrSleeveName + nextSn;
                         tbxSn.Text = nextSn;
-
                     }
                     else
                     {
@@ -671,6 +685,61 @@ namespace FFT_DOSE
             catch (Exception EX)
             {
                 MessageBox.Show(EX.ToString());
+            }
+        }
+
+        //判斷此deviceID(SN)是否已進入出貨模式, 1=是 0=否
+        int checkShippingExist(string deviceID)
+        {
+            CheckShipping = false;
+            strSQL = string.Format("SELECT sn FROM shippingMode where deviceID = '{0}' and shippingStatus = '{1}'", deviceID, "Pass"); //取得批號總數
+            string _sn = accessHelper.readData(strSQL);//執行SQL
+            if (_sn != "" || _sn != null)
+            {
+                return 1;
+            }
+            return 0;
+        }
+
+        void loadUserName()
+        {
+            string str_sql = "SELECT user_name FROM _user";
+            DataTable dt = accessHelper.GetDataTable(str_sql);
+            for (int i = 0; i < dt.Rows.Count; i++)
+            {
+                string str_dt = dt.Rows[i][0].ToString();
+                cbx_name.Items.Add(new ComboboxItem(str_dt, str_dt));
+            }
+            tbxPassword.PasswordChar = '*';
+            cbx_name.SelectedIndex = 0;
+        }
+        #endregion
+
+
+        private void cbxBatch_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                //由批號取得 sleeveName, PcbVer, housingVer
+                //SQL語法：        
+                strSQL = string.Format("select sleeveName,pcbVersion,housingVersion,total from batchData where batchNum = '{0}'", cbxBatch.SelectedItem.ToString());
+                DataTable dt_selectData = accessHelper.GetDataTable(strSQL);
+                for (int i = 0; i < dt_selectData.Rows.Count; i++)
+                {
+                    sleeveName = dt_selectData.Rows[i][0].ToString();
+                    pcbVer = dt_selectData.Rows[i][1].ToString();
+                    housingVer = dt_selectData.Rows[i][2].ToString();
+                    lblBatTotal.Text = dt_selectData.Rows[i][3].ToString(); //批號總數
+                    createSnMax(); //產生下一個最大SN
+                    int _num = getCompletedNumForBatch(); //取得完成數量
+                    //批號選擇完成, 刪掉密碼, 鎖定批號
+                    tbxPassword.Text = "";
+                    cbxBatch.Enabled = false;
+                }
+            }
+            catch
+            {
+                MessageBox.Show("載入批號相關資訊");
             }
         }
 
@@ -1405,23 +1474,14 @@ namespace FFT_DOSE
                     if (inData.Contains("Device ID:") == true)
                     {
                         deviceID = inData.Substring(inData.IndexOf("Device ID") + 10, inData.IndexOf("BLE ID") - (inData.IndexOf("Device ID") + 10)).Replace("\r\n", "");
-
-                        //由deviceID判斷SN是舊的還是新的
-                        //deviceID未被寫入資料庫                    
-                        strSQL = string.Format("select * from snData where deviceID = '{0}'", deviceID); //SQL語法：                                        
-                        string checkDeviceID = accessHelper.readData(strSQL);
-                        if (checkDeviceID == "-1")//deviceID不存在                    
+                        boolDeviceReceive = true; //deviceID接收完成
+                        if (CheckShipping) //按下主測試鈕後才判斷一次
                         {
-                            #region 取得要寫入的SN
-
-
-                            #endregion
+                            if (checkShippingExist(deviceID) == 1)
+                            {
+                                MessageBox.Show("此DEVICEID " + deviceID + " 曾經進入過Shipping Mode");
+                            }
                         }
-                        else //取得舊有SN
-                        {
-
-                        }
-                        boolDeviceReceive = true;
                     }
                     if (inData.Contains("BLE ID:") == true)
                     {
@@ -1578,10 +1638,8 @@ namespace FFT_DOSE
                         //Date
                         buildDate = DateTime.Now.ToString("yyyy MMM dd", CultureInfo.CreateSpecificCulture("en-US"));
 
-                        //deviceID未被寫入資料庫
-                        //SQL語法：                    
+                        //判斷deviceID是否不存在於snData, 若是則寫入一筆資料到snData
                         strSQL = string.Format("select * from snData where deviceID = '{0}'", deviceID);
-
                         string checkDeviceID = accessHelper.readData(strSQL);
                         if (checkDeviceID == "-1" && boolDeviceReceive)
                         {
@@ -1665,7 +1723,7 @@ namespace FFT_DOSE
                                         }
                                         else
                                         {
-                                            miCreateMaxSN = new MethodInvoker(this.CreateSnMax);
+                                            miCreateMaxSN = new MethodInvoker(this.createSnMax);
                                             this.BeginInvoke(miCreateMaxSN);
                                         }
                                     }
@@ -1755,7 +1813,7 @@ namespace FFT_DOSE
                         #endregion
 
                         #region  執行SQL，deviceID已存在寫入deviceData一筆資料和設定FW
-                        else if (boolDeviceReceive) //deviceID已存在   
+                        else if (boolDeviceReceive) //deviceID已存在,故只寫入測試資料  
                         {
                             #region 寫入測試資料庫
 

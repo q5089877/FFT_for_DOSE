@@ -27,7 +27,12 @@ namespace FFT_For_DOSE
 
         private void loginForm_Load(object sender, EventArgs e)
         {
-            //載入工單號碼到下單選單
+            //載入使用者名稱到下拉選單
+            loadUserName();
+        }
+
+        void loadUserName()
+        {
             string str_sql = "SELECT user_name FROM _user";
             DataTable dt = accessHelper.GetDataTable(str_sql);
             for (int i = 0; i < dt.Rows.Count; i++)
@@ -36,7 +41,6 @@ namespace FFT_For_DOSE
                 cbx_name.Items.Add(new ComboboxItem(str_dt, str_dt));
             }
             tbx_password.PasswordChar = '*';
-
             cbx_name.SelectedIndex = 0;
         }
 

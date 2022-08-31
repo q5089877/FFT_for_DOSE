@@ -129,13 +129,18 @@
             this.lblBatCompleteNum = new System.Windows.Forms.Label();
             this.lblBatTotal = new System.Windows.Forms.Label();
             this.label40 = new System.Windows.Forms.Label();
+            this.cbx_name = new System.Windows.Forms.ComboBox();
+            this.tbxPassword = new System.Windows.Forms.TextBox();
+            this.label39 = new System.Windows.Forms.Label();
+            this.label41 = new System.Windows.Forms.Label();
+            this.btnLogin = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.chart2)).BeginInit();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(808, 694);
+            this.button2.Location = new System.Drawing.Point(1349, 749);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(107, 23);
             this.button2.TabIndex = 1;
@@ -150,7 +155,7 @@
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(1001, 694);
+            this.button6.Location = new System.Drawing.Point(1542, 749);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(107, 23);
             this.button6.TabIndex = 5;
@@ -160,7 +165,7 @@
             // 
             // button7
             // 
-            this.button7.Location = new System.Drawing.Point(920, 694);
+            this.button7.Location = new System.Drawing.Point(1461, 749);
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(75, 23);
             this.button7.TabIndex = 6;
@@ -179,7 +184,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Verdana", 12F);
-            this.label1.Location = new System.Drawing.Point(16, 21);
+            this.label1.Location = new System.Drawing.Point(49, 21);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(120, 18);
             this.label1.TabIndex = 28;
@@ -199,7 +204,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Verdana", 12F);
-            this.label3.Location = new System.Drawing.Point(17, 669);
+            this.label3.Location = new System.Drawing.Point(519, 669);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(135, 18);
             this.label3.TabIndex = 32;
@@ -210,7 +215,7 @@
             // 
             this.cbx_dose.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.cbx_dose.FormattingEnabled = true;
-            this.cbx_dose.Location = new System.Drawing.Point(169, 663);
+            this.cbx_dose.Location = new System.Drawing.Point(671, 663);
             this.cbx_dose.Name = "cbx_dose";
             this.cbx_dose.Size = new System.Drawing.Size(287, 24);
             this.cbx_dose.TabIndex = 31;
@@ -221,7 +226,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Verdana", 12F);
-            this.label4.Location = new System.Drawing.Point(16, 51);
+            this.label4.Location = new System.Drawing.Point(30, 51);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(139, 18);
             this.label4.TabIndex = 34;
@@ -457,7 +462,7 @@
             // 
             this.btn_set_th.Font = new System.Drawing.Font("Verdana", 12F);
             this.btn_set_th.ForeColor = System.Drawing.Color.Navy;
-            this.btn_set_th.Location = new System.Drawing.Point(6, 715);
+            this.btn_set_th.Location = new System.Drawing.Point(508, 715);
             this.btn_set_th.Name = "btn_set_th";
             this.btn_set_th.Size = new System.Drawing.Size(143, 38);
             this.btn_set_th.TabIndex = 103;
@@ -469,9 +474,9 @@
             // 
             this.btn_ass_chk.Font = new System.Drawing.Font("Verdana", 12F);
             this.btn_ass_chk.ForeColor = System.Drawing.Color.Navy;
-            this.btn_ass_chk.Location = new System.Drawing.Point(175, 223);
+            this.btn_ass_chk.Location = new System.Drawing.Point(175, 391);
             this.btn_ass_chk.Name = "btn_ass_chk";
-            this.btn_ass_chk.Size = new System.Drawing.Size(270, 297);
+            this.btn_ass_chk.Size = new System.Drawing.Size(270, 129);
             this.btn_ass_chk.TabIndex = 104;
             this.btn_ass_chk.Text = "#ASS_CHECK";
             this.btn_ass_chk.UseVisualStyleBackColor = true;
@@ -580,7 +585,7 @@
             // 
             this.btn_clear_com.Font = new System.Drawing.Font("Verdana", 12F);
             this.btn_clear_com.ForeColor = System.Drawing.Color.Navy;
-            this.btn_clear_com.Location = new System.Drawing.Point(6, 759);
+            this.btn_clear_com.Location = new System.Drawing.Point(508, 759);
             this.btn_clear_com.Name = "btn_clear_com";
             this.btn_clear_com.Size = new System.Drawing.Size(433, 38);
             this.btn_clear_com.TabIndex = 139;
@@ -600,7 +605,7 @@
             series1.Legend = "Legend1";
             series1.Name = "Series1";
             this.chart2.Series.Add(series1);
-            this.chart2.Size = new System.Drawing.Size(408, 377);
+            this.chart2.Size = new System.Drawing.Size(760, 550);
             this.chart2.TabIndex = 140;
             this.chart2.Text = "chart2";
             this.chart2.Visible = false;
@@ -855,7 +860,7 @@
             "FT ",
             "KP ",
             "NP5"});
-            this.cbxSleeve.Location = new System.Drawing.Point(295, 701);
+            this.cbxSleeve.Location = new System.Drawing.Point(797, 701);
             this.cbxSleeve.Name = "cbxSleeve";
             this.cbxSleeve.Size = new System.Drawing.Size(81, 24);
             this.cbxSleeve.TabIndex = 167;
@@ -865,7 +870,7 @@
             // 
             this.label33.AutoSize = true;
             this.label33.Font = new System.Drawing.Font("Verdana", 12F);
-            this.label33.Location = new System.Drawing.Point(166, 704);
+            this.label33.Location = new System.Drawing.Point(668, 704);
             this.label33.Name = "label33";
             this.label33.Size = new System.Drawing.Size(115, 18);
             this.label33.TabIndex = 168;
@@ -875,18 +880,18 @@
             // 
             this.label34.AutoSize = true;
             this.label34.Font = new System.Drawing.Font("Verdana", 12F);
-            this.label34.Location = new System.Drawing.Point(172, 193);
+            this.label34.Location = new System.Drawing.Point(60, 351);
             this.label34.Name = "label34";
-            this.label34.Size = new System.Drawing.Size(120, 18);
+            this.label34.Size = new System.Drawing.Size(111, 18);
             this.label34.TabIndex = 169;
-            this.label34.Text = "目前欲製作序號";
+            this.label34.Text = "目前製作序號:";
             // 
             // tbxSn
             // 
             this.tbxSn.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.tbxSn.Location = new System.Drawing.Point(295, 190);
+            this.tbxSn.Location = new System.Drawing.Point(176, 349);
             this.tbxSn.Name = "tbxSn";
-            this.tbxSn.Size = new System.Drawing.Size(150, 27);
+            this.tbxSn.Size = new System.Drawing.Size(269, 27);
             this.tbxSn.TabIndex = 170;
             // 
             // btnOpenManage
@@ -904,7 +909,7 @@
             // 
             this.btnConfigFW.Font = new System.Drawing.Font("Verdana", 12F);
             this.btnConfigFW.ForeColor = System.Drawing.Color.Navy;
-            this.btnConfigFW.Location = new System.Drawing.Point(920, 729);
+            this.btnConfigFW.Location = new System.Drawing.Point(1461, 784);
             this.btnConfigFW.Name = "btnConfigFW";
             this.btnConfigFW.Size = new System.Drawing.Size(130, 27);
             this.btnConfigFW.TabIndex = 172;
@@ -916,9 +921,9 @@
             // 
             this.btnShipMode.Font = new System.Drawing.Font("Verdana", 12F);
             this.btnShipMode.ForeColor = System.Drawing.Color.Navy;
-            this.btnShipMode.Location = new System.Drawing.Point(6, 581);
+            this.btnShipMode.Location = new System.Drawing.Point(175, 706);
             this.btnShipMode.Name = "btnShipMode";
-            this.btnShipMode.Size = new System.Drawing.Size(149, 57);
+            this.btnShipMode.Size = new System.Drawing.Size(270, 57);
             this.btnShipMode.TabIndex = 173;
             this.btnShipMode.Text = "Ship Mode";
             this.btnShipMode.UseVisualStyleBackColor = true;
@@ -927,7 +932,7 @@
             // tbxHousing
             // 
             this.tbxHousing.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.tbxHousing.Location = new System.Drawing.Point(185, 806);
+            this.tbxHousing.Location = new System.Drawing.Point(687, 806);
             this.tbxHousing.Name = "tbxHousing";
             this.tbxHousing.Size = new System.Drawing.Size(271, 27);
             this.tbxHousing.TabIndex = 177;
@@ -936,7 +941,7 @@
             // 
             this.label35.AutoSize = true;
             this.label35.Font = new System.Drawing.Font("Verdana", 12F);
-            this.label35.Location = new System.Drawing.Point(48, 809);
+            this.label35.Location = new System.Drawing.Point(550, 809);
             this.label35.Name = "label35";
             this.label35.Size = new System.Drawing.Size(140, 18);
             this.label35.TabIndex = 176;
@@ -946,7 +951,7 @@
             // 
             this.label36.AutoSize = true;
             this.label36.Font = new System.Drawing.Font("Verdana", 12F);
-            this.label36.Location = new System.Drawing.Point(166, 732);
+            this.label36.Location = new System.Drawing.Point(668, 732);
             this.label36.Name = "label36";
             this.label36.Size = new System.Drawing.Size(106, 18);
             this.label36.TabIndex = 175;
@@ -955,7 +960,7 @@
             // tbxPCB
             // 
             this.tbxPCB.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.tbxPCB.Location = new System.Drawing.Point(295, 730);
+            this.tbxPCB.Location = new System.Drawing.Point(797, 730);
             this.tbxPCB.Name = "tbxPCB";
             this.tbxPCB.Size = new System.Drawing.Size(82, 27);
             this.tbxPCB.TabIndex = 178;
@@ -976,7 +981,7 @@
             // 
             this.btnDump.Font = new System.Drawing.Font("Verdana", 12F);
             this.btnDump.ForeColor = System.Drawing.Color.Navy;
-            this.btnDump.Location = new System.Drawing.Point(806, 729);
+            this.btnDump.Location = new System.Drawing.Point(1347, 784);
             this.btnDump.Name = "btnDump";
             this.btnDump.Size = new System.Drawing.Size(109, 27);
             this.btnDump.TabIndex = 180;
@@ -988,19 +993,20 @@
             // 
             this.label37.AutoSize = true;
             this.label37.Font = new System.Drawing.Font("Verdana", 12F);
-            this.label37.Location = new System.Drawing.Point(249, 117);
+            this.label37.Location = new System.Drawing.Point(124, 270);
             this.label37.Name = "label37";
-            this.label37.Size = new System.Drawing.Size(40, 18);
+            this.label37.Size = new System.Drawing.Size(47, 18);
             this.label37.TabIndex = 181;
-            this.label37.Text = "批號";
+            this.label37.Text = "批號:";
             // 
             // cbxBatch
             // 
+            this.cbxBatch.Enabled = false;
             this.cbxBatch.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.cbxBatch.FormattingEnabled = true;
-            this.cbxBatch.Location = new System.Drawing.Point(295, 114);
+            this.cbxBatch.Location = new System.Drawing.Point(177, 264);
             this.cbxBatch.Name = "cbxBatch";
-            this.cbxBatch.Size = new System.Drawing.Size(150, 24);
+            this.cbxBatch.Size = new System.Drawing.Size(269, 24);
             this.cbxBatch.TabIndex = 183;
             this.cbxBatch.SelectedIndexChanged += new System.EventHandler(this.cbxBatch_SelectedIndexChanged);
             // 
@@ -1059,26 +1065,26 @@
             this.panel1.Controls.Add(this.tbx_acc_y_max);
             this.panel1.Controls.Add(this.tbx_acc_y_min);
             this.panel1.Controls.Add(this.label30);
-            this.panel1.Location = new System.Drawing.Point(1299, 412);
+            this.panel1.Location = new System.Drawing.Point(12, 784);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(455, 445);
+            this.panel1.Size = new System.Drawing.Size(111, 63);
             this.panel1.TabIndex = 184;
             // 
             // label38
             // 
             this.label38.AutoSize = true;
             this.label38.Font = new System.Drawing.Font("Verdana", 12F);
-            this.label38.Location = new System.Drawing.Point(217, 169);
+            this.label38.Location = new System.Drawing.Point(92, 323);
             this.label38.Name = "label38";
-            this.label38.Size = new System.Drawing.Size(72, 18);
+            this.label38.Size = new System.Drawing.Size(79, 18);
             this.label38.TabIndex = 185;
-            this.label38.Text = "完成數量";
+            this.label38.Text = "完成數量:";
             // 
             // lblBatCompleteNum
             // 
             this.lblBatCompleteNum.AutoSize = true;
             this.lblBatCompleteNum.Font = new System.Drawing.Font("Verdana", 12F);
-            this.lblBatCompleteNum.Location = new System.Drawing.Point(292, 169);
+            this.lblBatCompleteNum.Location = new System.Drawing.Point(177, 323);
             this.lblBatCompleteNum.Name = "lblBatCompleteNum";
             this.lblBatCompleteNum.Size = new System.Drawing.Size(18, 18);
             this.lblBatCompleteNum.TabIndex = 186;
@@ -1088,7 +1094,7 @@
             // 
             this.lblBatTotal.AutoSize = true;
             this.lblBatTotal.Font = new System.Drawing.Font("Verdana", 12F);
-            this.lblBatTotal.Location = new System.Drawing.Point(292, 148);
+            this.lblBatTotal.Location = new System.Drawing.Point(177, 296);
             this.lblBatTotal.Name = "lblBatTotal";
             this.lblBatTotal.Size = new System.Drawing.Size(18, 18);
             this.lblBatTotal.TabIndex = 188;
@@ -1098,18 +1104,74 @@
             // 
             this.label40.AutoSize = true;
             this.label40.Font = new System.Drawing.Font("Verdana", 12F);
-            this.label40.Location = new System.Drawing.Point(201, 148);
+            this.label40.Location = new System.Drawing.Point(76, 296);
             this.label40.Name = "label40";
-            this.label40.Size = new System.Drawing.Size(88, 18);
+            this.label40.Size = new System.Drawing.Size(95, 18);
             this.label40.TabIndex = 187;
-            this.label40.Text = "應完成數量";
+            this.label40.Text = "應完成數量:";
+            // 
+            // cbx_name
+            // 
+            this.cbx_name.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.cbx_name.FormattingEnabled = true;
+            this.cbx_name.Location = new System.Drawing.Point(177, 127);
+            this.cbx_name.Name = "cbx_name";
+            this.cbx_name.Size = new System.Drawing.Size(268, 24);
+            this.cbx_name.TabIndex = 192;
+            // 
+            // tbxPassword
+            // 
+            this.tbxPassword.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.tbxPassword.Location = new System.Drawing.Point(177, 160);
+            this.tbxPassword.Name = "tbxPassword";
+            this.tbxPassword.PasswordChar = '*';
+            this.tbxPassword.Size = new System.Drawing.Size(268, 27);
+            this.tbxPassword.TabIndex = 191;
+            this.tbxPassword.Text = "690422";
+            // 
+            // label39
+            // 
+            this.label39.AutoSize = true;
+            this.label39.Font = new System.Drawing.Font("Verdana", 12F);
+            this.label39.Location = new System.Drawing.Point(76, 161);
+            this.label39.Name = "label39";
+            this.label39.Size = new System.Drawing.Size(95, 18);
+            this.label39.TabIndex = 190;
+            this.label39.Text = "使用者密碼:";
+            // 
+            // label41
+            // 
+            this.label41.AutoSize = true;
+            this.label41.Font = new System.Drawing.Font("Verdana", 12F);
+            this.label41.Location = new System.Drawing.Point(76, 128);
+            this.label41.Name = "label41";
+            this.label41.Size = new System.Drawing.Size(95, 18);
+            this.label41.TabIndex = 189;
+            this.label41.Text = "使用者名稱:";
+            // 
+            // btnLogin
+            // 
+            this.btnLogin.Font = new System.Drawing.Font("Verdana", 12F);
+            this.btnLogin.ForeColor = System.Drawing.Color.Navy;
+            this.btnLogin.Location = new System.Drawing.Point(176, 197);
+            this.btnLogin.Name = "btnLogin";
+            this.btnLogin.Size = new System.Drawing.Size(270, 57);
+            this.btnLogin.TabIndex = 193;
+            this.btnLogin.Text = "登入選擇批號";
+            this.btnLogin.UseVisualStyleBackColor = true;
+            this.btnLogin.Click += new System.EventHandler(this.btnLogin_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(189)))), ((int)(((byte)(211)))), ((int)(((byte)(225)))));
-            this.ClientSize = new System.Drawing.Size(1766, 869);
+            this.ClientSize = new System.Drawing.Size(1665, 869);
+            this.Controls.Add(this.btnLogin);
+            this.Controls.Add(this.cbx_name);
+            this.Controls.Add(this.tbxPassword);
+            this.Controls.Add(this.label39);
+            this.Controls.Add(this.label41);
             this.Controls.Add(this.lblBatTotal);
             this.Controls.Add(this.label40);
             this.Controls.Add(this.lblBatCompleteNum);
@@ -1261,6 +1323,11 @@
         private System.Windows.Forms.Label lblBatCompleteNum;
         private System.Windows.Forms.Label lblBatTotal;
         private System.Windows.Forms.Label label40;
+        private System.Windows.Forms.ComboBox cbx_name;
+        private System.Windows.Forms.TextBox tbxPassword;
+        private System.Windows.Forms.Label label39;
+        private System.Windows.Forms.Label label41;
+        private System.Windows.Forms.Button btnLogin;
     }
 }
 
