@@ -1,45 +1,45 @@
-﻿using ImageMagick;
+﻿using FFT_DOSE;
+using ImageMagick;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using ZXing;
 
 namespace FFT_For_DOSE
 {
     class printLabel
     {
+        int label_X_Move = -50;
+        int label_Y_Move = 8;
+        string strNotification = "USE FOR RESEARCH ONLY";
 
-         public void CrecatePCX()
+        public void PrintOneLabel(string strSN,string strBLEName)
         {
-            var writer = new BarcodeWriter
+            #region print Short label 
+            try
             {
-                Format = BarcodeFormat.DATA_MATRIX,
-                Options = new ZXing.Datamatrix.DatamatrixEncodingOptions
-                {
-                    //   SymbolShape = SymbolShapeHint.FORCE_...,
-                    //  MinSize = new Dimension(50,50),
-                    //  MaxSize = new Dimension(300,300),
-                    Width = 500,
-                    Height = 500
-                }
-            };
+                TSCLIB_DLL.openport("TSC TTP-644MU");
+                TSCLIB_DLL.setup("49.81", "8.53", "1.5", "15", "2", "3", "0");
+                TSCLIB_DLL.clearbuffer();
+                //22-C-DA2-001
+                //IZDOSE-3IL3MBIE
+                //USE FOR RESEARCH ONLY
+                TSCLIB_DLL.windowsfont(300 + label_X_Move, 10 + label_Y_Move, 60, 0, 2, 0, "FreeSans", strSN);
+                TSCLIB_DLL.windowsfont(300 + label_X_Move, 60 + label_Y_Move, 60, 0, 2, 0, "FreeSans", strBLEName);
+                TSCLIB_DLL.windowsfont(300 + label_X_Move, 110 + label_Y_Move, 60, 0, 2, 0, "FreeSans", strNotification);
 
-            string label = (char)29 + "01" + "05392000095502" + "10" + "0123456789KWIK" + (char)29 + "11" + "220701" + "17" + "230701" + "21" + "00000001";
-            writer
-                .Write(label)
-                .Save(@"C:\Temp\11111.png");
-
-
-            //png to pcx
-            var beforeImage = new MagickImage(@"C:\Temp\barcode.png");
-            using (MagickImage image = new MagickImage(beforeImage))
-            {
-                image.Format = MagickFormat.Pcx;
-                //     image.ColorType = ColorType.Palette;
-                image.Write(@"C:\Temp\barcode.pcx");
+                TSCLIB_DLL.sendcommand("PRINT 1");
+                TSCLIB_DLL.sendcommand("DIRECTION 1");
+                TSCLIB_DLL.closeport();
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+            #endregion
         }
     }
 }

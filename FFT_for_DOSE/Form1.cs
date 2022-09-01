@@ -24,16 +24,29 @@ namespace FFT_DOSE
 {
     public partial class Form1 : Form
     {
-        int FFTCureent = 0;
+        int batteryFullCurr = 150; //判斷充電電流是否小於此
+        #region SN
+        int SnLength = 3; //SN字串長度;
+        int intNextSn; //現在要製作的SN, 數字型別
+        string strNextSn = ""; //現在要製作的SN, 字串型別
+        string leftSN = ""; //SN前綴;
+        string rightSN = ""; //SN後綴;
+        #endregion
+        string StrSleeveName; //Sleeve名稱
+        bool checkSTATUSEnd = false; //用來決定是否可以開始判斷測試完成
+        string assCheck = ""; //此字串用來判斷FFT結果 Pass or Fail      
+
+        printLabel printLabel1; //建立公用label元件
+        int FFTCurr = 0;
         byte[] UTF8bytes;
         // Define some variables
         int numberOfPointsInChart = 30;
         int newX = 0;
-
         int charge_max = 0;
-        string StrSleeveName;
-        string batchNum = "", pcbVer = "", housingVer = "", deviceID = "", bleID = "", nextSn = "", fwVersion = "", sleeveName = "", buildDate = ""
-             , assCheck, accXmax = "2000", accXmin = "-2000", accYmax = "2000", accYmin = "-2000", accZmax = "2000", accZmin = "-2000"
+
+        //參數用
+        string batchNum = "", pcbVer = "", housingVer = "", deviceID = "", bleName = "", fwVersion = "", sleeveName = "", buildDate = ""
+             , accXmax = "2000", accXmin = "-2000", accYmax = "2000", accYmin = "-2000", accZmax = "2000", accZmin = "-2000"
         , gyroXmax = "", gyroXmin = "", gyroYmax = "", gyroYmin = "", gyroZmax = "", gyroZmin = "", mouseXmax = "", mouseXmin = "", mouseYmax = "", mouseYmin = "", mouseSmax = ""
         , mouseSmin = "", mouseFmax = "", mouseFmin = "", mouseImax = "", mouseImin = "", IRmax = "", IRmin = "", batterymax = "", batterymin = "", mountingSwitch = "";
 
@@ -44,7 +57,7 @@ namespace FFT_DOSE
         string strSQL;
         static double chart_MAX = 250;
         static int int_interval = 300;
-        string str_Response = "";
+
         bool CheckShipping = false;
         // DBConn access_data;
         string strFeedbackDose = "";
@@ -60,7 +73,6 @@ namespace FFT_DOSE
         private int pointIndex = 0;
         Chart chart1 = new RealtimeChart().GetChart;
         int[] int_curr_value = new int[] { 7200 };
-        int intNextSn;
         int delay_time2 = 100;
 
         //流程控制
@@ -75,10 +87,11 @@ namespace FFT_DOSE
         string PLC_COM = "";
         string POWER_COM = "";
         string DOSE_COM = "";
+
+
         private void Form1_Load(object sender, EventArgs e)
         {
-            printLabel printLabel1 = new printLabel();
-            printLabel1.CrecatePCX();
+            printLabel1 = new printLabel();
 
             //載入使用者名稱到下拉選單
             loadUserName();
@@ -86,7 +99,7 @@ namespace FFT_DOSE
             showLogForm = false;
             mi_pcb_feedback = new MethodInvoker(Update_pcb_feedback);
             GetPortInformation();
-          
+
             //初始化上一次選擇
             #region get save data            
             DataTable dt = accessHelper.GetDataTable("select * from saveData");
@@ -236,9 +249,12 @@ namespace FFT_DOSE
                 RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
                 Thread.Sleep(delay_time);
 
+                //設定checkSTATUSEnd為false,避免誤判已經測試結束
+                checkSTATUSEnd = false;
                 UTF8bytes = Encoding.UTF8.GetBytes("#STATUS" + Environment.NewLine);
                 RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
                 Thread.Sleep(300);
+
 
                 UTF8bytes = Encoding.UTF8.GetBytes("#RETEST" + Environment.NewLine);
                 RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
@@ -306,13 +322,16 @@ namespace FFT_DOSE
                 }
                 #endregion
 
+                //此時已經可判斷是否測試結束
+                checkSTATUSEnd = true;
+
                 #region  取得要寫入的SN 由批號取得sleeve, 再由sleeve取得SN最大值
 
                 #region 不要的CODE
                 //strSQL = string.Format("SELECT MAX(snData.sn) FROM snData where (SELECT snData.sleeveName from snData where snData.batchNum = '{0}')", cbxBatch.SelectedItem.ToString()); //取得SN最大值                                                                                                                    
                 //string _snMax = accessHelper.readData(strSQL);//執行SQL
                 //intNextSn = Convert.ToInt32(_snMax) + 1;
-                //_snMax = intNextSn.ToString().PadLeft(7, '0');
+                //_snMax = intNextSn.ToString().PadLeft(SnLength, '0');
                 //strSQL = string.Format("SELECT batchData.sleeveName from batchData where batchData.batchNum = '{0}'", cbxBatch.SelectedItem.ToString()); //取得sleeveName
                 //StrSleeveName = accessHelper.readData(strSQL);//執行SQL
                 #endregion
@@ -357,11 +376,6 @@ namespace FFT_DOSE
                         if (boolAssCheck)
                         {
                             boolAssCheck = false;
-
-                            //Date
-                            //DateTime.Now.ToString("dddd, dd MMMM yyyy")
-
-
                             //#SET_CONFIG_DATA 
                             //Mounted_Sleeve:       
                             UTF8bytes = Encoding.UTF8.GetBytes("#SET_CONFIG_DATA" + Environment.NewLine);
@@ -389,7 +403,7 @@ namespace FFT_DOSE
                             RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
                             Thread.Sleep(delay_time2);
 
-                            UTF8bytes = Encoding.UTF8.GetBytes("Assembly_Serial_Number:" + nextSn.ToString().PadLeft(7, '0') + Environment.NewLine);
+                            UTF8bytes = Encoding.UTF8.GetBytes("Assembly_Serial_Number:" + strNextSn.ToString().PadLeft(SnLength, '0') + Environment.NewLine);
                             RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
                             Thread.Sleep(delay_time2);
 
@@ -397,7 +411,6 @@ namespace FFT_DOSE
                             RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
                             Thread.Sleep(delay_time2);
                             break;
-
                         }
                         _counter++;
                         if (_counter == 6000)
@@ -408,15 +421,11 @@ namespace FFT_DOSE
                     }
                     #endregion
 
-                    #region 回傳STATIS
-
-                    #endregion
-
                     Thread.Sleep(2000);
 
                     #region dump_data 寫入txt
                     WriteTxt = true;
-                    SW = new StreamWriter(@"C:\DET_DOSE\" + nextSn + ".txt");
+                    SW = new StreamWriter(@"C:\DET_DOSE\" + strNextSn + ".txt");
                     try
                     {
                         UTF8bytes = Encoding.UTF8.GetBytes("#DUMP_DATA" + Environment.NewLine);
@@ -432,74 +441,87 @@ namespace FFT_DOSE
                     #region Shipping Mode
                     try
                     {
-                        //由電流來決定shippingStatus的狀態
-                        if (FFTCureent > 50)
+                        if (assCheck == "Pass")
                         {
-                            #region shipping Fail  
-
-                            #region 寫入shippingMode
-                            //SQL語法：       
-                            strSQL = "insert into shippingMode(deviceID,sn,shippingStatus,_current) VALUES(@deviceID, @sn,@shippingStatus,@_current)";
-                            if (string.IsNullOrEmpty(strSQL) == false)
+                            #region FFT PASS
+                            //由電流來決定shippingStatus的狀態
+                            if (FFTCurr > batteryFullCurr)
                             {
-                                //添加參數
-                                OleDbParameter[] pars = new OleDbParameter[] {
+                                #region shipping Fail  
+
+                                #region 寫入shippingMode
+                                //SQL語法：       
+                                strSQL = "insert into shippingMode(deviceID,sn,shippingStatus,_current) VALUES(@deviceID, @sn,@shippingStatus,@_current)";
+                                if (string.IsNullOrEmpty(strSQL) == false)
+                                {
+                                    //添加參數
+                                    OleDbParameter[] pars = new OleDbParameter[] {
                                             new OleDbParameter("@deviceID",deviceID),
-                                            new OleDbParameter("@sn",nextSn),
+                                            new OleDbParameter("@sn",strNextSn),
                                             new OleDbParameter("@shippingStatus","Fail"),
-                                            new OleDbParameter("@_current",FFTCureent.ToString())
+                                            new OleDbParameter("@_current",FFTCurr.ToString())
                                     };
 
-                                //執行SQL
-                                string errorInfo = accessHelper.ExecSql(strSQL, pars);
-                                if (errorInfo.Length != 0)
-                                {
-                                    MessageBox.Show("寫入失敗！" + errorInfo);
+                                    //執行SQL
+                                    string errorInfo = accessHelper.ExecSql(strSQL, pars);
+                                    if (errorInfo.Length != 0)
+                                    {
+                                        MessageBox.Show("寫入失敗！" + errorInfo);
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("寫入成功! " + errorInfo);
+                                    }
                                 }
-                                else
-                                {
-                                    Console.WriteLine("寫入成功! " + errorInfo);
-                                }
-                            }
-                            #endregion
+                                #endregion
 
+                                #endregion
+                            }
+                            else
+                            {
+                                #region shipping PASS  
+
+                                #region 寫入shippingMode
+                                //SQL語法：       
+                                strSQL = "insert into shippingMode(deviceID,sn,shippingStatus,_current) VALUES(@deviceID, @sn,@shippingStatus,@_current)";
+                                if (string.IsNullOrEmpty(strSQL) == false)
+                                {
+                                    //添加參數
+                                    OleDbParameter[] pars = new OleDbParameter[] {
+                                            new OleDbParameter("@deviceID",deviceID),
+                                            new OleDbParameter("@sn",strNextSn),
+                                            new OleDbParameter("@shippingStatus","Pass"),
+                                            new OleDbParameter("@_current",FFTCurr.ToString())
+                                    };
+
+                                    //執行SQL
+                                    string errorInfo = accessHelper.ExecSql(strSQL, pars);
+                                    if (errorInfo.Length != 0)
+                                    {
+                                        MessageBox.Show("寫入失敗！" + errorInfo);
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("寫入成功! " + errorInfo);
+                                        MessageBox.Show("進入出貨模式，請將其它 Code Uncomment才能真的進入出貨模式");
+                                        //進入出貨模式
+                                        //UTF8bytes = Encoding.UTF8.GetBytes("#SHIP_MODE" + Environment.NewLine);
+                                        //RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                                        //Thread.Sleep(delay_time2);
+                                        strNextSn = "22-IZD-C1-DV1-" + strNextSn + "," + StrSleeveName;
+                                        printLabel1.PrintOneLabel(strNextSn, bleName);
+                                        printLabel1.PrintOneLabel(strNextSn, bleName);
+                                        printLabel1.PrintOneLabel(strNextSn, bleName);
+                                    }
+                                }
+                                #endregion
+                                #endregion
+                            }
                             #endregion
                         }
                         else
                         {
-                            #region shipping PASS  
-
-                            #region 寫入shippingMode
-                            //SQL語法：       
-                            strSQL = "insert into shippingMode(deviceID,sn,shippingStatus,_current) VALUES(@deviceID, @sn,@shippingStatus,@_current)";
-                            if (string.IsNullOrEmpty(strSQL) == false)
-                            {
-                                //添加參數
-                                OleDbParameter[] pars = new OleDbParameter[] {
-                                            new OleDbParameter("@deviceID",deviceID),
-                                            new OleDbParameter("@sn",nextSn),
-                                            new OleDbParameter("@shippingStatus","Pass"),
-                                            new OleDbParameter("@_current",FFTCureent.ToString())
-                                    };
-
-                                //執行SQL
-                                string errorInfo = accessHelper.ExecSql(strSQL, pars);
-                                if (errorInfo.Length != 0)
-                                {
-                                    MessageBox.Show("寫入失敗！" + errorInfo);
-                                }
-                                else
-                                {
-                                    Console.WriteLine("寫入成功! " + errorInfo);
-                                    MessageBox.Show("進入出貨模式，請將其它 Code Uncomment才能真的進入出貨模式");
-                                    //進入出貨模式
-                                    //UTF8bytes = Encoding.UTF8.GetBytes("#SHIP_MODE" + Environment.NewLine);
-                                    //RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                                    //Thread.Sleep(delay_time2);
-                                }
-                            }
-                            #endregion
-                            #endregion
+                            MessageBox.Show("ASS_CHECK失敗！");
                         }
                     }
                     catch (Exception ex)
@@ -588,7 +610,6 @@ namespace FFT_DOSE
         }
 
 
-
         #region Function集中處
         //戴入未完成批號
         void loadBatch()
@@ -665,12 +686,12 @@ namespace FFT_DOSE
 
                     string _snMax = accessHelper.readData(strSQL);//執行SQL
                     intNextSn = Convert.ToInt32(_snMax) + 1;
-                    nextSn = intNextSn.ToString().PadLeft(7, '0');
-
+                    strNextSn = intNextSn.ToString().PadLeft(SnLength, '0');
                     if (_snMax != "-1")
                     {
-                        nextSn = StrSleeveName + nextSn;
-                        tbxSn.Text = nextSn;
+                        //SN前綴 + SN + SN後綴
+                        strNextSn = leftSN + strNextSn + rightSN;
+                        tbxSn.Text = strNextSn;
                     }
                     else
                     {
@@ -1383,7 +1404,7 @@ namespace FFT_DOSE
             try
             {
                 #region 寫入FW Conf
-                nextSn = tbxSn.Text;
+                strNextSn = tbxSn.Text;
                 batchNum = cbxBatch.SelectedItem.ToString();
                 pcbVer = tbxPCB.Text;
                 housingVer = tbxHousing.Text;
@@ -1421,7 +1442,7 @@ namespace FFT_DOSE
                 RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
                 Thread.Sleep(delay_time2);
 
-                UTF8bytes = Encoding.UTF8.GetBytes("Assembly_Serial_Number:" + nextSn.ToString().PadLeft(7, '0') + Environment.NewLine);
+                UTF8bytes = Encoding.UTF8.GetBytes("Assembly_Serial_Number:" + strNextSn.ToString().PadLeft(SnLength, '0') + Environment.NewLine);
                 RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
                 Thread.Sleep(delay_time2);
 
@@ -1483,9 +1504,17 @@ namespace FFT_DOSE
                             }
                         }
                     }
-                    if (inData.Contains("BLE ID:") == true)
+                    if (inData.Contains("BLE Device Name") == true)
                     {
-                        bleID = inData.Substring(inData.IndexOf("BLE ID") + 7, inData.IndexOf("BLE Device") - (inData.IndexOf("BLE ID") + 7)).Replace("\r\n", "");
+                        try
+                        {
+                            bleName = inData.Substring(inData.IndexOf("BLE Device Name") + 16, 15);
+                        }
+                        catch
+                        {
+                            Console.WriteLine("bleName Error");
+                        }
+
                     }
                     if (inData.Contains("ACC X Max. :") == true)
                     {
@@ -1629,9 +1658,10 @@ namespace FFT_DOSE
                         fwVersion = inData.Substring(inData.IndexOf("FW version:") + 11, 5);
                     }
 
-                    if (inData.Contains("ASS_CHECK") && inData.Contains("#") == false)
+                    //程式一開始會執行#STATUS和checkSTATUSEnd為false, 要先忽略掉其回傳, 到後半段程式會將checkSTATUSEnd設為true, 此時才再加以判斷是否測完畢
+                    if (inData.Contains("ASS_CHECK") && inData.Contains("#") == false && checkSTATUSEnd == true)
                     {
-                        #region 測試成功
+                        #region 測試成功                       
                         boolAssCheck = true; //測試完成
                         assCheck = inData.Substring(inData.IndexOf("ASS_CHECK") + 11, 4);
 
@@ -1647,14 +1677,14 @@ namespace FFT_DOSE
                             #region  執行SQL二次，deviceID不存在故同時寫入snData & deviceData 各一筆資料 和設定FW
                             //寫入資料庫
                             //SQL語法：     
-                            strSQL = "insert into snData(sn,deviceID,bleID,batchNum,fwVersion,sleeveName,buildDate,pcbVersion,housingVersion) VALUES(@sn,@deviceID,@bleID,@batchNum,@fwVersion,@sleeveName,@buildDate,@pcbVersion,@housingVersion)";
+                            strSQL = "insert into snData(sn,deviceID,bleName,batchNum,fwVersion,sleeveName,buildDate,pcbVersion,housingVersion) VALUES(@sn,@deviceID,@bleName,@batchNum,@fwVersion,@sleeveName,@buildDate,@pcbVersion,@housingVersion)";
                             if (string.IsNullOrEmpty(strSQL) == false)
                             {
                                 //添加參數                                                    
                                 OleDbParameter[] pars = new OleDbParameter[] {
                                             new OleDbParameter("@sn",""),
                                             new OleDbParameter("@deviceID",deviceID),
-                                            new OleDbParameter("@bleID",bleID),
+                                            new OleDbParameter("@bleName",bleName),
                                             new OleDbParameter("@batchNum",batchNum),
                                             new OleDbParameter("@fwVersion",fwVersion),
                                             new OleDbParameter("@sleeveName",sleeveName),
@@ -1683,11 +1713,11 @@ namespace FFT_DOSE
                                     {
                                         //添加參數
                                         OleDbParameter[] pars2 = new OleDbParameter[] {
-                                            new OleDbParameter("@sn",intNextSn.ToString().PadLeft(7, '0')),
+                                            new OleDbParameter("@sn",intNextSn.ToString().PadLeft(SnLength, '0')),
                                             new OleDbParameter("@deviceID",deviceID),
                                             new OleDbParameter("@batchNum",batchNum),
                                             new OleDbParameter("@sleeve",sleeveName),
-                                            new OleDbParameter("@buildDate",buildDate),
+                                            new OleDbParameter("@buildDate",DateTime.Now.ToString("yyyy-MM-dd HH:mm")),//改為寫入測試時間
                                             new OleDbParameter("@assCheck",assCheck),
                                             new OleDbParameter("@accXmax",accXmax),
                                             new OleDbParameter("@accXmin",accXmin),
@@ -1733,6 +1763,7 @@ namespace FFT_DOSE
                                     #region Config寫入FW，如果FFT測試PASS
                                     if (assCheck == "Pass")
                                     {
+                                        #region FFT PASS
                                         try
                                         {
                                             byte[] UTF8bytes = Encoding.UTF8.GetBytes("#SET_CONFIG_DATA" + Environment.NewLine);
@@ -1760,7 +1791,7 @@ namespace FFT_DOSE
                                             RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
                                             Thread.Sleep(delay_time2);
 
-                                            UTF8bytes = Encoding.UTF8.GetBytes("Assembly_Serial_Number:" + nextSn.ToString().PadLeft(7, '0') + Environment.NewLine);
+                                            UTF8bytes = Encoding.UTF8.GetBytes("Assembly_Serial_Number:" + strNextSn.ToString().PadLeft(SnLength, '0') + Environment.NewLine);
                                             RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
                                             Thread.Sleep(delay_time2);
 
@@ -1775,7 +1806,7 @@ namespace FFT_DOSE
                                             {
                                                 //添加參數
                                                 OleDbParameter[] pars3 = new OleDbParameter[] {
-                                            new OleDbParameter("@sn",intNextSn.ToString().PadLeft(7, '0')),
+                                            new OleDbParameter("@sn",intNextSn.ToString().PadLeft(SnLength, '0')),
                                             new OleDbParameter("@batchNum",batchNum),
                                             new OleDbParameter("@fwVersion",fwVersion),
                                             new OleDbParameter("@sleeveName",sleeveName),
@@ -1796,6 +1827,7 @@ namespace FFT_DOSE
                                                     //UTF8bytes = Encoding.UTF8.GetBytes("#SHIP_MODE" + Environment.NewLine);
                                                     //RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
                                                     //Thread.Sleep(delay_time2);
+                                                    Console.WriteLine("更新snData完成3245");
                                                 }
 
                                             }
@@ -1805,6 +1837,11 @@ namespace FFT_DOSE
                                         {
                                             MessageBox.Show(ex.ToString());
                                         }
+                                        #endregion
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show("ASS_CHECK失敗！");
                                     }
                                     #endregion
                                 }
@@ -1828,11 +1865,11 @@ namespace FFT_DOSE
                             {
                                 //添加參數
                                 OleDbParameter[] pars = new OleDbParameter[] {
-                                            new OleDbParameter("@sn",intNextSn.ToString().PadLeft(7, '0')),
+                                            new OleDbParameter("@sn",intNextSn.ToString().PadLeft(SnLength, '0')),
                                             new OleDbParameter("@deviceID",deviceID),
                                             new OleDbParameter("@batchNum",batchNum),
                                             new OleDbParameter("@sleeve",sleeveName),
-                                            new OleDbParameter("@buildDate",buildDate),
+                                            new OleDbParameter("@buildDate",DateTime.Now.ToString("yyyy-MM-dd HH:mm")),//改為寫入測試時間
                                             new OleDbParameter("@assCheck",assCheck),
                                             new OleDbParameter("@accXmax",accXmax),
                                             new OleDbParameter("@accXmin",accXmin),
@@ -1872,6 +1909,7 @@ namespace FFT_DOSE
                             #region Config寫入FW，如果FFT測試PASS
                             if (assCheck == "Pass")
                             {
+                                #region FFT PASS
                                 byte[] UTF8bytes = Encoding.UTF8.GetBytes("#SET_CONFIG_DATA" + Environment.NewLine);
                                 RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
                                 Thread.Sleep(delay_time2);
@@ -1897,7 +1935,7 @@ namespace FFT_DOSE
                                 RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
                                 Thread.Sleep(delay_time2);
 
-                                UTF8bytes = Encoding.UTF8.GetBytes("Assembly_Serial_Number:" + nextSn.ToString().PadLeft(7, '0') + Environment.NewLine);
+                                UTF8bytes = Encoding.UTF8.GetBytes("Assembly_Serial_Number:" + strNextSn.ToString().PadLeft(SnLength, '0') + Environment.NewLine);
                                 RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
                                 Thread.Sleep(delay_time2);
 
@@ -1912,7 +1950,7 @@ namespace FFT_DOSE
                                 {
                                     //添加參數
                                     OleDbParameter[] pars3 = new OleDbParameter[] {
-                                            new OleDbParameter("@sn",intNextSn.ToString().PadLeft(7, '0')),
+                                            new OleDbParameter("@sn",intNextSn.ToString().PadLeft(SnLength, '0')),
                                             new OleDbParameter("@batchNum",batchNum),
                                             new OleDbParameter("@fwVersion",fwVersion),
                                             new OleDbParameter("@sleeveName",sleeveName),
@@ -1934,10 +1972,16 @@ namespace FFT_DOSE
                                         //UTF8bytes = Encoding.UTF8.GetBytes("#SHIP_MODE" + Environment.NewLine);
                                         //RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
                                         //Thread.Sleep(delay_time2);
+                                        Console.WriteLine("更新snData完成3626");
                                     }
 
                                 }
                                 #endregion
+                                #endregion
+                            }
+                            else
+                            {
+                                MessageBox.Show("ASS_CHECK失敗！");
                             }
                             #endregion
                         }
@@ -2154,7 +2198,7 @@ namespace FFT_DOSE
                         charge_max = int_curr;
                     }
                     lbl_charge_curr.Text = charge_max.ToString() + "mA";
-                    FFTCureent = int_curr;
+                    FFTCurr = int_curr;
                     int_curr_value[0] = int_curr;
                     //依電流主動變化畫面高度
                     if (int_curr < 49)
