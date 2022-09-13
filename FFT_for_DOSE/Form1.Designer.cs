@@ -77,12 +77,15 @@
             this.btnLogin = new System.Windows.Forms.Button();
             this.cbxSleeve = new System.Windows.Forms.ComboBox();
             this.label33 = new System.Windows.Forms.Label();
+            this.btxPrintLabel2 = new System.Windows.Forms.Button();
+            this.cbxSleeveName2 = new System.Windows.Forms.ComboBox();
+            this.tbxSN2 = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.chart2)).BeginInit();
             this.SuspendLayout();
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(1349, 663);
+            this.button2.Location = new System.Drawing.Point(1346, 701);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(107, 23);
             this.button2.TabIndex = 1;
@@ -97,7 +100,7 @@
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(1542, 663);
+            this.button6.Location = new System.Drawing.Point(1539, 701);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(107, 23);
             this.button6.TabIndex = 5;
@@ -107,7 +110,7 @@
             // 
             // button7
             // 
-            this.button7.Location = new System.Drawing.Point(1461, 663);
+            this.button7.Location = new System.Drawing.Point(1458, 701);
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(75, 23);
             this.button7.TabIndex = 6;
@@ -134,7 +137,7 @@
             // 
             // cbx_plc
             // 
-            this.cbx_plc.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.cbx_plc.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.cbx_plc.FormattingEnabled = true;
             this.cbx_plc.Location = new System.Drawing.Point(175, 20);
             this.cbx_plc.Name = "cbx_plc";
@@ -154,7 +157,7 @@
             // 
             // cbx_power
             // 
-            this.cbx_power.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.cbx_power.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.cbx_power.FormattingEnabled = true;
             this.cbx_power.Location = new System.Drawing.Point(175, 50);
             this.cbx_power.Name = "cbx_power";
@@ -211,7 +214,7 @@
             // tbx_Pcb_feed_back
             // 
             this.tbx_Pcb_feed_back.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(184)))), ((int)(((byte)(195)))));
-            this.tbx_Pcb_feed_back.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.tbx_Pcb_feed_back.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.tbx_Pcb_feed_back.Location = new System.Drawing.Point(463, 39);
             this.tbx_Pcb_feed_back.Multiline = true;
             this.tbx_Pcb_feed_back.Name = "tbx_Pcb_feed_back";
@@ -221,7 +224,7 @@
             // 
             // tbx_ttl_send
             // 
-            this.tbx_ttl_send.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.tbx_ttl_send.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.tbx_ttl_send.Location = new System.Drawing.Point(578, 526);
             this.tbx_ttl_send.Name = "tbx_ttl_send";
             this.tbx_ttl_send.Size = new System.Drawing.Size(195, 27);
@@ -241,7 +244,7 @@
             // 
             this.btn_clear_com.Font = new System.Drawing.Font("Verdana", 12F);
             this.btn_clear_com.ForeColor = System.Drawing.Color.Navy;
-            this.btn_clear_com.Location = new System.Drawing.Point(1441, 692);
+            this.btn_clear_com.Location = new System.Drawing.Point(1438, 730);
             this.btn_clear_com.Name = "btn_clear_com";
             this.btn_clear_com.Size = new System.Drawing.Size(208, 30);
             this.btn_clear_com.TabIndex = 139;
@@ -298,7 +301,7 @@
             // 
             // tbxSn
             // 
-            this.tbxSn.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.tbxSn.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.tbxSn.Location = new System.Drawing.Point(176, 349);
             this.tbxSn.Name = "tbxSn";
             this.tbxSn.Size = new System.Drawing.Size(269, 27);
@@ -319,7 +322,7 @@
             // 
             this.btnConfigFW.Font = new System.Drawing.Font("Verdana", 12F);
             this.btnConfigFW.ForeColor = System.Drawing.Color.Navy;
-            this.btnConfigFW.Location = new System.Drawing.Point(1441, 728);
+            this.btnConfigFW.Location = new System.Drawing.Point(1438, 766);
             this.btnConfigFW.Name = "btnConfigFW";
             this.btnConfigFW.Size = new System.Drawing.Size(207, 30);
             this.btnConfigFW.TabIndex = 172;
@@ -331,7 +334,7 @@
             // 
             this.btnShipMode.Font = new System.Drawing.Font("Verdana", 12F);
             this.btnShipMode.ForeColor = System.Drawing.Color.Navy;
-            this.btnShipMode.Location = new System.Drawing.Point(175, 706);
+            this.btnShipMode.Location = new System.Drawing.Point(175, 665);
             this.btnShipMode.Name = "btnShipMode";
             this.btnShipMode.Size = new System.Drawing.Size(270, 57);
             this.btnShipMode.TabIndex = 173;
@@ -341,7 +344,7 @@
             // 
             // tbxHousing
             // 
-            this.tbxHousing.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.tbxHousing.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.tbxHousing.Location = new System.Drawing.Point(687, 806);
             this.tbxHousing.Name = "tbxHousing";
             this.tbxHousing.Size = new System.Drawing.Size(271, 27);
@@ -361,7 +364,7 @@
             // 
             this.label36.AutoSize = true;
             this.label36.Font = new System.Drawing.Font("Verdana", 12F);
-            this.label36.Location = new System.Drawing.Point(1438, 632);
+            this.label36.Location = new System.Drawing.Point(1435, 670);
             this.label36.Name = "label36";
             this.label36.Size = new System.Drawing.Size(106, 18);
             this.label36.TabIndex = 175;
@@ -369,8 +372,8 @@
             // 
             // tbxPCB
             // 
-            this.tbxPCB.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.tbxPCB.Location = new System.Drawing.Point(1567, 630);
+            this.tbxPCB.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.tbxPCB.Location = new System.Drawing.Point(1564, 668);
             this.tbxPCB.Name = "tbxPCB";
             this.tbxPCB.Size = new System.Drawing.Size(82, 27);
             this.tbxPCB.TabIndex = 178;
@@ -381,7 +384,7 @@
             this.btnStatus.ForeColor = System.Drawing.Color.Navy;
             this.btnStatus.Location = new System.Drawing.Point(463, 562);
             this.btnStatus.Name = "btnStatus";
-            this.btnStatus.Size = new System.Drawing.Size(405, 27);
+            this.btnStatus.Size = new System.Drawing.Size(405, 39);
             this.btnStatus.TabIndex = 179;
             this.btnStatus.Text = "Status";
             this.btnStatus.UseVisualStyleBackColor = true;
@@ -391,7 +394,7 @@
             // 
             this.btnDump.Font = new System.Drawing.Font("Verdana", 12F);
             this.btnDump.ForeColor = System.Drawing.Color.Navy;
-            this.btnDump.Location = new System.Drawing.Point(1441, 764);
+            this.btnDump.Location = new System.Drawing.Point(1438, 802);
             this.btnDump.Name = "btnDump";
             this.btnDump.Size = new System.Drawing.Size(204, 27);
             this.btnDump.TabIndex = 180;
@@ -412,7 +415,7 @@
             // cbxBatch
             // 
             this.cbxBatch.Enabled = false;
-            this.cbxBatch.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.cbxBatch.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.cbxBatch.FormattingEnabled = true;
             this.cbxBatch.Location = new System.Drawing.Point(177, 264);
             this.cbxBatch.Name = "cbxBatch";
@@ -462,7 +465,7 @@
             // 
             // cbx_name
             // 
-            this.cbx_name.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.cbx_name.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.cbx_name.FormattingEnabled = true;
             this.cbx_name.Location = new System.Drawing.Point(177, 127);
             this.cbx_name.Name = "cbx_name";
@@ -471,7 +474,7 @@
             // 
             // tbxPassword
             // 
-            this.tbxPassword.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.tbxPassword.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.tbxPassword.Location = new System.Drawing.Point(177, 160);
             this.tbxPassword.Name = "tbxPassword";
             this.tbxPassword.PasswordChar = '*';
@@ -513,14 +516,14 @@
             // 
             // cbxSleeve
             // 
-            this.cbxSleeve.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.cbxSleeve.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.cbxSleeve.FormattingEnabled = true;
             this.cbxSleeve.Items.AddRange(new object[] {
             "SS ",
             "FT ",
             "KP ",
             "NP5"});
-            this.cbxSleeve.Location = new System.Drawing.Point(1567, 601);
+            this.cbxSleeve.Location = new System.Drawing.Point(1564, 639);
             this.cbxSleeve.Name = "cbxSleeve";
             this.cbxSleeve.Size = new System.Drawing.Size(81, 24);
             this.cbxSleeve.TabIndex = 167;
@@ -530,11 +533,45 @@
             // 
             this.label33.AutoSize = true;
             this.label33.Font = new System.Drawing.Font("Verdana", 12F);
-            this.label33.Location = new System.Drawing.Point(1438, 604);
+            this.label33.Location = new System.Drawing.Point(1435, 642);
             this.label33.Name = "label33";
             this.label33.Size = new System.Drawing.Size(115, 18);
             this.label33.TabIndex = 168;
             this.label33.Text = "Sleeve Name";
+            // 
+            // btxPrintLabel2
+            // 
+            this.btxPrintLabel2.Font = new System.Drawing.Font("Verdana", 12F);
+            this.btxPrintLabel2.ForeColor = System.Drawing.Color.Navy;
+            this.btxPrintLabel2.Location = new System.Drawing.Point(793, 682);
+            this.btxPrintLabel2.Name = "btxPrintLabel2";
+            this.btxPrintLabel2.Size = new System.Drawing.Size(270, 57);
+            this.btxPrintLabel2.TabIndex = 194;
+            this.btxPrintLabel2.Text = "Print Label";
+            this.btxPrintLabel2.UseVisualStyleBackColor = true;
+            this.btxPrintLabel2.Click += new System.EventHandler(this.btxPrintLabel2_Click);
+            // 
+            // cbxSleeveName2
+            // 
+            this.cbxSleeveName2.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.cbxSleeveName2.FormattingEnabled = true;
+            this.cbxSleeveName2.Items.AddRange(new object[] {
+            "SS ",
+            "FT ",
+            "KP ",
+            "NP"});
+            this.cbxSleeveName2.Location = new System.Drawing.Point(793, 652);
+            this.cbxSleeveName2.Name = "cbxSleeveName2";
+            this.cbxSleeveName2.Size = new System.Drawing.Size(81, 24);
+            this.cbxSleeveName2.TabIndex = 195;
+            // 
+            // tbxSN2
+            // 
+            this.tbxSN2.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.tbxSN2.Location = new System.Drawing.Point(885, 649);
+            this.tbxSN2.Name = "tbxSN2";
+            this.tbxSN2.Size = new System.Drawing.Size(178, 27);
+            this.tbxSN2.TabIndex = 196;
             // 
             // Form1
             // 
@@ -542,6 +579,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(189)))), ((int)(((byte)(211)))), ((int)(((byte)(225)))));
             this.ClientSize = new System.Drawing.Size(1665, 869);
+            this.Controls.Add(this.tbxSN2);
+            this.Controls.Add(this.cbxSleeveName2);
+            this.Controls.Add(this.btxPrintLabel2);
             this.Controls.Add(this.btnLogin);
             this.Controls.Add(this.cbx_name);
             this.Controls.Add(this.tbxPassword);
@@ -640,6 +680,9 @@
         private System.Windows.Forms.Button btnLogin;
         private System.Windows.Forms.ComboBox cbxSleeve;
         private System.Windows.Forms.Label label33;
+        private System.Windows.Forms.Button btxPrintLabel2;
+        private System.Windows.Forms.ComboBox cbxSleeveName2;
+        private System.Windows.Forms.TextBox tbxSN2;
     }
 }
 

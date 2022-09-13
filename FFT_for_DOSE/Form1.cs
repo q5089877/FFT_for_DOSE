@@ -19,12 +19,14 @@ using FFT_For_DOSE;
 using System.Threading.Tasks;
 using System.IO;
 using System.Globalization;
+using ZXing;
+using ImageMagick;
 
 namespace FFT_DOSE
 {
     public partial class Form1 : Form
     {
-        int batteryFullCurr = 150;  //判斷充電電流是否小於此
+        int batteryFullCurr = 300;  //判斷充電電流是否小於此
         #region SN
         int SnLength = 3;           //SN字串長度;
         int intNextSn;              //現在要製作的SN, 數字型別
@@ -439,15 +441,24 @@ namespace FFT_DOSE
                                     else
                                     {
                                         Console.WriteLine("寫入成功! " + errorInfo);
-                                        MessageBox.Show("進入出貨模式，請將其它 Code Uncomment才能真的進入出貨模式");
+                                        Console.WriteLine("進入出貨模式，請將其它 Code Uncomment才能真的進入出貨模式");
                                         //進入出貨模式
                                         //UTF8bytes = Encoding.UTF8.GetBytes("#SHIP_MODE" + Environment.NewLine);
                                         //RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
                                         //Thread.Sleep(delay_time2);
-                                        strNextSn = "22-IZD-C1-DV1-" + strNextSn + "," + StrSleeveName;
-                                        printLabel1.PrintOneLabel(strNextSn, bleName);
-                                        printLabel1.PrintOneLabel(strNextSn, bleName);
-                                        printLabel1.PrintOneLabel(strNextSn, bleName);
+                                        strNextSn = "22-IZD-C1-DV1-" + intNextSn.ToString().PadLeft(SnLength, '0') + "," + StrSleeveName;
+                                        printLabel1.PrintOneLabel(strNextSn, bleName,StrSleeveName);
+                                        //printLabel1.PrintOneLabel(strNextSn, bleName, StrSleeveName);
+                                        //printLabel1.PrintOneLabel(strNextSn, bleName, StrSleeveName);
+
+                                        //將SN增加為1
+                                        miCreateMaxSN = new MethodInvoker(this.createSnMax);
+                                        this.BeginInvoke(miCreateMaxSN);
+
+                                        ////進入Shipping Mode
+                                        //UTF8bytes = Encoding.UTF8.GetBytes("#SHIP_MODE" + Environment.NewLine);
+                                        //RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                                        //Thread.Sleep(300);
                                     }
                                 }
                                 #endregion
@@ -562,7 +573,7 @@ namespace FFT_DOSE
             }
             #endregion          
         }
-
+       
         private void btnLogin_Click(object sender, EventArgs e)
         {
             if ((tbxPassword.Text.Length > 3) && (tbxPassword.Text != ""))
@@ -649,9 +660,9 @@ namespace FFT_DOSE
         int checkShippingExist(string deviceID)
         {
             CheckShipping = false;
-            strSQL = string.Format("SELECT sn FROM shippingMode where deviceID = '{0}' and shippingStatus = '{1}'", deviceID, "Pass"); //取得批號總數
+            strSQL = string.Format("SELECT sn FROM shippingMode where deviceID = '{0}' and shippingStatus = '{1}'", deviceID, "Pass"); 
             string _sn = accessHelper.readData(strSQL);//執行SQL
-            if (_sn != "" || _sn != null)
+            if (_sn !="-1")
             {
                 return 1;
             }
@@ -750,6 +761,27 @@ namespace FFT_DOSE
             }
         }
 
+        private void btxPrintLabel2_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                //由批號取得 sleeveName, PcbVer, housingVer
+                //SQL語法：        
+                strSQL = string.Format("select bleName from snData where sn = '{0}' and sleeveName = '{1}'", tbxSN2.Text,cbxSleeveName2.SelectedItem.ToString());
+                DataTable dt_selectData = accessHelper.GetDataTable(strSQL);
+                for (int i = 0; i < dt_selectData.Rows.Count; i++)
+                {
+                    printLabel1.PrintOneLabel("22-IZD-C1-DV1-" + tbxSN2.Text + "," + cbxSleeveName2.SelectedItem.ToString(), dt_selectData.Rows[i][0].ToString(), cbxSleeveName2.SelectedItem.ToString());
+                    printLabel1.PrintOneLabel("22-IZD-C1-DV1-" + tbxSN2.Text + "," + cbxSleeveName2.SelectedItem.ToString(), dt_selectData.Rows[i][0].ToString(), cbxSleeveName2.SelectedItem.ToString());
+                    printLabel1.PrintOneLabel("22-IZD-C1-DV1-" + tbxSN2.Text + "," + cbxSleeveName2.SelectedItem.ToString(), dt_selectData.Rows[i][0].ToString(), cbxSleeveName2.SelectedItem.ToString());
+                }
+            }
+            catch
+            {
+                MessageBox.Show("載入批號相關資訊");
+            }
+        }
+
         private void button6_Click(object sender, EventArgs e)
         {
             try
@@ -791,10 +823,15 @@ namespace FFT_DOSE
             RS232_PLC.Write(all_array, 0, all_array.Length);
         }
 
+        //由assCheck + ShippingMode = "Pass" 來判斷
         int getCompletedNumForBatch()
         {
-            strSQL = string.Format("SELECT count(*) from (select distinct deviceID from deviceData where sleeve = '{0}' and batchNum = '{1}' and assCheck = '{2}')",
-            StrSleeveName, cbxBatch.SelectedItem.ToString(), "Pass"); //取得sleeveName
+            // strSQL = string.Format("SELECT count(*) from (select distinct deviceID from deviceData where sleeve = '{0}' and batchNum = '{1}' and assCheck = '{2}')",
+            //StrSleeveName, cbxBatch.SelectedItem.ToString(), "Pass"); //取得sleeveName
+
+            strSQL = string.Format("SELECT count(*) from (SELECT DISTINCT deviceData.sn FROM shippingMode INNER JOIN deviceData ON shippingMode.deviceID = deviceData.deviceID"
+                + " WHERE(((deviceData.assCheck) = 'Pass') AND((deviceData.sleeve) = '{0}') AND((shippingMode.shippingStatus) = 'Pass') AND((deviceData.batchNum) = '{1}')))", StrSleeveName, cbxBatch.SelectedItem.ToString());
+
             string _return = accessHelper.readData(strSQL);//執行SQL
             int intTemp = Convert.ToInt32(_return);
             try
@@ -1222,7 +1259,7 @@ namespace FFT_DOSE
                     {
                         try
                         {
-                            bleName = inData.Substring(inData.IndexOf("BLE Device Name") + 16, 15);
+                            bleName = inData.Substring(inData.IndexOf("BLE Device Name") + 24, 8);                         
                         }
                         catch
                         {
@@ -1464,12 +1501,7 @@ namespace FFT_DOSE
                                         if (errorInfo.Length != 0)
                                         {
                                             MessageBox.Show("寫入失敗！" + errorInfo2);
-                                        }
-                                        else
-                                        {
-                                            miCreateMaxSN = new MethodInvoker(this.createSnMax);
-                                            this.BeginInvoke(miCreateMaxSN);
-                                        }
+                                        }                                       
                                     }
                                     #endregion
 
