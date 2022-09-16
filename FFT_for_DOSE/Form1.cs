@@ -41,6 +41,7 @@ namespace FFT_DOSE
         string pcbVer = "";         //PCB版本
         string bottomVer = "";      //Bottom版本
 
+        bool WriteTxt = false; //用來控制寫入dump date的txt檔用
         bool checkSTATUSEnd = false;//用來決定是否可以開始判斷測試完成
         string assCheck = "";       //此字串用來判斷FFT結果 Pass or Fail      
         string batchNum = "";       //批號
@@ -84,8 +85,8 @@ namespace FFT_DOSE
 
         //流程控制
         bool boolMountingSwitch = false;
-        bool boolAssCheck = false;
-        bool boolDeviceReceive = false;
+        bool boolAssCheckEnd = false;
+        bool boolDeviceReceived = false;
         public Form1()
         {
             InitializeComponent();
@@ -263,17 +264,8 @@ namespace FFT_DOSE
                 //此時已經可判斷是否測試結束
                 checkSTATUSEnd = true;
 
-                #region  取得要寫入的SN 由批號取得sleeve, 再由sleeve取得SN最大值
-
-                #region 不要的CODE
-                //strSQL = string.Format("SELECT MAX(snData.sn) FROM snData where (SELECT snData.sleeveName from snData where snData.batchNum = '{0}')", cbxBatch.SelectedItem.ToString()); //取得SN最大值                                                                                                                    
-                //string _snMax = accessHelper.readData(strSQL);//執行SQL
-                //intNextSn = Convert.ToInt32(_snMax) + 1;
-                //_snMax = intNextSn.ToString().PadLeft(SnLength, '0');
-                //strSQL = string.Format("SELECT batchData.sleeveName from batchData where batchData.batchNum = '{0}'", cbxBatch.SelectedItem.ToString()); //取得sleeveName
-                //StrSleeveName = accessHelper.readData(strSQL);//執行SQL
-                #endregion
-                strSQL = string.Format("SELECT total FROM batchData where batchNum = '{0}'", cbxBatch.SelectedItem.ToString()); //取得批號總數
+                #region 取得批號總數 
+                strSQL = string.Format("SELECT total FROM batchData where batchNum = '{0}'", cbxBatch.SelectedItem.ToString()); 
                 string strTotal = accessHelper.readData(strSQL);//執行SQL
                 int intTotal = Convert.ToInt32(strTotal);
                 if (strTotal == "-1")
@@ -293,7 +285,7 @@ namespace FFT_DOSE
                     while (true)
                     {
                         Thread.Sleep(1);
-                        if (boolDeviceReceive) //接收到回傳繼續往下
+                        if (boolDeviceReceived) //接收到回傳繼續往下
                         {
                             break;
                         }
@@ -311,9 +303,10 @@ namespace FFT_DOSE
                     while (true)
                     {
                         Thread.Sleep(1);
-                        if (boolAssCheck)
+                        // boolAssCheckEnd = true 代表測試跑完
+                        if (boolAssCheckEnd) 
                         {
-                            boolAssCheck = false;
+                            boolAssCheckEnd = false;
                             //#SET_CONFIG_DATA 
                             //Mounted_Sleeve:       
                             UTF8bytes = Encoding.UTF8.GetBytes("#SET_CONFIG_DATA" + Environment.NewLine);
@@ -441,7 +434,7 @@ namespace FFT_DOSE
                                     else
                                     {
                                         Console.WriteLine("寫入成功! " + errorInfo);
-                                        Console.WriteLine("進入出貨模式，請將其它 Code Uncomment才能真的進入出貨模式");
+                                        Console.WriteLine("進入出貨模式，請將其它 Code Uncomment才能真的進入出貨模式");                                        
                                         //進入出貨模式
                                         //UTF8bytes = Encoding.UTF8.GetBytes("#SHIP_MODE" + Environment.NewLine);
                                         //RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
@@ -456,6 +449,7 @@ namespace FFT_DOSE
                                         this.BeginInvoke(miCreateMaxSN);
 
                                         ////進入Shipping Mode
+                                        Thread.Sleep(8000); //視情況做加減
                                         //UTF8bytes = Encoding.UTF8.GetBytes("#SHIP_MODE" + Environment.NewLine);
                                         //RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
                                         //Thread.Sleep(300);
@@ -1094,11 +1088,11 @@ namespace FFT_DOSE
             }
         }
 
-        bool WriteTxt = false;
+        
         StreamWriter SW;
         private void btnDump_Click(object sender, EventArgs e)
         {
-            WriteTxt = true;
+            WriteTxt = true;            
             SW = new StreamWriter(@"C:\DET_DOSE\" + tbxSn.Text + ".txt");
             try
             {
@@ -1246,7 +1240,7 @@ namespace FFT_DOSE
                     if (inData.Contains("Device ID:") == true)
                     {
                         deviceID = inData.Substring(inData.IndexOf("Device ID") + 10, inData.IndexOf("BLE ID") - (inData.IndexOf("Device ID") + 10)).Replace("\r\n", "");
-                        boolDeviceReceive = true; //deviceID接收完成
+                        boolDeviceReceived = true; //deviceID接收完成
                         if (CheckShipping) //按下主測試鈕後才判斷一次
                         {
                             if (checkShippingExist(deviceID) == 1)
@@ -1409,22 +1403,23 @@ namespace FFT_DOSE
                         fwVersion = inData.Substring(inData.IndexOf("FW version:") + 11, 5);
                     }
 
-                    //程式一開始會執行#STATUS和checkSTATUSEnd為false, 要先忽略掉其回傳, 到後半段程式會將checkSTATUSEnd設為true, 此時才再加以判斷是否測完畢
+                    //程式一開始會執行#STATUS和checkSTATUSEnd = false, 讓下方程式碼先忽略掉裝置的回傳
+                    //到後半段程式會將checkSTATUSEnd設為true, 此時才開始判斷是否測試完畢
                     if (inData.Contains("ASS_CHECK") && inData.Contains("#") == false && checkSTATUSEnd == true)
                     {
-                        #region 測試成功                       
-                        boolAssCheck = true; //測試完成
+                        #region 測試跑完寫入deviceID，同時開始判斷是否pass
+                        boolAssCheckEnd = true; //測試跑完
                         assCheck = inData.Substring(inData.IndexOf("ASS_CHECK") + 11, 4);
 
-                        //Date
+                        //create building Date
                         buildDate = DateTime.Now.ToString("yyyy MMM dd", CultureInfo.CreateSpecificCulture("en-US"));
 
                         //判斷deviceID是否不存在於snData, 若是則寫入一筆資料到snData
                         strSQL = string.Format("select * from snData where deviceID = '{0}'", deviceID);
                         string checkDeviceID = accessHelper.readData(strSQL);
-                        if (checkDeviceID == "-1" && boolDeviceReceive)
+                        if (checkDeviceID == "-1" && boolDeviceReceived)
                         {
-                            boolDeviceReceive = false;
+                            boolDeviceReceived = false;
                             #region  執行SQL二次，deviceID不存在故同時寫入snData & deviceData 各一筆資料 和設定FW
                             //寫入資料庫
                             //SQL語法：     
@@ -1568,12 +1563,8 @@ namespace FFT_DOSE
                                                     MessageBox.Show("更新失敗！" + errorInfo3);
                                                 }
                                                 else
-                                                {
-                                                    //進入出貨模式
-                                                    //UTF8bytes = Encoding.UTF8.GetBytes("#SHIP_MODE" + Environment.NewLine);
-                                                    //RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                                                    //Thread.Sleep(delay_time2);
-                                                    Console.WriteLine("更新snData完成3245");
+                                                {                    
+                                                    Console.WriteLine("UPDATE snDate Completed.");
                                                 }
 
                                             }
@@ -1595,8 +1586,8 @@ namespace FFT_DOSE
                         }
                         #endregion
 
-                        #region  執行SQL，deviceID已存在寫入deviceData一筆資料和設定FW
-                        else if (boolDeviceReceive) //deviceID已存在,故只寫入測試資料  
+                        #region  執行SQL，deviceID已存在，故只寫入deviceData一筆資料和設定FW
+                        else if (boolDeviceReceived) //deviceID已存在,故只寫入測試資料  
                         {
                             #region 寫入測試資料庫
 

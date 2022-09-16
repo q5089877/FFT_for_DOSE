@@ -14,7 +14,7 @@ namespace FFT_For_DOSE
     {
 
 
-        public void PrintOneLabel(string strSN,string strBLEName, string StrSleeveName)
+        public void PrintOneLabel(string strSN, string strBLEName, string StrSleeveName)
         {
             int label_X_Move = 30;
 
@@ -23,7 +23,6 @@ namespace FFT_For_DOSE
             {
                 //創造新PCX
                 //  CreatePCX(strSN);
-
                 #region pringLabel
 
                 TSCLIB_DLL.openport("TSC TTP-644MU");
@@ -66,9 +65,6 @@ namespace FFT_For_DOSE
                 TSCLIB_DLL.closeport();
 
                 #endregion
-
-
-
             }
             catch (Exception ex)
             {
