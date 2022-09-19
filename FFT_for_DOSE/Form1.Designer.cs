@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.button2 = new System.Windows.Forms.Button();
             this.RS232_PLC = new System.IO.Ports.SerialPort(this.components);
@@ -137,7 +137,7 @@
             // 
             // cbx_plc
             // 
-            this.cbx_plc.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.cbx_plc.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.cbx_plc.FormattingEnabled = true;
             this.cbx_plc.Location = new System.Drawing.Point(175, 20);
             this.cbx_plc.Name = "cbx_plc";
@@ -157,7 +157,7 @@
             // 
             // cbx_power
             // 
-            this.cbx_power.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.cbx_power.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.cbx_power.FormattingEnabled = true;
             this.cbx_power.Location = new System.Drawing.Point(175, 50);
             this.cbx_power.Name = "cbx_power";
@@ -214,7 +214,7 @@
             // tbx_Pcb_feed_back
             // 
             this.tbx_Pcb_feed_back.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(184)))), ((int)(((byte)(195)))));
-            this.tbx_Pcb_feed_back.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.tbx_Pcb_feed_back.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.tbx_Pcb_feed_back.Location = new System.Drawing.Point(463, 39);
             this.tbx_Pcb_feed_back.Multiline = true;
             this.tbx_Pcb_feed_back.Name = "tbx_Pcb_feed_back";
@@ -224,7 +224,7 @@
             // 
             // tbx_ttl_send
             // 
-            this.tbx_ttl_send.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.tbx_ttl_send.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.tbx_ttl_send.Location = new System.Drawing.Point(578, 526);
             this.tbx_ttl_send.Name = "tbx_ttl_send";
             this.tbx_ttl_send.Size = new System.Drawing.Size(195, 27);
@@ -254,17 +254,17 @@
             // 
             // chart2
             // 
-            chartArea1.Name = "ChartArea1";
-            this.chart2.ChartAreas.Add(chartArea1);
-            legend1.Name = "Legend1";
-            this.chart2.Legends.Add(legend1);
+            chartArea2.Name = "ChartArea1";
+            this.chart2.ChartAreas.Add(chartArea2);
+            legend2.Name = "Legend1";
+            this.chart2.Legends.Add(legend2);
             this.chart2.Location = new System.Drawing.Point(885, 39);
             this.chart2.Name = "chart2";
-            series1.ChartArea = "ChartArea1";
-            series1.Legend = "Legend1";
-            series1.Name = "Series1";
-            this.chart2.Series.Add(series1);
-            this.chart2.Size = new System.Drawing.Size(760, 550);
+            series2.ChartArea = "ChartArea1";
+            series2.Legend = "Legend1";
+            series2.Name = "Series1";
+            this.chart2.Series.Add(series2);
+            this.chart2.Size = new System.Drawing.Size(760, 562);
             this.chart2.TabIndex = 140;
             this.chart2.Text = "chart2";
             this.chart2.Visible = false;
@@ -301,7 +301,7 @@
             // 
             // tbxSn
             // 
-            this.tbxSn.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.tbxSn.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.tbxSn.Location = new System.Drawing.Point(176, 349);
             this.tbxSn.Name = "tbxSn";
             this.tbxSn.Size = new System.Drawing.Size(269, 27);
@@ -334,7 +334,7 @@
             // 
             this.btnShipMode.Font = new System.Drawing.Font("Verdana", 12F);
             this.btnShipMode.ForeColor = System.Drawing.Color.Navy;
-            this.btnShipMode.Location = new System.Drawing.Point(175, 665);
+            this.btnShipMode.Location = new System.Drawing.Point(175, 799);
             this.btnShipMode.Name = "btnShipMode";
             this.btnShipMode.Size = new System.Drawing.Size(270, 57);
             this.btnShipMode.TabIndex = 173;
@@ -344,8 +344,8 @@
             // 
             // tbxHousing
             // 
-            this.tbxHousing.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.tbxHousing.Location = new System.Drawing.Point(687, 806);
+            this.tbxHousing.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.tbxHousing.Location = new System.Drawing.Point(1371, 835);
             this.tbxHousing.Name = "tbxHousing";
             this.tbxHousing.Size = new System.Drawing.Size(271, 27);
             this.tbxHousing.TabIndex = 177;
@@ -354,7 +354,7 @@
             // 
             this.label35.AutoSize = true;
             this.label35.Font = new System.Drawing.Font("Verdana", 12F);
-            this.label35.Location = new System.Drawing.Point(550, 809);
+            this.label35.Location = new System.Drawing.Point(1234, 838);
             this.label35.Name = "label35";
             this.label35.Size = new System.Drawing.Size(140, 18);
             this.label35.TabIndex = 176;
@@ -372,7 +372,7 @@
             // 
             // tbxPCB
             // 
-            this.tbxPCB.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.tbxPCB.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.tbxPCB.Location = new System.Drawing.Point(1564, 668);
             this.tbxPCB.Name = "tbxPCB";
             this.tbxPCB.Size = new System.Drawing.Size(82, 27);
@@ -415,7 +415,7 @@
             // cbxBatch
             // 
             this.cbxBatch.Enabled = false;
-            this.cbxBatch.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.cbxBatch.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.cbxBatch.FormattingEnabled = true;
             this.cbxBatch.Location = new System.Drawing.Point(177, 264);
             this.cbxBatch.Name = "cbxBatch";
@@ -465,7 +465,7 @@
             // 
             // cbx_name
             // 
-            this.cbx_name.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.cbx_name.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.cbx_name.FormattingEnabled = true;
             this.cbx_name.Location = new System.Drawing.Point(177, 127);
             this.cbx_name.Name = "cbx_name";
@@ -474,7 +474,7 @@
             // 
             // tbxPassword
             // 
-            this.tbxPassword.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.tbxPassword.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.tbxPassword.Location = new System.Drawing.Point(177, 160);
             this.tbxPassword.Name = "tbxPassword";
             this.tbxPassword.PasswordChar = '*';
@@ -516,7 +516,7 @@
             // 
             // cbxSleeve
             // 
-            this.cbxSleeve.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.cbxSleeve.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.cbxSleeve.FormattingEnabled = true;
             this.cbxSleeve.Items.AddRange(new object[] {
             "SS ",
@@ -543,7 +543,7 @@
             // 
             this.btxPrintLabel2.Font = new System.Drawing.Font("Verdana", 12F);
             this.btxPrintLabel2.ForeColor = System.Drawing.Color.Navy;
-            this.btxPrintLabel2.Location = new System.Drawing.Point(793, 682);
+            this.btxPrintLabel2.Location = new System.Drawing.Point(885, 691);
             this.btxPrintLabel2.Name = "btxPrintLabel2";
             this.btxPrintLabel2.Size = new System.Drawing.Size(270, 57);
             this.btxPrintLabel2.TabIndex = 194;
@@ -553,22 +553,22 @@
             // 
             // cbxSleeveName2
             // 
-            this.cbxSleeveName2.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.cbxSleeveName2.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.cbxSleeveName2.FormattingEnabled = true;
             this.cbxSleeveName2.Items.AddRange(new object[] {
             "SS ",
             "FT ",
             "KP ",
             "NP"});
-            this.cbxSleeveName2.Location = new System.Drawing.Point(793, 652);
+            this.cbxSleeveName2.Location = new System.Drawing.Point(885, 661);
             this.cbxSleeveName2.Name = "cbxSleeveName2";
             this.cbxSleeveName2.Size = new System.Drawing.Size(81, 24);
             this.cbxSleeveName2.TabIndex = 195;
             // 
             // tbxSN2
             // 
-            this.tbxSN2.Font = new System.Drawing.Font("新細明體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.tbxSN2.Location = new System.Drawing.Point(885, 649);
+            this.tbxSN2.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.tbxSN2.Location = new System.Drawing.Point(977, 658);
             this.tbxSN2.Name = "tbxSN2";
             this.tbxSN2.Size = new System.Drawing.Size(178, 27);
             this.tbxSN2.TabIndex = 196;
