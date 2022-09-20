@@ -112,9 +112,7 @@ namespace FFT_DOSE
             mi_pcb_feedback = new MethodInvoker(Update_pcb_feedback);
             GetPortInformation();
 
-            //初始化上一次選擇
-
-            cbxSleeve.SelectedIndex = 0;
+            //初始化上一次選擇          
             createSnMax();
             #region get select data
             try
@@ -136,7 +134,8 @@ namespace FFT_DOSE
                         POWER_COM = cbx_power.SelectedItem.ToString();
                     }
                 }
-                this.Controls.Add(chart1);
+                //     this.Controls.Add(chart1);
+                this.groupBox6.Controls.Add(this.chart1);
                 //Chart
                 try
                 {
@@ -1494,60 +1493,58 @@ namespace FFT_DOSE
 
                     // Enable the Termination Character.                
                     session.TerminationCharacterEnabled = true;
+
+                    try
+                    {
+                        // Connection parameters
+                        ISerialSession serial = session as ISerialSession;
+                        serial.BaudRate = 115200;
+                        serial.DataBits = 8;
+                        serial.Parity = Ivi.Visa.SerialParity.None;
+                        //  serial.FlowControl = SerialFlowControlModes.DtrDsr;
+                        serial.FlowControl = SerialFlowControlModes.None;
+
+                        // Send the *IDN? and read the response as strings
+                        formattedIO = new MessageBasedFormattedIO(session);
+                        //   formattedIO.WriteLine("MEASure:CURRent?");
+                        formattedIO.WriteLine("*IDN?");
+                        string idnResponse = formattedIO.ReadLine();
+
+                        Console.WriteLine("Current returned: {0}", idnResponse);
+                        Thread.Sleep(1000);
+
+                        formattedIO.WriteLine("OUTPut 0");
+                        formattedIO.WriteLine("OUTPut 0");
+
+                        Console.WriteLine("Current returned: {0}", idnResponse);
+                        Thread.Sleep(100);
+
+                        formattedIO.WriteLine("OUTPut 1");
+                        formattedIO.WriteLine("OUTPut 1");
+
+                        Console.WriteLine("Current returned: {0}", idnResponse);
+                        Thread.Sleep(100);
+
+                        formattedIO.WriteLine("MEASure:voltage?");
+                        idnResponse = formattedIO.ReadLine();
+
+                        Console.WriteLine("Current returned: {0}", idnResponse);
+
+                        formattedIO.WriteLine("VOLTage 5.00");
+                        Thread.Sleep(100);
+
+                        formattedIO.WriteLine("SYST:REM");
+                        Thread.Sleep(100);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("電流表通訊錯誤!!");
+                    }
                 }
                 catch (Exception err)
                 {
-                    MessageBox.Show("POWER Error!");
-                    MessageBox.Show(err.ToString());
-                }
-
-                try
-                {
-                    // Connection parameters
-                    ISerialSession serial = session as ISerialSession;
-                    serial.BaudRate = 115200;
-                    serial.DataBits = 8;
-                    serial.Parity = Ivi.Visa.SerialParity.None;
-                    //  serial.FlowControl = SerialFlowControlModes.DtrDsr;
-                    serial.FlowControl = SerialFlowControlModes.None;
-
-                    // Send the *IDN? and read the response as strings
-                    formattedIO = new MessageBasedFormattedIO(session);
-                    //   formattedIO.WriteLine("MEASure:CURRent?");
-                    formattedIO.WriteLine("*IDN?");
-                    string idnResponse = formattedIO.ReadLine();
-
-                    Console.WriteLine("Current returned: {0}", idnResponse);
-                    Thread.Sleep(1000);
-
-                    formattedIO.WriteLine("OUTPut 0");
-                    formattedIO.WriteLine("OUTPut 0");
-
-                    Console.WriteLine("Current returned: {0}", idnResponse);
-                    Thread.Sleep(100);
-
-                    formattedIO.WriteLine("OUTPut 1");
-                    formattedIO.WriteLine("OUTPut 1");
-
-                    Console.WriteLine("Current returned: {0}", idnResponse);
-                    Thread.Sleep(100);
-
-                    formattedIO.WriteLine("MEASure:voltage?");
-                    idnResponse = formattedIO.ReadLine();
-
-                    Console.WriteLine("Current returned: {0}", idnResponse);
-
-                    formattedIO.WriteLine("VOLTage 5.00");
-                    Thread.Sleep(100);
-
-                    formattedIO.WriteLine("SYST:REM");
-                    Thread.Sleep(100);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("POWER Error!");
-                    MessageBox.Show(ex.ToString());
-                }
+                    MessageBox.Show("電流表通訊錯誤!!");                    
+                }               
             }
             catch (Exception ex)
             {
@@ -1612,61 +1609,7 @@ namespace FFT_DOSE
 
         private void btnConfigFW_Click(object sender, EventArgs e)
         {
-            #region 寫入FW Conf
-            try
-            {
-                strNextSn = tbxSn.Text;
-                batchNum = cbxBatch.SelectedItem.ToString();
-                pcbVer = tbxPCB.Text;
-                bottomVer = tbxHousing.Text;
-                //Date
-                buildDate = DateTime.Now.ToString("yyyy MMM dd", CultureInfo.CreateSpecificCulture("en-US"));
-
-                RS232_DOSE.Close();
-                RS232_DOSE.Dispose();
-                RS232_DOSE.PortName = GetPortInformation_for_DOSE_COM();
-                RS232_DOSE.Open();
-                //#SET_CONFIG_DATA 
-                //Mounted_Sleeve:       
-                byte[] UTF8bytes = Encoding.UTF8.GetBytes("#SET_CONFIG_DATA" + Environment.NewLine);
-                RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                Thread.Sleep(500);
-
-                UTF8bytes = Encoding.UTF8.GetBytes("Housing_Version:" + bottomVer + Environment.NewLine);
-                RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                Thread.Sleep(delay_time2);
-
-                UTF8bytes = Encoding.UTF8.GetBytes("PCBA_Version:" + pcbVer + Environment.NewLine);
-                RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                Thread.Sleep(delay_time2);
-
-                UTF8bytes = Encoding.UTF8.GetBytes("Batch_ID:" + batchNum + Environment.NewLine);
-                RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                Thread.Sleep(delay_time2);
-
-                string date1 = DateTime.Now.ToString("yyyy MMM dd", CultureInfo.CreateSpecificCulture("en-US"));
-                UTF8bytes = Encoding.UTF8.GetBytes("Build_Date:" + date1 + Environment.NewLine);
-                RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                Thread.Sleep(delay_time2);
-
-                UTF8bytes = Encoding.UTF8.GetBytes("Mounted_Sleeve:" + StrSleeveName + Environment.NewLine);
-                RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                Thread.Sleep(delay_time2);
-
-                UTF8bytes = Encoding.UTF8.GetBytes("Assembly_Serial_Number:" + strNextSn.ToString().PadLeft(SnLength, '0') + Environment.NewLine);
-                RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                Thread.Sleep(delay_time2);
-
-                UTF8bytes = Encoding.UTF8.GetBytes("#CONFIG_END" + Environment.NewLine);
-                RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                Thread.Sleep(delay_time2);
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
-            #endregion
+          
         }
 
         // static loginForm loginForm1 = new loginForm();
@@ -1931,8 +1874,8 @@ namespace FFT_DOSE
         public class RealtimeChart
         {
             private Chart _chart = null;
-            private int chartWidth = 760;
-            private int chartHeight = 562;
+            private int chartWidth = 722;
+            private int chartHeight = 615;
             public string nameAxisX = "Counter";
             private string nameAxisY = "Charging Current (mA)";
 
@@ -1950,7 +1893,8 @@ namespace FFT_DOSE
                 _chart.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
                 _chart.BorderlineWidth = 2;
                 _chart.BorderSkin.SkinStyle = System.Windows.Forms.DataVisualization.Charting.BorderSkinStyle.None;
-                _chart.Location = new System.Drawing.Point(885, 39);
+                //Chart1位置
+                _chart.Location = new System.Drawing.Point(9, 44);
                 _chart.Name = "chart1";
                 _chart.Size = new System.Drawing.Size(chartWidth, chartHeight);
                 _chart.TabIndex = 1;
@@ -2016,67 +1960,7 @@ namespace FFT_DOSE
             {
                 get { return _chart; }
             }
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            RS232_PLC.PortName = "COM13";
-            RS232_PLC.BaudRate = 9600;
-            RS232_PLC.DataBits = 8;
-            RS232_PLC.Parity = Parity.Even;
-            RS232_PLC.StopBits = StopBits.One;
-            try
-            {
-                RS232_PLC.Open();
-                //  timer1.Enabled = true;
-                MessageBox.Show("打开端口");
-            }
-            catch (Exception ea)
-            {
-                MessageBox.Show("打开端口错误");
-            }
-        }
-
-        private void button6_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                List<byte> list = new List<byte>();
-                list.Add(0x01);
-                list.Add(0x05);
-                list.Add(0x08);
-                list.Add(0x02);
-                list.Add(0xFF);
-                list.Add(0x00);
-                byte[] array = list.ToArray();
-                byte[] Crc_data = CRC16LH(array);
-                list.Add(Crc_data[0]);
-                list.Add(Crc_data[1]);
-                byte[] all_array = list.ToArray();
-                RS232_PLC.Write(all_array, 0, all_array.Length);
-            }
-            catch
-            {
-                MessageBox.Show("Com Port Error!!");
-            }
-        }
-
-        private void button7_Click(object sender, EventArgs e)
-        {
-            List<byte> list = new List<byte>();
-            list.Add(0x01);
-            list.Add(0x01);
-            list.Add(0x08);
-            list.Add(0x02);
-            list.Add(0x00);
-            list.Add(0x01);
-            byte[] array = list.ToArray();
-            byte[] Crc_data = CRC16LH(array);
-            list.Add(Crc_data[0]);
-            list.Add(Crc_data[1]);
-            byte[] all_array = list.ToArray();
-            RS232_PLC.Write(all_array, 0, all_array.Length);
-        }
+        }      
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -2086,14 +1970,11 @@ namespace FFT_DOSE
             }
             catch
             {
-                MessageBox.Show("POWER發生錯誤");
+                MessageBox.Show("電流表通訊錯誤!!");
             }
         }
 
-        private void cbxSleeve_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            StrSleeveName = cbxSleeve.SelectedItem.ToString();
-        }
+
 
         #region CRC
         /// <summary>
