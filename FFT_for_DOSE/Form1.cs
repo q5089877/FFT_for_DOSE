@@ -26,6 +26,8 @@ namespace FFT_DOSE
 {
     public partial class Form1 : Form
     {
+        
+
         int batteryFullCurr = 300;  //判斷充電電流是否小於此
 
         #region SN
@@ -67,7 +69,9 @@ namespace FFT_DOSE
          , gyroXmax = "", gyroXmin = "", gyroYmax = "", gyroYmin = "", gyroZmax = "", gyroZmin = "", mouseXmax = "", mouseXmin = "", mouseYmax = "", mouseYmin = "", mouseSmax = ""
          , mouseSmin = "", mouseFmax = "", mouseFmin = "", mouseImax = "", mouseImin = "", IRmax = "", IRmin = "", batterymax = "", batterymin = "", mountingSwitch = "";
 
-        public bool showLogForm { get; set; }
+        int label_X_Move = 30;  //控制LABE位置
+
+      //  public bool showLogForm { get; set; }
 
         MethodInvoker miCreateMaxSN;
         AccessHelper accessHelper = new AccessHelper();
@@ -108,12 +112,13 @@ namespace FFT_DOSE
             //載入使用者名稱到下拉選單
             loadUserName();
 
-            showLogForm = false;
+         //   showLogForm = false;
             mi_pcb_feedback = new MethodInvoker(Update_pcb_feedback);
             GetPortInformation();
 
-            //初始化上一次選擇          
+            //取得序號最大值                 
             createSnMax();
+            //初始化上一次選擇     
             #region get select data
             try
             {
@@ -170,7 +175,7 @@ namespace FFT_DOSE
                 pcbVer = "";         //PCB版本
                 bottomVer = "";      //Bottom版本
                 assCheck = "";       //此字串用來判斷FFT結果 Pass or Fail   
-
+                checkSTATUSEnd = false;
                 CheckShipping = true;
                 strSQL = string.Format("select sleeveName from batchData where batchNum = '{0}'", cbxBatch.SelectedItem.ToString()); //取得sleeveName                                                                                 
                 StrSleeveName = accessHelper.readData(strSQL);//執行SQL
@@ -181,7 +186,7 @@ namespace FFT_DOSE
                 StrSleeveName = "";
             }
 
-            if (StrSleeveName != "" && pcbVer != "" && bottomVer != "")
+        //    if (StrSleeveName != "" && pcbVer != "" && bottomVer != "")
             {
                 #region ASS_CHECK
 
@@ -310,64 +315,77 @@ namespace FFT_DOSE
                     #endregion
 
                     #region 寫入FW Conf
-                    //_counter = 0;
-                    //while (true)
-                    //{
-                    //    Thread.Sleep(1);
-                    //    // boolAssCheckEnd = true 代表測試跑完
-                    //    if (boolAssCheckEnd) 
-                    //    {
-                    //        boolAssCheckEnd = false;
-                    //        //#SET_CONFIG_DATA 
-                    //        //Mounted_Sleeve:       
-                    //        UTF8bytes = Encoding.UTF8.GetBytes("#SET_CONFIG_DATA" + Environment.NewLine);
-                    //        RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                    //        Thread.Sleep(500);
+                    _counter = 0;
+                    while (true)
+                    {
+                        Thread.Sleep(1);
+                        // boolAssCheckEnd = true 代表測試跑完
+                        if (boolAssCheckEnd)
+                        {
+                            boolAssCheckEnd = false;
+                            //#SET_CONFIG_DATA 
+                            //Mounted_Sleeve:       
+                            UTF8bytes = Encoding.UTF8.GetBytes("#SET_CONFIG_DATA" + Environment.NewLine);
+                            RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                            Thread.Sleep(500);
 
-                    //        UTF8bytes = Encoding.UTF8.GetBytes("Housing_Version:" + bottomVer + Environment.NewLine);
-                    //        RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                    //        Thread.Sleep(delay_time2);
+                            UTF8bytes = Encoding.UTF8.GetBytes("Housing_Version:" + bottomVer + Environment.NewLine);
+                            RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                            Thread.Sleep(delay_time2);
 
-                    //        UTF8bytes = Encoding.UTF8.GetBytes("PCBA_Version:" + pcbVer + Environment.NewLine);
-                    //        RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                    //        Thread.Sleep(delay_time2);
+                            UTF8bytes = Encoding.UTF8.GetBytes("PCBA_Version:" + pcbVer + Environment.NewLine);
+                            RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                            Thread.Sleep(delay_time2);
 
-                    //        UTF8bytes = Encoding.UTF8.GetBytes("Batch_ID:" + batchNum + Environment.NewLine);
-                    //        RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                    //        Thread.Sleep(delay_time2);
+                            UTF8bytes = Encoding.UTF8.GetBytes("Batch_ID:" + batchNum + Environment.NewLine);
+                            RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                            Thread.Sleep(delay_time2);
 
-                    //        string date1 = DateTime.Now.ToString("yyyy MMM dd", CultureInfo.CreateSpecificCulture("en-US"));
-                    //        UTF8bytes = Encoding.UTF8.GetBytes("Build_Date:" + date1 + Environment.NewLine);
-                    //        RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                    //        Thread.Sleep(delay_time2);
+                            string date1 = DateTime.Now.ToString("yyyy MMM dd", CultureInfo.CreateSpecificCulture("en-US"));
+                            UTF8bytes = Encoding.UTF8.GetBytes("Build_Date:" + date1 + Environment.NewLine);
+                            RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                            Thread.Sleep(delay_time2);
 
-                    //        UTF8bytes = Encoding.UTF8.GetBytes("Mounted_Sleeve:" + StrSleeveName + Environment.NewLine);
-                    //        RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                    //        Thread.Sleep(delay_time2);
+                            UTF8bytes = Encoding.UTF8.GetBytes("Mounted_Sleeve:" + StrSleeveName + Environment.NewLine);
+                            RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                            Thread.Sleep(delay_time2);
 
-                    //        UTF8bytes = Encoding.UTF8.GetBytes("Assembly_Serial_Number:" + strNextSn.ToString().PadLeft(SnLength, '0') + Environment.NewLine);
-                    //        RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                    //        Thread.Sleep(delay_time2);
+                            UTF8bytes = Encoding.UTF8.GetBytes("Assembly_Serial_Number:" + strNextSn.ToString().PadLeft(SnLength, '0') + Environment.NewLine);
+                            RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                            Thread.Sleep(delay_time2);
 
-                    //        UTF8bytes = Encoding.UTF8.GetBytes("#CONFIG_END" + Environment.NewLine);
-                    //        RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                    //        Thread.Sleep(delay_time2);
-                    //        break;
-                    //    }
-                    //    _counter++;
-                    //    if (_counter == 6000)
-                    //    {
-                    //        MessageBox.Show("測試失敗, 請重測試!!");
-                    //        break;
-                    //    }
-                    //}
+                            UTF8bytes = Encoding.UTF8.GetBytes("#CONFIG_END" + Environment.NewLine);
+                            RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                            Thread.Sleep(delay_time2);
+                            break;
+                        }
+                        _counter++;
+                        if (_counter == 6000)
+                        {
+                            MessageBox.Show("測試失敗, 請重測試!!");
+                            break;
+                        }
+                    }
                     #endregion
 
                     Thread.Sleep(2000);
 
                     #region dump_data 寫入txt
                     WriteDumpData = true; //用來判斷dump_data是否寫入完成
-                    SW = new StreamWriter(@"C:\DET_DOSE\" + strNextSn + ".txt");
+
+
+                    // 如果批號資料夾不存在, 便建立其資料夾                    
+                    if (Directory.Exists("C:\\DOSE_DumpData\\" + cbxBatch.Text))
+                    {
+                        Console.WriteLine("The directory {0} already exists.", "C:\\DOSE_DumpData\\" + cbxBatch.Text);
+                    }
+                    else
+                    {
+                        Directory.CreateDirectory("C:\\DOSE_DumpData\\" + cbxBatch.Text);
+                        Console.WriteLine("The directory {0} was created.", "C:\\DOSE_DumpData\\" + cbxBatch.Text);
+                    }
+
+                    SW = new StreamWriter(@"C:\DOSE_DumpData\" + strNextSn + ".txt"); //
                     try
                     {
                         UTF8bytes = Encoding.UTF8.GetBytes("#DUMP_DATA" + Environment.NewLine);
@@ -559,10 +577,10 @@ namespace FFT_DOSE
                     MessageBox.Show("數量異常 CODE 548");
                 }
             }
-            else
-            {
-                MessageBox.Show("批號讀取錯誤");
-            }
+         //   else
+            //{
+            //    MessageBox.Show("批號讀取錯誤");
+            //}
         }
 
         private void RS232_DOSE_DataReceived(object sender, SerialDataReceivedEventArgs e)
@@ -605,7 +623,7 @@ namespace FFT_DOSE
                     {
                         try
                         {
-                            bleName = inData.Substring(inData.IndexOf("BLE Device Name") + 24, 8);
+                            bleName = inData.Substring(inData.IndexOf("BLE Device Name") + 23, 8);
                         }
                         catch
                         {
@@ -1192,6 +1210,114 @@ namespace FFT_DOSE
             }
         }
 
+
+        int aaa = 0;
+        private void btnPNGtoPCX_Click(object sender, EventArgs e)
+        {
+            aaa++;
+            string strDir = System.Windows.Forms.Application.StartupPath;
+
+            BarcodeWriter barcodeWriter1 = new BarcodeWriter();
+            barcodeWriter1.Format = BarcodeFormat.DATA_MATRIX;
+            barcodeWriter1.Options = new ZXing.Datamatrix.DatamatrixEncodingOptions();
+            barcodeWriter1.Options.Width = 170;
+            barcodeWriter1.Options.Height = 170;
+            barcodeWriter1.Options.Margin = 0;
+            //  string label = (char)29 + "01" + "05392000095502" + "10" + "0123456789KWIK" + (char)29 + "11" + "220701" + "17" + "230701" + "21" + "000123" + aaa.ToString();
+            string label = (char)29 + "01" + "05392000095502" + (char)29 + "11" + "220701" + "17" + "230701" + "21" + "000999";
+
+            Image pngTemp = barcodeWriter1.Write(label);
+
+            using (System.Drawing.Image oOrgImg = new Bitmap(pngTemp))
+            {
+                using (System.IO.MemoryStream oMS = new System.IO.MemoryStream())
+                {
+                    //將oTarImg儲存（指定）到記憶體串流中
+                    oOrgImg.Save(oMS, System.Drawing.Imaging.ImageFormat.Png);
+                    //將串流整個讀到陣列中，寫入某個路徑中的某個檔案裡
+                    using (System.IO.FileStream oFS = System.IO.File.Open(strDir + "\\GS1.png", System.IO.FileMode.OpenOrCreate))
+                    { oFS.Write(oMS.ToArray(), 0, oMS.ToArray().Length); }
+                }
+            }
+
+            //黑白反轉
+            using (Image PNGimage = Image.FromFile(strDir + "\\GS1.png"))
+            {
+                using (Bitmap pic = new Bitmap(PNGimage))
+                {
+                    for (int y = 0; (y
+                                <= (pic.Height - 1)); y++)
+                    {
+                        for (int x = 0; (x
+                                    <= (pic.Width - 1)); x++)
+                        {
+                            Color inv = pic.GetPixel(x, y);
+                            inv = Color.FromArgb(255, (255 - inv.R), (255 - inv.G), (255 - inv.B));
+                            pic.SetPixel(x, y, inv);
+                        }
+                    }
+                    Image PNGimage2 = pic;
+                    PNGimage2.Save(strDir + "\\GS2.png");
+                    PNGimage2.Dispose();
+                }
+            }
+
+
+            //png to pcx
+            var beforeImage = new MagickImage(strDir + "\\GS2.png");
+            using (MagickImage image = new MagickImage(beforeImage))
+            {
+                //增加轉換為黑白色彩
+                image.Format = MagickFormat.Pcx;
+                image.ColorType = ColorType.Palette;
+                //取得目錄字串
+                image.Write(strDir + "\\GS1.PCX");
+            }
+            beforeImage.Dispose();
+        }
+
+        private void btnPrintLabel_Click(object sender, EventArgs e)
+        {
+            TSCLIB_DLL.openport("Bar Code Printer TT053-61");
+
+            TSCLIB_DLL.setup("49.92", "8.7", "1", "15", "0", "3", "-0.7");
+
+            TSCLIB_DLL.clearbuffer();
+            //Innovation Zed,NovaUCD.....
+            TSCLIB_DLL.windowsfont(120 + label_X_Move, 20, 40, 0, 2, 0, "FreeSans", "Innovation Zed");
+            TSCLIB_DLL.windowsfont(120 + label_X_Move, 47, 40, 0, 2, 0, "FreeSans", "Nova UCD");
+            TSCLIB_DLL.windowsfont(120 + label_X_Move, 74, 40, 0, 2, 0, "FreeSans", "Dublin 4, Ireland");
+
+            //BLE
+            TSCLIB_DLL.windowsfont(440 + label_X_Move, 42, 44, 0, 2, 0, "FreeSans", "3IG7MBIE");
+            TSCLIB_DLL.windowsfont(445 + label_X_Move, 101, 44, 0, 2, 0, "FreeSans", "DOSE-KP");
+            TSCLIB_DLL.windowsfont(445 + label_X_Move, 152, 40, 0, 2, 0, "FreeSans", "2022-09-21");
+
+
+            //Label PCX
+            string str_path = System.Windows.Forms.Application.StartupPath;
+            int aa = TSCLIB_DLL.downloadpcx(str_path + "\\label.PCX", "label.PCX");
+            int bb = TSCLIB_DLL.sendcommand("PUTPCX 30,25,\"label.PCX\"");
+
+
+            str_path = System.Windows.Forms.Application.StartupPath;
+            int aaa = TSCLIB_DLL.downloadpcx(str_path + "\\GS1.PCX", "GS1.PCX");
+            int bbb = TSCLIB_DLL.sendcommand("PUTPCX 640,25,\"GS1.PCX\"");
+
+            //以下為GSI文字
+            int fontX = 785;
+            int fontSize = 40;
+            TSCLIB_DLL.windowsfont(fontX + label_X_Move, 20, fontSize, 0, 2, 0, "FreeSans", "(01)05392000095502");
+            TSCLIB_DLL.windowsfont(fontX + label_X_Move, 55, fontSize, 0, 2, 0, "FreeSans", "(10)0123456789KWIK");
+            TSCLIB_DLL.windowsfont(fontX + label_X_Move, 90, fontSize, 0, 2, 0, "FreeSans", "(11)220913");
+            TSCLIB_DLL.windowsfont(fontX + label_X_Move, 125, fontSize, 0, 2, 0, "FreeSans", "(17)250913");
+            TSCLIB_DLL.windowsfont(fontX + label_X_Move, 160, fontSize, 0, 2, 0, "FreeSans", "(21)000999");
+
+            TSCLIB_DLL.sendcommand("PRINT 1");
+            TSCLIB_DLL.sendcommand("DIRECTION 1");
+            TSCLIB_DLL.closeport();
+        }
+
         //判斷此deviceID(SN)是否已進入出貨模式, 1=是 0=否
         int checkShippingExist(string deviceID)
         {
@@ -1232,9 +1358,11 @@ namespace FFT_DOSE
                     StrSleeveName = dt_selectData.Rows[i][0].ToString();
                     pcbVer = dt_selectData.Rows[i][1].ToString();
                     bottomVer = dt_selectData.Rows[i][2].ToString();
+                    lblSleeve.Text = StrSleeveName;                         //顯示正在制作的Sleeve在UI上
                     lblBatTotal.Text = dt_selectData.Rows[i][3].ToString(); //批號總數
-                    createSnMax(); //產生下一個最大SN
-                    int _num = getCompletedNumForBatch(); //取得完成數量
+                    createSnMax();                                          //產生下一個最大SN
+                    int _num = getCompletedNumForBatch();                   //取得完成數量
+
                     //批號選擇完成, 刪掉密碼, 鎖定批號
                     tbxPassword.Text = "";
                     cbxBatch.Enabled = false;
@@ -1243,6 +1371,19 @@ namespace FFT_DOSE
             catch
             {
                 MessageBox.Show("載入批號相關資訊");
+            }
+
+
+
+            // 如果批號資料夾不存在, 便建立其資料夾                    
+            if (Directory.Exists("C:\\DOSE_DumpData\\" + cbxBatch.Text))
+            {
+                Console.WriteLine("The directory {0} already exists.", "C:\\DOSE_DumpData\\" + cbxBatch.Text);
+            }
+            else
+            {
+                Directory.CreateDirectory("C:\\DOSE_DumpData\\" + cbxBatch.Text);
+                Console.WriteLine("The directory {0} was created.", "C:\\DOSE_DumpData\\" + cbxBatch.Text);
             }
         }
 
@@ -1543,8 +1684,8 @@ namespace FFT_DOSE
                 }
                 catch (Exception err)
                 {
-                    MessageBox.Show("電流表通訊錯誤!!");                    
-                }               
+                    MessageBox.Show("電流表通訊錯誤!!");
+                }
             }
             catch (Exception ex)
             {
@@ -1557,7 +1698,7 @@ namespace FFT_DOSE
         private void btnDump_Click(object sender, EventArgs e)
         {
             WriteDumpData = true;
-            SW = new StreamWriter(@"C:\DET_DOSE\" + tbxSn.Text + ".txt");
+            SW = new StreamWriter(@"C:\DOSE_DumpData\" + tbxSn.Text + ".txt");
             try
             {
                 RS232_DOSE.Close();
@@ -1609,19 +1750,64 @@ namespace FFT_DOSE
 
         private void btnConfigFW_Click(object sender, EventArgs e)
         {
-          
+
         }
+
+        public bool showManage { get; set; }    //控制工單管理頁面
 
         // static loginForm loginForm1 = new loginForm();
         private void btnOpenManage_Click(object sender, EventArgs e)
         {
-            if (showLogForm == false)
+            if ((tbxPassword.Text.Length > 3) && (tbxPassword.Text != ""))
             {
-                loginForm loginForm1 = new loginForm(showLogForm);
-                loginForm1.Owner = this;
-                loginForm1.Show();
-                showLogForm = true;
+                //此判斷帳號密碼是否正確
+                string str_sql = string.Format("SELECT pass_word FROM _user where user_name = '{0}'", cbx_name.SelectedItem.ToString());
+                string pass_word = accessHelper.readData(str_sql);
+
+                if (pass_word != "-2")
+                {
+                    //帳號密碼存在，比對密碼
+                    if (pass_word == tbxPassword.Text)
+                    {
+                        //登入成功;
+                        try
+                        {
+                                if (showManage == false)
+                                {
+                                    FormManage FormManage1 = new FormManage(showManage);
+                                    FormManage1.Owner = this;
+                                    FormManage1.Show();
+                                    showManage = true;
+                                }           
+                        }
+                        catch
+                        {
+                            MessageBox.Show("登入失敗");
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("登入失敗");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("登入失敗");
+                }
             }
+            else
+            {
+                MessageBox.Show("密碼長度不足");
+            }
+
+
+            //if (showLogForm == false)
+            //{
+            //    loginForm loginForm1 = new loginForm(showLogForm);
+            //    loginForm1.Owner = this;
+            //    loginForm1.Show();
+            //    showLogForm = true;
+            //}
         }
 
         private void cbx_plc_SelectedIndexChanged(object sender, EventArgs e)
@@ -1875,7 +2061,7 @@ namespace FFT_DOSE
         {
             private Chart _chart = null;
             private int chartWidth = 722;
-            private int chartHeight = 615;
+            private int chartHeight = 640;
             public string nameAxisX = "Counter";
             private string nameAxisY = "Charging Current (mA)";
 
@@ -1960,7 +2146,7 @@ namespace FFT_DOSE
             {
                 get { return _chart; }
             }
-        }      
+        }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {

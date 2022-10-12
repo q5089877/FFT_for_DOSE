@@ -117,8 +117,8 @@ namespace FFT_For_DOSE
 
         private void loginForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            f1 = (Form1)this.Owner;
-            f1.showLogForm = false;
+            //f1 = (Form1)this.Owner;
+            //f1.showLogForm = false;
         }
 
         private void btnDel_Click(object sender, EventArgs e)

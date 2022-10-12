@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FFT_DOSE;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -16,16 +17,11 @@ namespace FFT_For_DOSE
     {
         DataTable dtForGrid;
 
-        public bool showManUser { get; set; }
-        bool showManage;
-        AccessHelper accessHelper = new AccessHelper();
-
-        loginForm logForm1 = null;
-
+        public bool showManUser { get; set; }       
+        AccessHelper accessHelper = new AccessHelper();       
         public FormManage(bool showManage)
         {
             InitializeComponent();
-            this.showManage = showManage;
         }
 
         private void Form_manage_Load(object sender, EventArgs e)
@@ -74,19 +70,33 @@ namespace FFT_For_DOSE
 
         private void Form_manage_FormClosed(object sender, FormClosedEventArgs e)
         {
-            logForm1 = (loginForm)this.Owner;
-            logForm1.showManage = false;
+            string formName = "Form1";
+            Form fr = Application.OpenForms[formName];
+            if (fr != null)
+            {                
+                Form1 f1 = (Form1)fr;   //取得Form1                
+                f1.showManage = false;  //改變showManage的值
+            }
         }
 
         private void btn_add_Click(object sender, EventArgs e)
         {
             try
             {
+                string sleeveName = "";
                 string strSQL = "";
                 string moNum = tbx_MO.Text;
                 string batchNum = tbx_lot.Text;
                 string makeTotal = tbx_make_total.Text;
-                string sleeveName = cbxSleeve.SelectedItem.ToString();
+                try
+                {
+                     sleeveName = cbxSleeve.SelectedItem.ToString();
+                }
+                catch
+                {
+                    cbxSleeve.SelectedIndex = 0;
+                    sleeveName = cbxSleeve.SelectedItem.ToString();
+                }
                 string pcbVersion = tbxPCB.Text;
                 string housingVersion = tbxHousing.Text;
 
@@ -172,7 +182,7 @@ namespace FFT_For_DOSE
             }
             catch (Exception ex)
             {
-                MessageBox.Show("發生錯誤!!");
+                MessageBox.Show("發生錯誤，是否有內容為空白!");
                 MessageBox.Show(ex.ToString());
             }
             reLoadMoNum();

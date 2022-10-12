@@ -12,19 +12,15 @@ namespace FFT_For_DOSE
 {
     class printLabel
     {
-
-
+        int label_X_Move = 30;
         public void PrintOneLabel(string strSN, string strBLEName, string StrSleeveName)
         {
-            int label_X_Move = 30;
-
             #region print Short label 
             try
             {
                 //創造新PCX
                 //  CreatePCX(strSN);
                 #region pringLabel
-
                 TSCLIB_DLL.openport("TSC TTP-644MU");
                 TSCLIB_DLL.setup("49.92", "8.53", "1", "15", "0", "3", "-0.6");
                 TSCLIB_DLL.clearbuffer();
@@ -37,13 +33,11 @@ namespace FFT_For_DOSE
                 TSCLIB_DLL.windowsfont(440 + label_X_Move, 46, 44, 0, 2, 0, "FreeSans", strBLEName);
                 TSCLIB_DLL.windowsfont(445 + label_X_Move, 103, 44, 0, 2, 0, "FreeSans", "DOSE-" + StrSleeveName);
                 TSCLIB_DLL.windowsfont(445 + label_X_Move, 155, 40, 0, 2, 0, "FreeSans", "2022-09-12");
-
-
+                
                 //Label PCX
                 string str_path = System.Windows.Forms.Application.StartupPath;
                 int aa = TSCLIB_DLL.downloadpcx(str_path + "\\label.PCX", "label.PCX");
                 int bb = TSCLIB_DLL.sendcommand("PUTPCX 30,25,\"label.PCX\"");
-
 
                 str_path = System.Windows.Forms.Application.StartupPath;
                 int aaa = TSCLIB_DLL.downloadpcx(str_path + "\\GS1.PCX", "GS1.PCX");
@@ -63,7 +57,6 @@ namespace FFT_For_DOSE
                 TSCLIB_DLL.sendcommand("PRINT 1");
                 TSCLIB_DLL.sendcommand("DIRECTION 1");
                 TSCLIB_DLL.closeport();
-
                 #endregion
             }
             catch (Exception ex)
@@ -73,41 +66,48 @@ namespace FFT_For_DOSE
             #endregion
         }
 
-        void CreatePCX(string strNextSn)
+
+        /// <summary>函式說明</summary>
+        /// <param name="BleName">藍芽ID</param>
+        /// <param name="sleeve">Sleeve型號</param>
+        /// <param name="batchNum">批號</param>
+        /// <param name="strNextSn">序號</param>
+        void CreatePCX(string BleName, string sleeve,string batchNum, string strNextSn)
         {
-            string strDir = System.Windows.Forms.Application.StartupPath;
-            var writer = new BarcodeWriter
-            {
-                Format = BarcodeFormat.DATA_MATRIX,
-                Options = new ZXing.Datamatrix.DatamatrixEncodingOptions
-                {
-                    //   SymbolShape = SymbolShapeHint.FORCE_...,
-                    //  MinSize = new Dimension(50,50),
-                    //  MaxSize = new Dimension(300,300),
-                    Width = 181,
-                    Height = 181
-                    //181 為正確的
-                }
-            };
+            TSCLIB_DLL.openport("Bar Code Printer TT053-61");
+            TSCLIB_DLL.setup("49.92", "8.7", "1", "15", "0", "3", "-0.7");
+            TSCLIB_DLL.clearbuffer();
+            //Innovation Zed,NovaUCD.....
+            TSCLIB_DLL.windowsfont(120 + label_X_Move, 20, 40, 0, 2, 0, "FreeSans", "Innovation Zed");
+            TSCLIB_DLL.windowsfont(120 + label_X_Move, 47, 40, 0, 2, 0, "FreeSans", "Nova UCD");
+            TSCLIB_DLL.windowsfont(120 + label_X_Move, 74, 40, 0, 2, 0, "FreeSans", "Dublin 4, Ireland");
 
-            string label = (char)29 + "01" + "05392000095502" + "10" + "0123456789KWIK" + (char)29 + "11" + "220912" + "17" + "250912" + "21" + strNextSn;
-            writer
-                .Write(label)
-                .Save(strDir + "\\GS1.png");
+            //BLE
+            TSCLIB_DLL.windowsfont(440 + label_X_Move, 42, 44, 0, 2, 0, "FreeSans", "3IG7MBIE");
+            TSCLIB_DLL.windowsfont(445 + label_X_Move, 101, 44, 0, 2, 0, "FreeSans", "DOSE-KP");
+            TSCLIB_DLL.windowsfont(445 + label_X_Move, 152, 40, 0, 2, 0, "FreeSans", "2022-09-21");
 
+            //Label PCX
+            string str_path = System.Windows.Forms.Application.StartupPath;
+            int aa = TSCLIB_DLL.downloadpcx(str_path + "\\label.PCX", "label.PCX");
+            int bb = TSCLIB_DLL.sendcommand("PUTPCX 30,25,\"label.PCX\"");
 
-            //png to pcx
-            var beforeImage = new MagickImage(strDir + "\\GS1.png");
-            using (MagickImage image = new MagickImage(beforeImage))
-            {
-                //增加轉換為黑白色彩
-                image.Format = MagickFormat.Pcx;
-                image.ColorType = ColorType.Palette;
-                // image.Write(@"C:\Temp\barcode.pcx");
-                //取得目錄字串
+            str_path = System.Windows.Forms.Application.StartupPath;
+            int aaa = TSCLIB_DLL.downloadpcx(str_path + "\\GS1.PCX", "GS1.PCX");
+            int bbb = TSCLIB_DLL.sendcommand("PUTPCX 640,25,\"GS1.PCX\"");
 
-                image.Write(strDir + "\\GS1.PCX");
-            }
+            //以下為GSI文字
+            int fontX = 785;
+            int fontSize = 40;
+            TSCLIB_DLL.windowsfont(fontX + label_X_Move, 20, fontSize, 0, 2, 0, "FreeSans", "(01)05392000095502");
+            TSCLIB_DLL.windowsfont(fontX + label_X_Move, 55, fontSize, 0, 2, 0, "FreeSans", "(10)0123456789KWIK");
+            TSCLIB_DLL.windowsfont(fontX + label_X_Move, 90, fontSize, 0, 2, 0, "FreeSans", "(11)220913");
+            TSCLIB_DLL.windowsfont(fontX + label_X_Move, 125, fontSize, 0, 2, 0, "FreeSans", "(17)250913");
+            TSCLIB_DLL.windowsfont(fontX + label_X_Move, 160, fontSize, 0, 2, 0, "FreeSans", "(21)000999");
+
+            TSCLIB_DLL.sendcommand("PRINT 1");
+            TSCLIB_DLL.sendcommand("DIRECTION 1");
+            TSCLIB_DLL.closeport();
         }
     }
 }

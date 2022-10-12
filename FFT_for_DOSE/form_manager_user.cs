@@ -55,5 +55,43 @@ namespace FFT_For_DOSE
                 MessageBox.Show("密碼長度太短或不相符");
             }
         }
+
+        private void btnDelName_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (tbxDelName.Text == "Neil" || tbxDelName.Text == "neil")
+                {
+                    MessageBox.Show("Neil為系統管理者，不可被刪除!");
+                }
+                else
+                {
+                    //刪除User
+                    string str_sql = string.Format("SELECT * FROM _user where user_name = '{0}'", tbxDelName.Text);
+                    string username2 = accessHelper.readData(str_sql);
+                    if (username2 == "-1")
+                    {
+                        MessageBox.Show("無此使用者");
+                    }
+                    else
+                    {
+                        string strSQL = string.Format("DELETE FROM _user where user_name ='{0}'", tbxDelName.Text);
+                        string delResult = accessHelper.ExecSql(strSQL);
+                        if (delResult != "")
+                        {
+                            MessageBox.Show("刪除失敗!");
+                        }
+                        else
+                        {
+                            MessageBox.Show("刪除 " + tbxDelName.Text + " 完成");
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                MessageBox.Show("發生錯誤!!");
+            }
+        }
     }
 }
