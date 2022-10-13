@@ -384,8 +384,9 @@ namespace FFT_DOSE
                         Directory.CreateDirectory("C:\\DOSE_DumpData\\" + cbxBatch.Text);
                         Console.WriteLine("The directory {0} was created.", "C:\\DOSE_DumpData\\" + cbxBatch.Text);
                     }
-
-                    SW = new StreamWriter(@"C:\DOSE_DumpData\" + strNextSn + ".txt"); //
+                    SW = new StreamWriter("C:\\DOSE_DumpData\\" + cbxBatch.Text + "\\" + tbxSn.Text + ".txt");
+                 //   SW = new StreamWriter("C:\\DOSE_DumpData\\" + cbxBatch.Text + "\\" + strNextSn + ".txt");
+                 //   SW = new StreamWriter(@"C:\DOSE_DumpData\" + strNextSn + ".txt"); //
                     try
                     {
                         UTF8bytes = Encoding.UTF8.GetBytes("#DUMP_DATA" + Environment.NewLine);
@@ -462,22 +463,23 @@ namespace FFT_DOSE
                                     }
                                     else
                                     {
-                                        Console.WriteLine("寫入成功! " + errorInfo);
-                                        Console.WriteLine("進入出貨模式，請將其它 Code Uncomment才能真的進入出貨模式");
+                                        MessageBox.Show("寫入成功! " + errorInfo);
+                                        MessageBox.Show("進入出貨模式，請將其它 Code Uncomment才能真的進入出貨模式");
+
                                         //進入出貨模式
                                         //UTF8bytes = Encoding.UTF8.GetBytes("#SHIP_MODE" + Environment.NewLine);
                                         //RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
                                         //Thread.Sleep(delay_time2);
+
+                                        //下面這行實際生產時要再做變更
                                         strNextSn = "22-IZD-C1-DV1-" + intNextSn.ToString().PadLeft(SnLength, '0') + "," + StrSleeveName;
                                         printLabel1.PrintOneLabel(strNextSn, bleName, StrSleeveName);
-                                        //printLabel1.PrintOneLabel(strNextSn, bleName, StrSleeveName);
-                                        //printLabel1.PrintOneLabel(strNextSn, bleName, StrSleeveName);
 
                                         //將SN增加為1
                                         miCreateMaxSN = new MethodInvoker(this.createSnMax);
                                         this.BeginInvoke(miCreateMaxSN);
 
-                                        ////進入Shipping Mode
+                                        //進入Shipping Mode，須確定dump data寫入完成
                                         if (WriteDumpData && toShippingMode)
                                         {
                                             toShippingMode = false; //進入ShippingMode, 重置bool
@@ -495,7 +497,7 @@ namespace FFT_DOSE
                         }
                         else
                         {
-                            MessageBox.Show("ASS_CHECK失敗！");
+                            MessageBox.Show("ASS_CHECK失敗，無法進入休眠！");
                         }
                     }
                     catch (Exception ex)
@@ -784,8 +786,7 @@ namespace FFT_DOSE
                     {
                         #region 測試跑完寫入deviceID，同時開始判斷是否pass
                         boolAssCheckEnd = true; //測試跑完
-                        assCheck = inData.Substring(inData.IndexOf("ASS_CHECK") + 11, 4);
-
+                        assCheck = inData.Substring(inData.IndexOf("ASS_CHECK") + 11, 4);                    
                         //create building Date
                         buildDate = DateTime.Now.ToString("yyyy MMM dd", CultureInfo.CreateSpecificCulture("en-US"));
 
@@ -953,7 +954,7 @@ namespace FFT_DOSE
                                     }
                                     else
                                     {
-                                        MessageBox.Show("ASS_CHECK失敗！");
+                                        MessageBox.Show("DOSE回傳ASS_CHECK失敗!！");
                                     }
                                     #endregion
                                 }
@@ -1093,7 +1094,7 @@ namespace FFT_DOSE
                             }
                             else
                             {
-                                MessageBox.Show("ASS_CHECK失敗！");
+                                MessageBox.Show("DOSE回傳ASS_CHECK失敗！");
                             }
                             #endregion
                         }
@@ -1698,7 +1699,8 @@ namespace FFT_DOSE
         private void btnDump_Click(object sender, EventArgs e)
         {
             WriteDumpData = true;
-            SW = new StreamWriter(@"C:\DOSE_DumpData\" + tbxSn.Text + ".txt");
+            SW = new StreamWriter("C:\\DOSE_DumpData\\" + cbxBatch.Text + "\\" + tbxSn.Text + ".txt");
+           // SW = new StreamWriter("C:\\DOSE_DumpData\\" + cbxBatch.Text + "\\" + tbxSn.Text);
             try
             {
                 RS232_DOSE.Close();

@@ -74,13 +74,13 @@
             this.cbx_power = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.lblSleeve = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.btnPNGtoPCX = new System.Windows.Forms.Button();
             this.btnPrintLabel = new System.Windows.Forms.Button();
-            this.label5 = new System.Windows.Forms.Label();
-            this.lblSleeve = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.chart2)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -140,7 +140,7 @@
             // 
             this.tbx_Pcb_feed_back.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(184)))), ((int)(((byte)(195)))));
             this.tbx_Pcb_feed_back.Font = new System.Drawing.Font("PMingLiU", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.tbx_Pcb_feed_back.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(180)))));
+            this.tbx_Pcb_feed_back.ForeColor = System.Drawing.Color.DarkBlue;
             this.tbx_Pcb_feed_back.Location = new System.Drawing.Point(6, 25);
             this.tbx_Pcb_feed_back.Multiline = true;
             this.tbx_Pcb_feed_back.Name = "tbx_Pcb_feed_back";
@@ -234,6 +234,7 @@
             this.tbxSn.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.tbxSn.Location = new System.Drawing.Point(159, 30);
             this.tbxSn.Name = "tbxSn";
+            this.tbxSn.ReadOnly = true;
             this.tbxSn.Size = new System.Drawing.Size(269, 27);
             this.tbxSn.TabIndex = 170;
             // 
@@ -561,6 +562,28 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "工單管理 ＆ 批號選擇";
             // 
+            // lblSleeve
+            // 
+            this.lblSleeve.AutoSize = true;
+            this.lblSleeve.Font = new System.Drawing.Font("Verdana", 12F);
+            this.lblSleeve.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.lblSleeve.Location = new System.Drawing.Point(159, 194);
+            this.lblSleeve.Name = "lblSleeve";
+            this.lblSleeve.Size = new System.Drawing.Size(62, 18);
+            this.lblSleeve.TabIndex = 195;
+            this.lblSleeve.Text = "Sleeve";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Verdana", 12F);
+            this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.label5.Location = new System.Drawing.Point(74, 194);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(79, 18);
+            this.label5.TabIndex = 194;
+            this.label5.Text = "製作筆型:";
+            // 
             // groupBox4
             // 
             this.groupBox4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(184)))), ((int)(((byte)(195)))));
@@ -631,28 +654,6 @@
             this.btnPrintLabel.Text = "Print Label";
             this.btnPrintLabel.UseVisualStyleBackColor = true;
             this.btnPrintLabel.Click += new System.EventHandler(this.btnPrintLabel_Click);
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Verdana", 12F);
-            this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.label5.Location = new System.Drawing.Point(74, 194);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(79, 18);
-            this.label5.TabIndex = 194;
-            this.label5.Text = "製作筆型:";
-            // 
-            // lblSleeve
-            // 
-            this.lblSleeve.AutoSize = true;
-            this.lblSleeve.Font = new System.Drawing.Font("Verdana", 12F);
-            this.lblSleeve.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.lblSleeve.Location = new System.Drawing.Point(159, 194);
-            this.lblSleeve.Name = "lblSleeve";
-            this.lblSleeve.Size = new System.Drawing.Size(62, 18);
-            this.lblSleeve.TabIndex = 195;
-            this.lblSleeve.Text = "Sleeve";
             // 
             // Form1
             // 
