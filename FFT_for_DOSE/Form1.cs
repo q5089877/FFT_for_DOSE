@@ -26,7 +26,7 @@ namespace FFT_DOSE
 {
     public partial class Form1 : Form
     {
-        
+
 
         int batteryFullCurr = 300;  //判斷充電電流是否小於此
 
@@ -71,7 +71,7 @@ namespace FFT_DOSE
 
         int label_X_Move = 30;  //控制LABE位置
 
-      //  public bool showLogForm { get; set; }
+        //  public bool showLogForm { get; set; }
 
         MethodInvoker miCreateMaxSN;
         AccessHelper accessHelper = new AccessHelper();
@@ -112,13 +112,13 @@ namespace FFT_DOSE
             //載入使用者名稱到下拉選單
             loadUserName();
 
-         //   showLogForm = false;
+            //   showLogForm = false;
             mi_pcb_feedback = new MethodInvoker(Update_pcb_feedback);
             GetPortInformation();
 
             //取得序號最大值                 
             createSnMax();
-            //初始化上一次選擇     
+            //初始化上一次選擇     R
             #region get select data
             try
             {
@@ -186,7 +186,7 @@ namespace FFT_DOSE
                 StrSleeveName = "";
             }
 
-        //    if (StrSleeveName != "" && pcbVer != "" && bottomVer != "")
+            //    if (StrSleeveName != "" && pcbVer != "" && bottomVer != "")
             {
                 #region ASS_CHECK
 
@@ -385,8 +385,7 @@ namespace FFT_DOSE
                         Console.WriteLine("The directory {0} was created.", "C:\\DOSE_DumpData\\" + cbxBatch.Text);
                     }
                     SW = new StreamWriter("C:\\DOSE_DumpData\\" + cbxBatch.Text + "\\" + tbxSn.Text + ".txt");
-                 //   SW = new StreamWriter("C:\\DOSE_DumpData\\" + cbxBatch.Text + "\\" + strNextSn + ".txt");
-                 //   SW = new StreamWriter(@"C:\DOSE_DumpData\" + strNextSn + ".txt"); //
+      
                     try
                     {
                         UTF8bytes = Encoding.UTF8.GetBytes("#DUMP_DATA" + Environment.NewLine);
@@ -472,7 +471,7 @@ namespace FFT_DOSE
                                         //Thread.Sleep(delay_time2);
 
                                         //下面這行實際生產時要再做變更
-                                        strNextSn = "22-IZD-C1-DV1-" + intNextSn.ToString().PadLeft(SnLength, '0') + "," + StrSleeveName;
+                                        strNextSn = "22-IZD-C1-DE5-" + intNextSn.ToString().PadLeft(SnLength, '0') + "," + StrSleeveName;
                                         printLabel1.PrintOneLabel(strNextSn, bleName, StrSleeveName);
 
                                         //將SN增加為1
@@ -579,7 +578,7 @@ namespace FFT_DOSE
                     MessageBox.Show("數量異常 CODE 548");
                 }
             }
-         //   else
+            //   else
             //{
             //    MessageBox.Show("批號讀取錯誤");
             //}
@@ -601,7 +600,7 @@ namespace FFT_DOSE
 
                     if (WriteDumpData)
                     {
-                        SW.WriteLine(inData);
+                        SW.Write(inData);
                         if (inData.Contains("Assembly_Serial_Number"))
                         {
                             WriteDumpData = false;
@@ -786,7 +785,7 @@ namespace FFT_DOSE
                     {
                         #region 測試跑完寫入deviceID，同時開始判斷是否pass
                         boolAssCheckEnd = true; //測試跑完
-                        assCheck = inData.Substring(inData.IndexOf("ASS_CHECK") + 11, 4);                    
+                        assCheck = inData.Substring(inData.IndexOf("ASS_CHECK") + 11, 4);
                         //create building Date
                         buildDate = DateTime.Now.ToString("yyyy MMM dd", CultureInfo.CreateSpecificCulture("en-US"));
 
@@ -1419,20 +1418,23 @@ namespace FFT_DOSE
             }
         }
 
+        //for DET TEST
         private void btxPrintLabel2_Click(object sender, EventArgs e)
         {
             try
             {
                 //由批號取得 sleeveName, PcbVer, housingVer
                 //SQL語法：        
-                strSQL = string.Format("select bleName from snData where sn = '{0}' and sleeveName = '{1}'", tbxSN2.Text, cbxSleeveName2.SelectedItem.ToString());
-                DataTable dt_selectData = accessHelper.GetDataTable(strSQL);
-                for (int i = 0; i < dt_selectData.Rows.Count; i++)
+              //  strSQL = string.Format("select bleName from snData where sn = '{0}' and sleeveName = '{1}'", tbxSN2.Text, cbxSleeveName2.SelectedItem.ToString());
+              //  DataTable dt_selectData = accessHelper.GetDataTable(strSQL);
+              //  for (int i = 0; i < dt_selectData.Rows.Count; i++)
                 {
-                    printLabel1.PrintOneLabel("22-IZD-C1-DV1-" + tbxSN2.Text + "," + cbxSleeveName2.SelectedItem.ToString(), dt_selectData.Rows[i][0].ToString(), cbxSleeveName2.SelectedItem.ToString());
-                    printLabel1.PrintOneLabel("22-IZD-C1-DV1-" + tbxSN2.Text + "," + cbxSleeveName2.SelectedItem.ToString(), dt_selectData.Rows[i][0].ToString(), cbxSleeveName2.SelectedItem.ToString());
-                    printLabel1.PrintOneLabel("22-IZD-C1-DV1-" + tbxSN2.Text + "," + cbxSleeveName2.SelectedItem.ToString(), dt_selectData.Rows[i][0].ToString(), cbxSleeveName2.SelectedItem.ToString());
+                    //  //    printLabel1.PrintOneLabel("22-IZD-C1-DV1-" + tbxSN2.Text + "," + cbxSleeveName2.SelectedItem.ToString(), dt_selectData.Rows[i][0].ToString(), cbxSleeveName2.SelectedItem.ToString());       
+                    //   printLabel1.PrintOneLabel_temp("22-IZD-C1-DE5-" + tbxSN2.Text , tbx_BLE.Text, cbxSleeveName2.SelectedItem.ToString());
+                   
+                    printLabel1.PrintOneLabel_PCX();
                 }
+
             }
             catch
             {
@@ -1700,7 +1702,7 @@ namespace FFT_DOSE
         {
             WriteDumpData = true;
             SW = new StreamWriter("C:\\DOSE_DumpData\\" + cbxBatch.Text + "\\" + tbxSn.Text + ".txt");
-           // SW = new StreamWriter("C:\\DOSE_DumpData\\" + cbxBatch.Text + "\\" + tbxSn.Text);
+            // SW = new StreamWriter("C:\\DOSE_DumpData\\" + cbxBatch.Text + "\\" + tbxSn.Text);
             try
             {
                 RS232_DOSE.Close();
@@ -1720,15 +1722,22 @@ namespace FFT_DOSE
 
         private void btnStatus_Click(object sender, EventArgs e)
         {
-            RS232_DOSE.Close();
-            RS232_DOSE.Dispose();
-            RS232_DOSE.PortName = GetPortInformation_for_DOSE_COM();
-            RS232_DOSE.Open();
-            //#SET_CONFIG_DATA 
-            //Mounted_Sleeve:       
-            byte[] UTF8bytes = Encoding.UTF8.GetBytes("#STATUS" + Environment.NewLine);
-            RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-            Thread.Sleep(100);
+            try
+            {
+                RS232_DOSE.Close();
+                RS232_DOSE.Dispose();
+                RS232_DOSE.PortName = GetPortInformation_for_DOSE_COM();
+                RS232_DOSE.Open();
+                //#SET_CONFIG_DATA 
+                //Mounted_Sleeve:       
+                byte[] UTF8bytes = Encoding.UTF8.GetBytes("#STATUS" + Environment.NewLine);
+                RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                Thread.Sleep(100);
+            }
+            catch
+            {
+                MessageBox.Show("DOSE COM PORT錯誤");
+            }
         }
 
         private void btnShipMode_Click(object sender, EventArgs e)
@@ -1774,13 +1783,13 @@ namespace FFT_DOSE
                         //登入成功;
                         try
                         {
-                                if (showManage == false)
-                                {
-                                    FormManage FormManage1 = new FormManage(showManage);
-                                    FormManage1.Owner = this;
-                                    FormManage1.Show();
-                                    showManage = true;
-                                }           
+                            if (showManage == false)
+                            {
+                                FormManage FormManage1 = new FormManage(showManage);
+                                FormManage1.Owner = this;
+                                FormManage1.Show();
+                                showManage = true;
+                            }
                         }
                         catch
                         {

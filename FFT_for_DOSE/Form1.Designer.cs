@@ -67,6 +67,7 @@
             this.tbxSN2 = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.tbx_BLE = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.label4 = new System.Windows.Forms.Label();
@@ -81,6 +82,7 @@
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.btnPNGtoPCX = new System.Windows.Forms.Button();
             this.btnPrintLabel = new System.Windows.Forms.Button();
+            this.label6 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.chart2)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -234,7 +236,6 @@
             this.tbxSn.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.tbxSn.Location = new System.Drawing.Point(159, 30);
             this.tbxSn.Name = "tbxSn";
-            this.tbxSn.ReadOnly = true;
             this.tbxSn.Size = new System.Drawing.Size(269, 27);
             this.tbxSn.TabIndex = 170;
             // 
@@ -409,9 +410,9 @@
             // 
             this.btxPrintLabel2.Font = new System.Drawing.Font("Verdana", 12F);
             this.btxPrintLabel2.ForeColor = System.Drawing.Color.Navy;
-            this.btxPrintLabel2.Location = new System.Drawing.Point(158, 64);
+            this.btxPrintLabel2.Location = new System.Drawing.Point(292, 64);
             this.btxPrintLabel2.Name = "btxPrintLabel2";
-            this.btxPrintLabel2.Size = new System.Drawing.Size(270, 41);
+            this.btxPrintLabel2.Size = new System.Drawing.Size(136, 41);
             this.btxPrintLabel2.TabIndex = 194;
             this.btxPrintLabel2.Text = "Print Label";
             this.btxPrintLabel2.UseVisualStyleBackColor = true;
@@ -453,6 +454,8 @@
             // groupBox1
             // 
             this.groupBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(184)))), ((int)(((byte)(195)))));
+            this.groupBox1.Controls.Add(this.label6);
+            this.groupBox1.Controls.Add(this.tbx_BLE);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.btxPrintLabel2);
             this.groupBox1.Controls.Add(this.label2);
@@ -466,6 +469,14 @@
             this.groupBox1.TabIndex = 198;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "手動列印區";
+            // 
+            // tbx_BLE
+            // 
+            this.tbx_BLE.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.tbx_BLE.Location = new System.Drawing.Point(160, 78);
+            this.tbx_BLE.Name = "tbx_BLE";
+            this.tbx_BLE.Size = new System.Drawing.Size(126, 27);
+            this.tbx_BLE.TabIndex = 199;
             // 
             // label3
             // 
@@ -655,6 +666,17 @@
             this.btnPrintLabel.UseVisualStyleBackColor = true;
             this.btnPrintLabel.Click += new System.EventHandler(this.btnPrintLabel_Click);
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Verdana", 12F);
+            this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
+            this.label6.Location = new System.Drawing.Point(84, 87);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(45, 18);
+            this.label6.TabIndex = 200;
+            this.label6.Text = "BLE:";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -744,6 +766,8 @@
         private System.Windows.Forms.Button btnPrintLabel;
         private System.Windows.Forms.Label lblSleeve;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox tbx_BLE;
+        private System.Windows.Forms.Label label6;
     }
 }
 

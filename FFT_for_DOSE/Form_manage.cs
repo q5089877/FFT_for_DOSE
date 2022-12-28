@@ -192,25 +192,28 @@ namespace FFT_For_DOSE
         {
             try
             {
-                //刪除Batch
-                string strSQL = string.Format("DELETE FROM batchData where moNum ='{0}'", cbxMO.SelectedItem.ToString());
-                string delResult = accessHelper.ExecSql(strSQL);
-                //刪除MO
-                strSQL = string.Format("DELETE FROM moData where moNum ='{0}'", cbxMO.SelectedItem.ToString());
-                delResult = accessHelper.ExecSql(strSQL);
-                if (delResult != "")
+                var result = MessageBox.Show("確認刪除", "刪除工單", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.Yes)
                 {
-                    MessageBox.Show("刪除失敗，其它資料表包含相關資料!!");
+                    //刪除Batch
+                    string strSQL = string.Format("DELETE FROM batchData where moNum ='{0}'", cbxMO.SelectedItem.ToString());
+                    string delResult = accessHelper.ExecSql(strSQL);
+                    //刪除MO
+                    strSQL = string.Format("DELETE FROM moData where moNum ='{0}'", cbxMO.SelectedItem.ToString());
+                    delResult = accessHelper.ExecSql(strSQL);
+                    if (delResult != "")
+                    {
+                        MessageBox.Show("刪除失敗，其它資料表包含相關資料!!");
+                    }
+                    else
+                    {
+                        MessageBox.Show("刪除 " + cbxMO.SelectedItem.ToString() + " 完成");
+
+                        loadNullGrid();
+
+                    }
+                    reLoadMoNum();
                 }
-                else
-                {
-                    MessageBox.Show("刪除 " + cbxMO.SelectedItem.ToString() + " 完成");
-
-                    loadNullGrid();
-
-
-                }
-                reLoadMoNum();
             }
             catch
             {

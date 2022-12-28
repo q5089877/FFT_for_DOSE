@@ -21,8 +21,9 @@ namespace FFT_For_DOSE
                 //創造新PCX
                 //  CreatePCX(strSN);
                 #region pringLabel
-                TSCLIB_DLL.openport("TSC TTP-644MU");
-                TSCLIB_DLL.setup("49.92", "8.53", "1", "15", "0", "3", "-0.6");
+                TSCLIB_DLL.openport("Bar Code Printer TT053-61");
+                TSCLIB_DLL.setup("49.92", "8.7", "1", "15", "0", "3", "-0.7");
+
                 TSCLIB_DLL.clearbuffer();
                 //Innovation Zed,NovaUCD.....
                 TSCLIB_DLL.windowsfont(120 + label_X_Move, 20, 40, 0, 2, 0, "FreeSans", "Innovation Zed");
@@ -66,6 +67,67 @@ namespace FFT_For_DOSE
             #endregion
         }
 
+        public void PrintOneLabel_temp(string strDET, string strBLEName, string StrSleeveName)
+        {
+            #region print Short label 
+            try
+            {
+                //創造新PCX
+                //  CreatePCX(strSN);
+                #region pringLabel
+                TSCLIB_DLL.openport("Bar Code Printer TT053-61");
+                TSCLIB_DLL.setup("49.92", "8.7", "1", "15", "0", "3", "-0.7");
+                TSCLIB_DLL.clearbuffer();
+
+                //BLE
+                TSCLIB_DLL.windowsfont(350, 20, 65, 0, 2, 0, "FreeSans", strDET);
+                TSCLIB_DLL.windowsfont(350, 80, 65, 0, 2, 0, "FreeSans", "BLE:" + strBLEName + " :" + StrSleeveName);
+                TSCLIB_DLL.windowsfont(350,  130, 65, 0, 2, 0, "FreeSans", "Not for sale :HW 10.2");
+                //22 - IZD - C1 - DE4 - 001~024
+                //“Not for sale”
+                //“HW10.2”
+
+                TSCLIB_DLL.sendcommand("PRINT 1");
+                TSCLIB_DLL.sendcommand("DIRECTION 1");
+                TSCLIB_DLL.closeport();
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+            #endregion
+        }
+
+        public void PrintOneLabel_PCX()
+        {
+            #region print Short label 
+            try
+            {
+                //創造新PCX
+                //  CreatePCX(strSN);
+                #region pringLabel
+                TSCLIB_DLL.openport("Bar Code Printer TT053-61");
+                TSCLIB_DLL.setup("49.92", "8.7", "1", "15", "0", "3", "-1.3");
+                TSCLIB_DLL.clearbuffer();
+
+                //Label PCX
+                string str_path = System.Windows.Forms.Application.StartupPath;
+                int aa = TSCLIB_DLL.downloadpcx(str_path + "\\label2.PCX", "label2.PCX");
+                int bb = TSCLIB_DLL.sendcommand("PUTPCX 30,25,\"label2.PCX\"");
+
+
+                TSCLIB_DLL.sendcommand("PRINT 1");
+                TSCLIB_DLL.sendcommand("DIRECTION 1");
+                TSCLIB_DLL.closeport();
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+            }
+            #endregion
+        }
 
         /// <summary>函式說明</summary>
         /// <param name="BleName">藍芽ID</param>
