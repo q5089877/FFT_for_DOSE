@@ -34,7 +34,7 @@ namespace FFT_For_DOSE
                 TSCLIB_DLL.windowsfont(440 + label_X_Move, 46, 44, 0, 2, 0, "FreeSans", strBLEName);
                 TSCLIB_DLL.windowsfont(445 + label_X_Move, 103, 44, 0, 2, 0, "FreeSans", "DOSE-" + StrSleeveName);
                 TSCLIB_DLL.windowsfont(445 + label_X_Move, 155, 40, 0, 2, 0, "FreeSans", "2022-09-12");
-                
+
                 //Label PCX
                 string str_path = System.Windows.Forms.Application.StartupPath;
                 int aa = TSCLIB_DLL.downloadpcx(str_path + "\\label.PCX", "label.PCX");
@@ -82,7 +82,7 @@ namespace FFT_For_DOSE
                 //BLE
                 TSCLIB_DLL.windowsfont(350, 20, 65, 0, 2, 0, "FreeSans", strDET);
                 TSCLIB_DLL.windowsfont(350, 80, 65, 0, 2, 0, "FreeSans", "BLE:" + strBLEName + " :" + StrSleeveName);
-                TSCLIB_DLL.windowsfont(350,  130, 65, 0, 2, 0, "FreeSans", "Not for sale :HW 10.2");
+                TSCLIB_DLL.windowsfont(350, 130, 65, 0, 2, 0, "FreeSans", "Not for sale :HW 10.2");
                 //22 - IZD - C1 - DE4 - 001~024
                 //“Not for sale”
                 //“HW10.2”
@@ -108,14 +108,18 @@ namespace FFT_For_DOSE
                 //  CreatePCX(strSN);
                 #region pringLabel
                 TSCLIB_DLL.openport("Bar Code Printer TT053-61");
-                TSCLIB_DLL.setup("49.92", "8.7", "1", "15", "0", "3", "-1.3");
+                TSCLIB_DLL.setup("49.92", "8.7", "1", "15", "0", "3", "-0.3");
                 TSCLIB_DLL.clearbuffer();
 
                 //Label PCX
                 string str_path = System.Windows.Forms.Application.StartupPath;
                 int aa = TSCLIB_DLL.downloadpcx(str_path + "\\label2.PCX", "label2.PCX");
-                int bb = TSCLIB_DLL.sendcommand("PUTPCX 30,25,\"label2.PCX\"");
+                int bb = TSCLIB_DLL.sendcommand("PUTPCX 30,0,\"label2.PCX\"");
 
+                //TSCLIB_DLL.windowsfont(440 + label_X_Move,       50, 36, 0, 2, 0, "FreeSans", "2023-01-07");
+                //TSCLIB_DLL.windowsfont(445 + label_X_Move + 100, 97, 36, 0, 2, 0, "FreeSans", "KP");
+                //TSCLIB_DLL.windowsfont(445 + label_X_Move + 270, 97, 36, 0, 2, 0, "FreeSans", "DKP000999");
+                //TSCLIB_DLL.windowsfont(440 + label_X_Move + 500, 170, 36, 0, 2, 0, "FreeSans", "3IG7MBIE");
 
                 TSCLIB_DLL.sendcommand("PRINT 1");
                 TSCLIB_DLL.sendcommand("DIRECTION 1");
@@ -134,7 +138,7 @@ namespace FFT_For_DOSE
         /// <param name="sleeve">Sleeve型號</param>
         /// <param name="batchNum">批號</param>
         /// <param name="strNextSn">序號</param>
-        void CreatePCX(string BleName, string sleeve,string batchNum, string strNextSn)
+        void CreatePCX(string BleName, string sleeve, string batchNum, string strNextSn)
         {
             TSCLIB_DLL.openport("Bar Code Printer TT053-61");
             TSCLIB_DLL.setup("49.92", "8.7", "1", "15", "0", "3", "-0.7");

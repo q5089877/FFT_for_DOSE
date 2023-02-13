@@ -200,6 +200,21 @@ namespace FFT_DOSE
 
                 int delay_time = 100;
 
+                //設定IR threshold Max
+                UTF8bytes = Encoding.UTF8.GetBytes("#SET_ASS_TH" + Environment.NewLine);
+                RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                Thread.Sleep(delay_time);
+
+                UTF8bytes = Encoding.UTF8.GetBytes("IR_Max:2500" + Environment.NewLine);
+                RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                Thread.Sleep(delay_time);
+
+                UTF8bytes = Encoding.UTF8.GetBytes("#ASS_TH_END" + Environment.NewLine);
+                RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                Thread.Sleep(delay_time);
+                //設定IR threshold Max------End
+
+
                 UTF8bytes = Encoding.UTF8.GetBytes("#CONFIG_END" + Environment.NewLine);
                 RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
                 Thread.Sleep(delay_time);
@@ -583,6 +598,7 @@ namespace FFT_DOSE
             //    MessageBox.Show("批號讀取錯誤");
             //}
         }
+
 
         private void RS232_DOSE_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
