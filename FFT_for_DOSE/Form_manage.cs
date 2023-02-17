@@ -41,14 +41,13 @@ namespace FFT_For_DOSE
         {
             //--------------------------           
             adapter = new OleDbDataAdapter("SELECT * FROM gtin", conn);
-
             adapter.Fill(dtGtin);
 
             // 將 DataTable 分配給 DataGridView 的 DataSource 屬性
             GvGtin.DataSource = dtGtin;
 
             // 創建一個 OleDbCommandBuilder
-            builder = new OleDbCommandBuilder(adapter);
+            builder = new OleDbCommandBuilder(adapter);        
             //--------------------------
 
             dataGV.AllowUserToAddRows = false;
@@ -335,6 +334,7 @@ namespace FFT_For_DOSE
         {
             GvGtin.Columns["id"].Visible = false;
             GvGtin.Columns["penName"].HeaderText = "筆型";
+            GvGtin.Columns["penName"].ReadOnly = true;
             GvGtin.Columns["gtin"].HeaderText = "GTIN";
             GvGtin.Columns["penName"].Width = 200;
             GvGtin.Columns["gtin"].Width = 300;
@@ -387,15 +387,22 @@ namespace FFT_For_DOSE
 
         private void GvGtin_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            // 獲取修改後的資料
-            DataGridViewRow row = GvGtin.Rows[e.RowIndex];
-            string gtin = (string)row.Cells["gtin"].Value;
-            dtGtin.Rows[e.RowIndex]["gtin"] = gtin;
-            //string name = (string)row.Cells["Name"].Value;
-            //int age = (int)row.Cells["Age"].Value;
+            try
+            {
+                // 獲取修改後的資料
+                DataGridViewRow row = GvGtin.Rows[e.RowIndex];
+                dtGtin.Rows[e.RowIndex]["id"] = (int)row.Cells["id"].Value;
+                dtGtin.Rows[e.RowIndex]["penName"] = (string)row.Cells["penName"].Value;
+                dtGtin.Rows[e.RowIndex]["gtin"] = (string)row.Cells["gtin"].Value;
 
-            // 更新資料庫中的資料
-            adapter.Update(dtGtin);
+                // 更新資料庫中的資料
+                adapter.Update(dtGtin);
+            }
+            catch
+            {
+                MessageBox.Show("修改失敗");
+               
+            }
         }
     }
 }
