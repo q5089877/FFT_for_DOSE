@@ -164,381 +164,412 @@ namespace FFT_DOSE
 
         private async void btn_ass_chk_Click(object sender, EventArgs e)
         {
-            try
+            if (cbxBatch.SelectedItem != null)
             {
-                //initial data
-                deviceID = "";       //Device ID
-                bleName = "";        //藍牙名稱
-                fwVersion = "";      //FW版本
-                PcbIQC = "";      //PCB IQC結果
-                StrSleeveName = "";       //Sleeve名稱
-                pcbVer = "";         //PCB版本
-                bottomVer = "";      //Bottom版本
-                assCheck = "";       //此字串用來判斷FFT結果 Pass or Fail   
-                checkSTATUSEnd = false;
-                CheckShipping = true;
-                strSQL = string.Format("select sleeveName from batchData where batchNum = '{0}'", cbxBatch.SelectedItem.ToString()); //取得sleeveName                                                                                 
-                StrSleeveName = accessHelper.readData(strSQL);//執行SQL
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-                StrSleeveName = "";
-            }
-
-            //    if (StrSleeveName != "" && pcbVer != "" && bottomVer != "")
-            {
-                #region ASS_CHECK
-
-                charge_max = 0;
-                strFeedbackDose = "";
-
-                RS232_DOSE.Close();
-                RS232_DOSE.Dispose();
-                RS232_DOSE.PortName = GetPortInformation_for_DOSE_COM();
-                RS232_DOSE.Open();
-
-                int delay_time = 100;
-
-                //設定IR threshold Max
-                UTF8bytes = Encoding.UTF8.GetBytes("#SET_ASS_TH" + Environment.NewLine);
-                RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                Thread.Sleep(delay_time);
-
-                UTF8bytes = Encoding.UTF8.GetBytes("IR_Max:2500" + Environment.NewLine);
-                RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                Thread.Sleep(delay_time);
-
-                UTF8bytes = Encoding.UTF8.GetBytes("#ASS_TH_END" + Environment.NewLine);
-                RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                Thread.Sleep(delay_time);
-                //設定IR threshold Max------End
-
-
-                UTF8bytes = Encoding.UTF8.GetBytes("#CONFIG_END" + Environment.NewLine);
-                RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                Thread.Sleep(delay_time);
-
-                //設定checkSTATUSEnd為false,避免誤判已經測試結束
-                checkSTATUSEnd = false;
-                UTF8bytes = Encoding.UTF8.GetBytes("#STATUS" + Environment.NewLine);
-                RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                Thread.Sleep(300);
-
-
-                UTF8bytes = Encoding.UTF8.GetBytes("#RETEST" + Environment.NewLine);
-                RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                Thread.Sleep(delay_time);
-
-                UTF8bytes = Encoding.UTF8.GetBytes("#RE_ASS_MOUNTING" + Environment.NewLine);
-                RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                Thread.Sleep(delay_time);
-
-                UTF8bytes = Encoding.UTF8.GetBytes("#ASS_CHECK" + Environment.NewLine);
-                RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                Thread.Sleep(delay_time);
-
-                UTF8bytes = Encoding.UTF8.GetBytes("#ASS_MOUNTING" + Environment.NewLine);
-                RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                Thread.Sleep(delay_time);
-
-                int _counter = 0;
-                while (true)
+                try
                 {
-                    await Task.Delay(1);
-                    if (boolMountingSwitch)
-                    {
-                        Thread.Sleep(3000); //245
-                        //690422
-                        UTF8bytes = Encoding.UTF8.GetBytes("#ASS_START" + Environment.NewLine);
-                        RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                        Thread.Sleep(delay_time);
+                    //initial data
+                    deviceID = "";       //Device ID
+                    bleName = "";        //藍牙名稱
+                    fwVersion = "";      //FW版本
+                    PcbIQC = "";      //PCB IQC結果
+                    StrSleeveName = "";       //Sleeve名稱
+                    pcbVer = "";         //PCB版本
+                    bottomVer = "";      //Bottom版本
+                    assCheck = "";       //此字串用來判斷FFT結果 Pass or Fail   
+                    checkSTATUSEnd = false;
+                    CheckShipping = true;
+                    strSQL = string.Format("select sleeveName from batchData where batchNum = '{0}'", cbxBatch.SelectedItem.ToString()); //取得sleeveName                                                                                 
+                    StrSleeveName = accessHelper.readData(strSQL);//執行SQL
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.ToString());
+                    StrSleeveName = "";
+                }
 
-                        //等待二秒                      
-                        #region 移動PLC
+                //    if (StrSleeveName != "" && pcbVer != "" && bottomVer != "")
+                {
+                    #region ASS_CHECK
+
+                    charge_max = 0;
+                    strFeedbackDose = "";
+
+                    RS232_DOSE.Close();
+                    RS232_DOSE.Dispose();
+                    RS232_DOSE.PortName = GetPortInformation_for_DOSE_COM();
+                    RS232_DOSE.Open();
+
+                    int delay_time = 100;
+
+                    //設定IR threshold Max
+                    UTF8bytes = Encoding.UTF8.GetBytes("#SET_ASS_TH" + Environment.NewLine);
+                    RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                    Thread.Sleep(delay_time);
+
+                    UTF8bytes = Encoding.UTF8.GetBytes("IR_Max:2500" + Environment.NewLine);
+                    RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                    Thread.Sleep(delay_time);
+
+                    UTF8bytes = Encoding.UTF8.GetBytes("#ASS_TH_END" + Environment.NewLine);
+                    RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                    Thread.Sleep(delay_time);
+                    //設定IR threshold Max------End
+
+
+                    UTF8bytes = Encoding.UTF8.GetBytes("#CONFIG_END" + Environment.NewLine);
+                    RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                    Thread.Sleep(delay_time);
+
+                    //設定checkSTATUSEnd為false,避免誤判已經測試結束
+                    checkSTATUSEnd = false;
+                    UTF8bytes = Encoding.UTF8.GetBytes("#STATUS" + Environment.NewLine);
+                    RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                    Thread.Sleep(300);
+
+
+                    UTF8bytes = Encoding.UTF8.GetBytes("#RETEST" + Environment.NewLine);
+                    RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                    Thread.Sleep(delay_time);
+
+                    UTF8bytes = Encoding.UTF8.GetBytes("#RE_ASS_MOUNTING" + Environment.NewLine);
+                    RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                    Thread.Sleep(delay_time);
+
+                    UTF8bytes = Encoding.UTF8.GetBytes("#ASS_CHECK" + Environment.NewLine);
+                    RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                    Thread.Sleep(delay_time);
+
+                    UTF8bytes = Encoding.UTF8.GetBytes("#ASS_MOUNTING" + Environment.NewLine);
+                    RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                    Thread.Sleep(delay_time);
+
+                    int _counter = 0;
+                    while (true)
+                    {
+                        await Task.Delay(1);
+                        if (boolMountingSwitch)
+                        {
+                            Thread.Sleep(3000); //245
+                                                //690422
+                            UTF8bytes = Encoding.UTF8.GetBytes("#ASS_START" + Environment.NewLine);
+                            RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                            Thread.Sleep(delay_time);
+
+                            //等待二秒                      
+                            #region 移動PLC
+                            try
+                            {
+                                List<byte> list = new List<byte>();
+                                list.Add(0x01);
+                                list.Add(0x05);
+                                list.Add(0x08);
+                                list.Add(0x02);
+                                list.Add(0xFF);
+                                list.Add(0x00);
+                                byte[] array = list.ToArray();
+                                byte[] Crc_data = CRC16LH(array);
+                                list.Add(Crc_data[0]);
+                                list.Add(Crc_data[1]);
+                                byte[] all_array = list.ToArray();
+                                RS232_PLC.Write(all_array, 0, all_array.Length);
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show("PLC Com Port Error!!");
+                                LoadPlcCom();
+                            }
+                            #endregion
+                            break;
+                        }
+                        _counter++;
+                        if (_counter == 3000)
+                        {
+                            UTF8bytes = Encoding.UTF8.GetBytes("#ASS_STOP" + Environment.NewLine);
+                            RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                            Thread.Sleep(delay_time);
+                            MessageBox.Show("超過亖秒沒按下Mounting Switch, 請重測試!!");
+                            break;
+                        }
+                    }
+                    #endregion
+
+                    //此時已經可判斷是否測試結束
+                    checkSTATUSEnd = true;
+
+                    #region 取得批號總數 
+                    strSQL = string.Format("SELECT total FROM batchData where batchNum = '{0}'", cbxBatch.SelectedItem.ToString());
+                    string strTotal = accessHelper.readData(strSQL);//執行SQL
+                    int intTotal = Convert.ToInt32(strTotal);
+                    if (strTotal == "-1")
+                    {
+                        MessageBox.Show("查詢失敗");
+                    }
+                    #endregion
+
+                    batchNum = cbxBatch.SelectedItem.ToString();
+                    int _completed = getCompletedNumForBatch(); //取得此批完成的數量
+                    if (Convert.ToInt32(_completed) < intTotal) //判斷總數小於等於批號數量
+                    {
+                        #region FFT主要測試區塊-----------------------------------------------------------------------------------
+
+                        #region 若有接收到FW回傳繼續往下
+                        _counter = 0;
+                        while (true)
+                        {
+                            Thread.Sleep(1);
+                            if (boolDeviceReceived) //接收到回傳繼續往下
+                            {
+                                break;
+                            }
+                            _counter++;
+                            if (_counter == 6000)
+                            {
+                                MessageBox.Show("測試失敗, 請重測試!!");
+                                break;
+                            }
+                        }
+                        #endregion
+
+                        #region 寫入FW Conf
+                        _counter = 0;
+                        while (true)
+                        {
+                            Thread.Sleep(1);
+                            // boolAssCheckEnd = true 代表測試跑完
+                            if (boolAssCheckEnd)
+                            {
+                                boolAssCheckEnd = false;
+                                //#SET_CONFIG_DATA 
+                                //Mounted_Sleeve:       
+                                UTF8bytes = Encoding.UTF8.GetBytes("#SET_CONFIG_DATA" + Environment.NewLine);
+                                RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                                Thread.Sleep(500);
+
+                                UTF8bytes = Encoding.UTF8.GetBytes("Housing_Version:" + bottomVer + Environment.NewLine);
+                                RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                                Thread.Sleep(delay_time2);
+
+                                UTF8bytes = Encoding.UTF8.GetBytes("PCBA_Version:" + pcbVer + Environment.NewLine);
+                                RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                                Thread.Sleep(delay_time2);
+
+                                UTF8bytes = Encoding.UTF8.GetBytes("Batch_ID:" + batchNum + Environment.NewLine);
+                                RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                                Thread.Sleep(delay_time2);
+
+                                string date1 = DateTime.Now.ToString("yyyy MMM dd", CultureInfo.CreateSpecificCulture("en-US"));
+                                UTF8bytes = Encoding.UTF8.GetBytes("Build_Date:" + date1 + Environment.NewLine);
+                                RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                                Thread.Sleep(delay_time2);
+
+                                UTF8bytes = Encoding.UTF8.GetBytes("Mounted_Sleeve:" + StrSleeveName + Environment.NewLine);
+                                RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                                Thread.Sleep(delay_time2);
+
+                                UTF8bytes = Encoding.UTF8.GetBytes("Assembly_Serial_Number:" + strNextSn.ToString().PadLeft(SnLength, '0') + Environment.NewLine);
+                                RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                                Thread.Sleep(delay_time2);
+
+                                UTF8bytes = Encoding.UTF8.GetBytes("#CONFIG_END" + Environment.NewLine);
+                                RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                                Thread.Sleep(delay_time2);
+                                break;
+                            }
+                            _counter++;
+                            if (_counter == 6000)
+                            {
+                                MessageBox.Show("測試失敗, 請重測試!!");
+                                break;
+                            }
+                        }
+                        #endregion
+
+                        Thread.Sleep(2000);
+
+                        #region dump_data 寫入txt
+                        WriteDumpData = true; //用來判斷dump_data是否寫入完成
+
+
+                        // 如果批號資料夾不存在, 便建立其資料夾                    
+                        if (Directory.Exists("C:\\DOSE_DumpData\\" + cbxBatch.Text))
+                        {
+                            Console.WriteLine("The directory {0} already exists.", "C:\\DOSE_DumpData\\" + cbxBatch.Text);
+                        }
+                        else
+                        {
+                            Directory.CreateDirectory("C:\\DOSE_DumpData\\" + cbxBatch.Text);
+                            Console.WriteLine("The directory {0} was created.", "C:\\DOSE_DumpData\\" + cbxBatch.Text);
+                        }
+                        SW = new StreamWriter("C:\\DOSE_DumpData\\" + cbxBatch.Text + "\\" + tbxSn.Text + ".txt");
+
                         try
                         {
-                            List<byte> list = new List<byte>();
-                            list.Add(0x01);
-                            list.Add(0x05);
-                            list.Add(0x08);
-                            list.Add(0x02);
-                            list.Add(0xFF);
-                            list.Add(0x00);
-                            byte[] array = list.ToArray();
-                            byte[] Crc_data = CRC16LH(array);
-                            list.Add(Crc_data[0]);
-                            list.Add(Crc_data[1]);
-                            byte[] all_array = list.ToArray();
-                            RS232_PLC.Write(all_array, 0, all_array.Length);
+                            UTF8bytes = Encoding.UTF8.GetBytes("#DUMP_DATA" + Environment.NewLine);
+                            RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                            Thread.Sleep(100);
                         }
                         catch (Exception ex)
                         {
-                            MessageBox.Show("PLC Com Port Error!!");
-                            LoadPlcCom();
+                            MessageBox.Show("ComPort Error!");
                         }
                         #endregion
-                        break;
-                    }
-                    _counter++;
-                    if (_counter == 3000)
-                    {
-                        UTF8bytes = Encoding.UTF8.GetBytes("#ASS_STOP" + Environment.NewLine);
-                        RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                        Thread.Sleep(delay_time);
-                        MessageBox.Show("超過亖秒沒按下Mounting Switch, 請重測試!!");
-                        break;
-                    }
-                }
-                #endregion
 
-                //此時已經可判斷是否測試結束
-                checkSTATUSEnd = true;
-
-                #region 取得批號總數 
-                strSQL = string.Format("SELECT total FROM batchData where batchNum = '{0}'", cbxBatch.SelectedItem.ToString());
-                string strTotal = accessHelper.readData(strSQL);//執行SQL
-                int intTotal = Convert.ToInt32(strTotal);
-                if (strTotal == "-1")
-                {
-                    MessageBox.Show("查詢失敗");
-                }
-                #endregion
-
-                batchNum = cbxBatch.SelectedItem.ToString();
-                int _completed = getCompletedNumForBatch(); //取得此批完成的數量
-                if (Convert.ToInt32(_completed) < intTotal) //判斷總數小於等於批號數量
-                {
-                    #region FFT主要測試區塊-----------------------------------------------------------------------------------
-
-                    #region 若有接收到FW回傳繼續往下
-                    _counter = 0;
-                    while (true)
-                    {
-                        Thread.Sleep(1);
-                        if (boolDeviceReceived) //接收到回傳繼續往下
+                        #region Shipping Mode
+                        try
                         {
-                            break;
-                        }
-                        _counter++;
-                        if (_counter == 6000)
-                        {
-                            MessageBox.Show("測試失敗, 請重測試!!");
-                            break;
-                        }
-                    }
-                    #endregion
-
-                    #region 寫入FW Conf
-                    _counter = 0;
-                    while (true)
-                    {
-                        Thread.Sleep(1);
-                        // boolAssCheckEnd = true 代表測試跑完
-                        if (boolAssCheckEnd)
-                        {
-                            boolAssCheckEnd = false;
-                            //#SET_CONFIG_DATA 
-                            //Mounted_Sleeve:       
-                            UTF8bytes = Encoding.UTF8.GetBytes("#SET_CONFIG_DATA" + Environment.NewLine);
-                            RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                            Thread.Sleep(500);
-
-                            UTF8bytes = Encoding.UTF8.GetBytes("Housing_Version:" + bottomVer + Environment.NewLine);
-                            RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                            Thread.Sleep(delay_time2);
-
-                            UTF8bytes = Encoding.UTF8.GetBytes("PCBA_Version:" + pcbVer + Environment.NewLine);
-                            RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                            Thread.Sleep(delay_time2);
-
-                            UTF8bytes = Encoding.UTF8.GetBytes("Batch_ID:" + batchNum + Environment.NewLine);
-                            RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                            Thread.Sleep(delay_time2);
-
-                            string date1 = DateTime.Now.ToString("yyyy MMM dd", CultureInfo.CreateSpecificCulture("en-US"));
-                            UTF8bytes = Encoding.UTF8.GetBytes("Build_Date:" + date1 + Environment.NewLine);
-                            RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                            Thread.Sleep(delay_time2);
-
-                            UTF8bytes = Encoding.UTF8.GetBytes("Mounted_Sleeve:" + StrSleeveName + Environment.NewLine);
-                            RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                            Thread.Sleep(delay_time2);
-
-                            UTF8bytes = Encoding.UTF8.GetBytes("Assembly_Serial_Number:" + strNextSn.ToString().PadLeft(SnLength, '0') + Environment.NewLine);
-                            RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                            Thread.Sleep(delay_time2);
-
-                            UTF8bytes = Encoding.UTF8.GetBytes("#CONFIG_END" + Environment.NewLine);
-                            RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                            Thread.Sleep(delay_time2);
-                            break;
-                        }
-                        _counter++;
-                        if (_counter == 6000)
-                        {
-                            MessageBox.Show("測試失敗, 請重測試!!");
-                            break;
-                        }
-                    }
-                    #endregion
-
-                    Thread.Sleep(2000);
-
-                    #region dump_data 寫入txt
-                    WriteDumpData = true; //用來判斷dump_data是否寫入完成
-
-
-                    // 如果批號資料夾不存在, 便建立其資料夾                    
-                    if (Directory.Exists("C:\\DOSE_DumpData\\" + cbxBatch.Text))
-                    {
-                        Console.WriteLine("The directory {0} already exists.", "C:\\DOSE_DumpData\\" + cbxBatch.Text);
-                    }
-                    else
-                    {
-                        Directory.CreateDirectory("C:\\DOSE_DumpData\\" + cbxBatch.Text);
-                        Console.WriteLine("The directory {0} was created.", "C:\\DOSE_DumpData\\" + cbxBatch.Text);
-                    }
-                    SW = new StreamWriter("C:\\DOSE_DumpData\\" + cbxBatch.Text + "\\" + tbxSn.Text + ".txt");
-      
-                    try
-                    {
-                        UTF8bytes = Encoding.UTF8.GetBytes("#DUMP_DATA" + Environment.NewLine);
-                        RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                        Thread.Sleep(100);
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("ComPort Error!");
-                    }
-                    #endregion
-
-                    #region Shipping Mode
-                    try
-                    {
-                        if (assCheck == "Pass" && PcbIQC == "Pass")
-                        {
-                            #region FFT PASS
-                            //由電流來決定shippingStatus的狀態
-                            if (FFTCurr > batteryFullCurr)
+                            if (assCheck == "Pass" && PcbIQC == "Pass")
                             {
-                                #region shipping Fail  
-
-                                #region 寫入shippingMode
-                                //SQL語法：       
-                                strSQL = "insert into shippingMode(deviceID,sn,shippingStatus,_current) VALUES(@deviceID, @sn,@shippingStatus,@_current)";
-                                if (string.IsNullOrEmpty(strSQL) == false)
+                                #region FFT PASS
+                                //由電流來決定shippingStatus的狀態
+                                if (FFTCurr > batteryFullCurr)
                                 {
-                                    //添加參數
-                                    OleDbParameter[] pars = new OleDbParameter[] {
+                                    #region shipping Fail  
+
+                                    #region 寫入shippingMode
+                                    //SQL語法：       
+                                    strSQL = "insert into shippingMode(deviceID,sn,shippingStatus,_current) VALUES(@deviceID, @sn,@shippingStatus,@_current)";
+                                    if (string.IsNullOrEmpty(strSQL) == false)
+                                    {
+                                        //添加參數
+                                        OleDbParameter[] pars = new OleDbParameter[] {
                                             new OleDbParameter("@deviceID",deviceID),
                                             new OleDbParameter("@sn",strNextSn),
                                             new OleDbParameter("@shippingStatus","Fail"),
                                             new OleDbParameter("@_current",FFTCurr.ToString())
                                     };
 
-                                    //執行SQL
-                                    string errorInfo = accessHelper.ExecSql(strSQL, pars);
-                                    if (errorInfo.Length != 0)
-                                    {
-                                        MessageBox.Show("寫入失敗！" + errorInfo);
+                                        //執行SQL
+                                        string errorInfo = accessHelper.ExecSql(strSQL, pars);
+                                        if (errorInfo.Length != 0)
+                                        {
+                                            MessageBox.Show("寫入失敗！" + errorInfo);
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("寫入成功! " + errorInfo);
+                                        }
                                     }
-                                    else
-                                    {
-                                        Console.WriteLine("寫入成功! " + errorInfo);
-                                    }
+                                    #endregion
+
+                                    #endregion
                                 }
-                                #endregion
-
-                                #endregion
-                            }
-                            else
-                            {
-                                #region shipping PASS  
-
-                                #region 寫入shippingMode
-                                //SQL語法：       
-                                strSQL = "insert into shippingMode(deviceID,sn,shippingStatus,_current) VALUES(@deviceID, @sn,@shippingStatus,@_current)";
-                                if (string.IsNullOrEmpty(strSQL) == false)
+                                else
                                 {
-                                    //添加參數
-                                    OleDbParameter[] pars = new OleDbParameter[] {
+                                    #region shipping PASS  
+
+                                    #region 寫入shippingMode
+                                    //SQL語法：       
+                                    strSQL = "insert into shippingMode(deviceID,sn,shippingStatus,_current) VALUES(@deviceID, @sn,@shippingStatus,@_current)";
+                                    if (string.IsNullOrEmpty(strSQL) == false)
+                                    {
+                                        //添加參數
+                                        OleDbParameter[] pars = new OleDbParameter[] {
                                             new OleDbParameter("@deviceID",deviceID),
                                             new OleDbParameter("@sn",strNextSn),
                                             new OleDbParameter("@shippingStatus","Pass"),
                                             new OleDbParameter("@_current",FFTCurr.ToString())
                                     };
 
-                                    //執行SQL
-                                    string errorInfo = accessHelper.ExecSql(strSQL, pars);
-                                    if (errorInfo.Length != 0)
-                                    {
-                                        MessageBox.Show("寫入失敗！" + errorInfo);
-                                    }
-                                    else
-                                    {
-                                        MessageBox.Show("寫入成功! " + errorInfo);
-                                        MessageBox.Show("進入出貨模式，請將其它 Code Uncomment才能真的進入出貨模式");
-
-                                        //進入出貨模式
-                                        //UTF8bytes = Encoding.UTF8.GetBytes("#SHIP_MODE" + Environment.NewLine);
-                                        //RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                                        //Thread.Sleep(delay_time2);
-
-                                        //下面這行實際生產時要再做變更
-                                        strNextSn = "22-IZD-C1-DE5-" + intNextSn.ToString().PadLeft(SnLength, '0') + "," + StrSleeveName;
-                                        printLabel1.PrintOneLabel(strNextSn, bleName, StrSleeveName);
-
-                                        //將SN增加為1
-                                        miCreateMaxSN = new MethodInvoker(this.createSnMax);
-                                        this.BeginInvoke(miCreateMaxSN);
-
-                                        //進入Shipping Mode，須確定dump data寫入完成
-                                        if (WriteDumpData && toShippingMode)
+                                        //執行SQL
+                                        string errorInfo = accessHelper.ExecSql(strSQL, pars);
+                                        if (errorInfo.Length != 0)
                                         {
-                                            toShippingMode = false; //進入ShippingMode, 重置bool
+                                            MessageBox.Show("寫入失敗！" + errorInfo);
+                                        }
+                                        else
+                                        {
+                                            MessageBox.Show("寫入成功! " + errorInfo);
+                                            MessageBox.Show("進入出貨模式，請將其它 Code Uncomment才能真的進入出貨模式");
 
+                                            //進入出貨模式
                                             //UTF8bytes = Encoding.UTF8.GetBytes("#SHIP_MODE" + Environment.NewLine);
                                             //RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                                            //Thread.Sleep(300);
+                                            //Thread.Sleep(delay_time2);
+
+                                            //下面這行實際生產時要再做變更
+                                            strNextSn = "22-IZD-C1-DE5-" + intNextSn.ToString().PadLeft(SnLength, '0') + "," + StrSleeveName;
+                                            printLabel1.PrintOneLabel(strNextSn, bleName, StrSleeveName);
+
+                                            //將SN增加為1
+                                            miCreateMaxSN = new MethodInvoker(this.createSnMax);
+                                            this.BeginInvoke(miCreateMaxSN);
+
+                                            //進入Shipping Mode，須確定dump data寫入完成
+                                            if (WriteDumpData && toShippingMode)
+                                            {
+                                                toShippingMode = false; //進入ShippingMode, 重置bool
+
+                                                //UTF8bytes = Encoding.UTF8.GetBytes("#SHIP_MODE" + Environment.NewLine);
+                                                //RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                                                //Thread.Sleep(300);
+                                            }
                                         }
                                     }
+                                    #endregion
+                                    #endregion
                                 }
                                 #endregion
-                                #endregion
+                            }
+                            else
+                            {
+                                MessageBox.Show("ASS_CHECK失敗，無法進入休眠！");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("ComPort Error!");
+                        }
+                        #endregion
+                        #endregion
+
+                        #region 測試結束, 判斷該批號是否已完成-------------------------------------------------------------
+                        strSQL = string.Format("SELECT total FROM batchData where batchNum = '{0}'", cbxBatch.SelectedItem.ToString()); //取得批號總數
+                        strTotal = accessHelper.readData(strSQL);//執行SQL
+                        intTotal = Convert.ToInt32(strTotal);
+                        if (strTotal == "-1")
+                        {
+                            MessageBox.Show("查詢失敗，發生錯誤");
+                        }
+
+                        batchNum = cbxBatch.SelectedItem.ToString();
+                        _completed = getCompletedNumForBatch(); //取得此批完成的數量
+                        if (Convert.ToInt32(_completed) < intTotal) //判斷總數小於等於批號數量
+                        {
+                            //	
+                        }
+                        else if (_completed == intTotal)
+                        {
+                            MessageBox.Show("批號 " + batchNum + " 已完成");
+                            cbxBatch.Items.Remove(cbxBatch.SelectedItem);
+
+                            #region SQL語法，設定此批號已完成
+                            strSQL = "UPDATE batchData set finished = @finished where batchNum = @batchNum";
+                            if (string.IsNullOrEmpty(strSQL) == false)
+                            {
+                                //添加參數
+                                OleDbParameter[] pars = new OleDbParameter[] {
+                                            new OleDbParameter("@finished","Y"),
+                                            new OleDbParameter("@batchNum",batchNum)
+                                                                };
+                                //執行SQL
+                                string errorInfo = accessHelper.ExecSql(strSQL, pars);
+                                if (errorInfo.Length != 0)
+                                {
+                                    MessageBox.Show("批號完成更新失敗！" + errorInfo);
+                                }
                             }
                             #endregion
                         }
                         else
                         {
-                            MessageBox.Show("ASS_CHECK失敗，無法進入休眠！");
+                            MessageBox.Show("數量異常 CODE 537");
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("ComPort Error!");
-                    }
-                    #endregion
-                    #endregion
-
-                    #region 測試結束, 判斷該批號是否已完成-------------------------------------------------------------
-                    strSQL = string.Format("SELECT total FROM batchData where batchNum = '{0}'", cbxBatch.SelectedItem.ToString()); //取得批號總數
-                    strTotal = accessHelper.readData(strSQL);//執行SQL
-                    intTotal = Convert.ToInt32(strTotal);
-                    if (strTotal == "-1")
-                    {
-                        MessageBox.Show("查詢失敗，發生錯誤");
-                    }
-
-                    batchNum = cbxBatch.SelectedItem.ToString();
-                    _completed = getCompletedNumForBatch(); //取得此批完成的數量
-                    if (Convert.ToInt32(_completed) < intTotal) //判斷總數小於等於批號數量
-                    {
-                        //	
+                        #endregion
                     }
                     else if (_completed == intTotal)
                     {
-                        MessageBox.Show("批號 " + batchNum + " 已完成");
+                        MessageBox.Show("此批號已完成");
                         cbxBatch.Items.Remove(cbxBatch.SelectedItem);
 
                         #region SQL語法，設定此批號已完成
@@ -561,42 +592,18 @@ namespace FFT_DOSE
                     }
                     else
                     {
-                        MessageBox.Show("數量異常 CODE 537");
+                        MessageBox.Show("數量異常 CODE 548");
                     }
-                    #endregion
                 }
-                else if (_completed == intTotal)
-                {
-                    MessageBox.Show("此批號已完成");
-                    cbxBatch.Items.Remove(cbxBatch.SelectedItem);
-
-                    #region SQL語法，設定此批號已完成
-                    strSQL = "UPDATE batchData set finished = @finished where batchNum = @batchNum";
-                    if (string.IsNullOrEmpty(strSQL) == false)
-                    {
-                        //添加參數
-                        OleDbParameter[] pars = new OleDbParameter[] {
-                                            new OleDbParameter("@finished","Y"),
-                                            new OleDbParameter("@batchNum",batchNum)
-                                                                };
-                        //執行SQL
-                        string errorInfo = accessHelper.ExecSql(strSQL, pars);
-                        if (errorInfo.Length != 0)
-                        {
-                            MessageBox.Show("批號完成更新失敗！" + errorInfo);
-                        }
-                    }
-                    #endregion
-                }
-                else
-                {
-                    MessageBox.Show("數量異常 CODE 548");
-                }
+                //   else
+                //{
+                //    MessageBox.Show("批號讀取錯誤");
+                //}
             }
-            //   else
-            //{
-            //    MessageBox.Show("批號讀取錯誤");
-            //}
+            else
+            {
+                MessageBox.Show("批號未選擇");
+            }
         }
 
 

@@ -25,7 +25,7 @@ namespace FFT_DOSE
         {
             this.m_bIsInTransaction = false;
             this.m_Timeout = 30;
-            this.m_objConn = new OleDbConnection(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + Application.StartupPath + @"\Database.accdb; Jet OLEDB:Database Password=SHL1235;");
+            this.m_objConn = new OleDbConnection(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + Application.StartupPath + @"\Database.accdb; Jet OLEDB:Database Password=1235;");
             this.m_objConn.Open();
         }
 

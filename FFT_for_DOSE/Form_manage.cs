@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.OleDb;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -17,8 +18,20 @@ namespace FFT_For_DOSE
     {
         DataTable dtForGrid;
 
-        public bool showManUser { get; set; }       
-        AccessHelper accessHelper = new AccessHelper();       
+        // 創建一個 OleDbConnection
+        OleDbConnection conn = new OleDbConnection(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + Application.StartupPath + @"\Database.accdb; Jet OLEDB:Database Password=1235;");
+
+        // 創建一個 OleDbDataAdapter
+        OleDbDataAdapter adapter;
+
+        // 創建一個 OleDbCommandBuilder
+        OleDbCommandBuilder builder;
+
+        // 創建一個 DataTable 並填充資料
+        DataTable dtGtin = new DataTable();
+
+        public bool showManUser { get; set; }
+        AccessHelper accessHelper = new AccessHelper();
         public FormManage(bool showManage)
         {
             InitializeComponent();
@@ -26,6 +39,18 @@ namespace FFT_For_DOSE
 
         private void Form_manage_Load(object sender, EventArgs e)
         {
+            //--------------------------           
+            adapter = new OleDbDataAdapter("SELECT * FROM gtin", conn);
+
+            adapter.Fill(dtGtin);
+
+            // 將 DataTable 分配給 DataGridView 的 DataSource 屬性
+            GvGtin.DataSource = dtGtin;
+
+            // 創建一個 OleDbCommandBuilder
+            builder = new OleDbCommandBuilder(adapter);
+            //--------------------------
+
             dataGV.AllowUserToAddRows = false;
             dataGV.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGV.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
@@ -36,6 +61,7 @@ namespace FFT_For_DOSE
             string strSQL = string.Format("select * from batchData where moNum = '{0}'", cbxMO); //檢查MO
             dtForGrid = accessHelper.GetDataTable(strSQL);
             reLoadBatch();
+            reLoadGtin();
         }
 
         private void dataGV_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
@@ -73,7 +99,7 @@ namespace FFT_For_DOSE
             string formName = "Form1";
             Form fr = Application.OpenForms[formName];
             if (fr != null)
-            {                
+            {
                 Form1 f1 = (Form1)fr;   //取得Form1                
                 f1.showManage = false;  //改變showManage的值
             }
@@ -90,7 +116,7 @@ namespace FFT_For_DOSE
                 string makeTotal = tbx_make_total.Text;
                 try
                 {
-                     sleeveName = cbxSleeve.SelectedItem.ToString();
+                    sleeveName = cbxSleeve.SelectedItem.ToString();
                 }
                 catch
                 {
@@ -305,6 +331,18 @@ namespace FFT_For_DOSE
             dataGV.Columns["housingVersion"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
         }
 
+        void reLoadGtin()
+        {
+            GvGtin.Columns["id"].Visible = false;
+            GvGtin.Columns["penName"].HeaderText = "筆型";
+            GvGtin.Columns["gtin"].HeaderText = "GTIN";
+            GvGtin.Columns["penName"].Width = 200;
+            GvGtin.Columns["gtin"].Width = 300;
+            GvGtin.Columns["penName"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            GvGtin.Columns["gtin"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+        }
+
+
         #region ComboxItem
         private class ComboboxItem
         {
@@ -345,6 +383,19 @@ namespace FFT_For_DOSE
             DataTable dt = (DataTable)dataGV.DataSource;
             dt.Rows.Clear();
             dataGV.DataSource = dt;
+        }
+
+        private void GvGtin_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            // 獲取修改後的資料
+            DataGridViewRow row = GvGtin.Rows[e.RowIndex];
+            string gtin = (string)row.Cells["gtin"].Value;
+            dtGtin.Rows[e.RowIndex]["gtin"] = gtin;
+            //string name = (string)row.Cells["Name"].Value;
+            //int age = (int)row.Cells["Age"].Value;
+
+            // 更新資料庫中的資料
+            adapter.Update(dtGtin);
         }
     }
 }

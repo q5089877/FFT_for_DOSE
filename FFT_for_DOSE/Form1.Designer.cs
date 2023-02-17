@@ -67,6 +67,7 @@
             this.tbxSN2 = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label6 = new System.Windows.Forms.Label();
             this.tbx_BLE = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -82,7 +83,6 @@
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.btnPNGtoPCX = new System.Windows.Forms.Button();
             this.btnPrintLabel = new System.Windows.Forms.Button();
-            this.label6 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.chart2)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -426,7 +426,7 @@
             "SS ",
             "FT ",
             "KP ",
-            "NP"});
+            "NP5"});
             this.cbxSleeveName2.Location = new System.Drawing.Point(160, 34);
             this.cbxSleeveName2.Name = "cbxSleeveName2";
             this.cbxSleeveName2.Size = new System.Drawing.Size(83, 24);
@@ -469,6 +469,17 @@
             this.groupBox1.TabIndex = 198;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "手動列印區";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Verdana", 12F);
+            this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
+            this.label6.Location = new System.Drawing.Point(84, 87);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(45, 18);
+            this.label6.TabIndex = 200;
+            this.label6.Text = "BLE:";
             // 
             // tbx_BLE
             // 
@@ -665,17 +676,6 @@
             this.btnPrintLabel.Text = "Print Label";
             this.btnPrintLabel.UseVisualStyleBackColor = true;
             this.btnPrintLabel.Click += new System.EventHandler(this.btnPrintLabel_Click);
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Verdana", 12F);
-            this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(60)))), ((int)(((byte)(60)))));
-            this.label6.Location = new System.Drawing.Point(84, 87);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(45, 18);
-            this.label6.TabIndex = 200;
-            this.label6.Text = "BLE:";
             // 
             // Form1
             // 
