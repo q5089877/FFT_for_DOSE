@@ -100,7 +100,7 @@
             this.dataGV.Name = "dataGV";
             this.dataGV.ReadOnly = true;
             this.dataGV.RowTemplate.Height = 24;
-            this.dataGV.Size = new System.Drawing.Size(894, 225);
+            this.dataGV.Size = new System.Drawing.Size(914, 244);
             this.dataGV.TabIndex = 76;
             // 
             // label5

@@ -214,10 +214,6 @@ namespace FFT_For_DOSE
 
 
 
-
-
-
-
         /// <summary>
         /// 執行語法
         /// </summary>

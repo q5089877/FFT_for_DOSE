@@ -314,13 +314,16 @@ namespace FFT_For_DOSE
             dataGV.Columns["sleeveName"].HeaderText = "袖套名稱";
             dataGV.Columns["pcbVersion"].HeaderText = "PCB版本";
             dataGV.Columns["housingVersion"].HeaderText = "外殼版本";
+            dataGV.Columns["finished"].HeaderText = "完成";
 
-            dataGV.Columns["moNum"].Width = 120;
-            dataGV.Columns["batchNum"].Width = 120;
-            dataGV.Columns["total"].Width = 100;
-            dataGV.Columns["sleeveName"].Width = 120;
-            dataGV.Columns["pcbVersion"].Width = 120;
-            dataGV.Columns["housingVersion"].Width = 120;
+            dataGV.Columns["id"].Width = 0;
+            dataGV.Columns["moNum"].Width = 200;
+            dataGV.Columns["batchNum"].Width = 200;
+            dataGV.Columns["total"].Width = 60;
+            dataGV.Columns["sleeveName"].Width = 90;
+            dataGV.Columns["pcbVersion"].Width = 90;
+            dataGV.Columns["housingVersion"].Width = 90;
+            dataGV.Columns["finished"].Width = 80;
 
             dataGV.Columns["moNum"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGV.Columns["batchNum"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -328,6 +331,7 @@ namespace FFT_For_DOSE
             dataGV.Columns["sleeveName"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGV.Columns["pcbVersion"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGV.Columns["housingVersion"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGV.Columns["finished"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
         }
 
         void reLoadGtin()
