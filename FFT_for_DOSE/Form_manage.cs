@@ -6,6 +6,7 @@ using System.Data;
 using System.Data.OleDb;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -47,14 +48,12 @@ namespace FFT_For_DOSE
             GvGtin.DataSource = dtGtin;
 
             // 創建一個 OleDbCommandBuilder
-            builder = new OleDbCommandBuilder(adapter);        
+            builder = new OleDbCommandBuilder(adapter);
             //--------------------------
 
             dataGV.AllowUserToAddRows = false;
             dataGV.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dataGV.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dataGV.MouseDown += dataGV_MouseDown;
-            dataGV.UserDeletingRow += dataGV_UserDeletingRow;
+            dataGV.SelectionMode = DataGridViewSelectionMode.FullRowSelect;       
 
             reLoadMoNum();
             string strSQL = string.Format("select * from batchData where moNum = '{0}'", cbxMO); //檢查MO
@@ -63,24 +62,27 @@ namespace FFT_For_DOSE
             reLoadGtin();
         }
 
-        private void dataGV_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
-        {
-            DialogResult result =
-                MessageBox.Show(
-                    "是否刪除該筆資料",
-                    "確認",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Question);
 
-            if (result == DialogResult.No) e.Cancel = true;
-        }
+        #region GridView右鍵增加刪除功能(關閉中)
+        //private void dataGV_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
+        //{
+        //    DialogResult result =
+        //        MessageBox.Show(
+        //            "是否刪除該筆資料",
+        //            "確認",
+        //            MessageBoxButtons.YesNo,
+        //            MessageBoxIcon.Question);
 
-        private void dataGV_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button != MouseButtons.Right) return;
-            DataGridView dgv = sender as DataGridView;
-            ShowMenu(dgv, e);
-        }
+        //    if (result == DialogResult.No) e.Cancel = true;
+        //}
+
+        //private void dataGV_MouseDown(object sender, MouseEventArgs e)
+        //{
+        //    if (e.Button != MouseButtons.Right) return;
+        //    DataGridView dgv = sender as DataGridView;
+        //    ShowMenu(dgv, e);
+        //}
+        #endregion
 
         private void btn_open_user_Click(object sender, EventArgs e)
         {
@@ -136,7 +138,6 @@ namespace FFT_For_DOSE
                     //執行SQL
                     string checkMO = accessHelper.readData(strSQL);
                     if (checkMO == "-1")//MO不存在      
-
                     {
                         //寫入資料庫
                         //SQL語法：       
@@ -187,6 +188,9 @@ namespace FFT_For_DOSE
                                         else
                                         {
                                             MessageBox.Show("新增工單完成");
+                                            tbx_MO.Text = "";
+                                            tbx_lot.Text = "";
+                                            tbx_make_total.Text = "";    
                                         }
                                     }
                                 }
@@ -220,28 +224,36 @@ namespace FFT_For_DOSE
                 var result = MessageBox.Show("確認刪除", "刪除工單", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result == DialogResult.Yes)
                 {
+                    //利用工單取得批號
+                    string batchNum = string.Format("SELECT batchNum FROM batchData WHERE moNum ='{0}'", cbxMO.SelectedItem.ToString());
+                    batchNum = accessHelper.readData(batchNum);
                     //刪除Batch
-                    string strSQL = string.Format("DELETE FROM batchData where moNum ='{0}'", cbxMO.SelectedItem.ToString());
-                    string delResult = accessHelper.ExecSql(strSQL);
-                    //刪除MO
-                    strSQL = string.Format("DELETE FROM moData where moNum ='{0}'", cbxMO.SelectedItem.ToString());
-                    delResult = accessHelper.ExecSql(strSQL);
-                    if (delResult != "")
+                    //SELECT COUNT(*) FROM deviceData WHERE batchNum = @batchNum
+                    string strSQL = string.Format("SELECT COUNT(*) FROM deviceData WHERE batchNum ='{0}'", batchNum);
+                    string sqlResult = accessHelper.readData(strSQL);
+
+                    int readTotal = Convert.ToInt16(sqlResult);
+                    if (readTotal > 0)
                     {
-                        MessageBox.Show("刪除失敗，其它資料表包含相關資料!!");
+                        MessageBox.Show("已經有" + readTotal.ToString() + "筆測試資料，無法刪除");
                     }
                     else
                     {
+                        //刪除batchData
+                        strSQL = string.Format("DELETE FROM batchData where batchNum ='{0}'", batchNum);
+                        sqlResult = accessHelper.ExecSql(strSQL);
+                        //刪除moData
+                        strSQL = string.Format("DELETE FROM moData where moNum ='{0}'", cbxMO.SelectedItem.ToString());
+                        sqlResult = accessHelper.ExecSql(strSQL);
+                        clearGrid();                        
                         MessageBox.Show("刪除 " + cbxMO.SelectedItem.ToString() + " 完成");
-
-                        loadNullGrid();
-
+                        reLoadMoNum();
                     }
-                    reLoadMoNum();
                 }
             }
-            catch
+            catch(Exception ex)
             {
+                MessageBox.Show(ex.ToString());
                 MessageBox.Show("發生錯誤!!");
             }
         }
@@ -382,7 +394,7 @@ namespace FFT_For_DOSE
             reLoadBatch();
         }
 
-        void loadNullGrid()
+        void clearGrid()
         {
             DataTable dt = (DataTable)dataGV.DataSource;
             dt.Rows.Clear();
@@ -405,8 +417,18 @@ namespace FFT_For_DOSE
             catch
             {
                 MessageBox.Show("修改失敗");
-               
+
             }
+        }
+
+        private void btnOpenCurrMeter_Click(object sender, EventArgs e)
+        {
+            // 開啟檔案，如果不存在就建立檔案
+            using (StreamWriter outputFile = new StreamWriter(Application.StartupPath + @"\meter.txt"))
+            {   // 寫入訊息
+                outputFile.WriteLine("open");
+            }
+            MessageBox.Show("電流計已開啟，請將電流計的USB和+-極接到治具上");
         }
     }
 }
