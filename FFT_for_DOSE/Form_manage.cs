@@ -124,10 +124,10 @@ namespace FFT_For_DOSE
                     cbxSleeve.SelectedIndex = 0;
                     sleeveName = cbxSleeve.SelectedItem.ToString();
                 }
-                string pcbVersion = tbxPCB.Text;
+             
                 string housingVersion = tbxHousing.Text;
 
-                if (moNum == "" || batchNum == "" || makeTotal == "" || sleeveName == "" || pcbVersion == "" || housingVersion == "")
+                if (moNum == "" || batchNum == "" || makeTotal == "" || sleeveName == "" || housingVersion == "")
                 {
                     MessageBox.Show("資料不可為空值");
                 }
@@ -164,8 +164,8 @@ namespace FFT_For_DOSE
                                 {
                                     #region 寫入
                                     //SQL語法：       
-                                    strSQL = "insert into batchData(batchNum,moNum,total,sleeveName,pcbVersion,housingVersion,finished)" +
-                                    " VALUES(@batchNum,@moNum,@total,@sleeveName,@pcbVersion,@housingVersion,@finished)";
+                                    strSQL = "insert into batchData(batchNum,moNum,total,sleeveName,housingVersion,finished)" +
+                                    " VALUES(@batchNum,@moNum,@total,@sleeveName,@housingVersion,@finished)";
                                     if (string.IsNullOrEmpty(strSQL) == false)
                                     {
                                         //添加參數
@@ -173,8 +173,7 @@ namespace FFT_For_DOSE
                                             new OleDbParameter("@batchNum",batchNum),
                                             new OleDbParameter("@moNum",moNum),
                                             new OleDbParameter("@total",makeTotal),
-                                            new OleDbParameter("@sleeveName",sleeveName),
-                                            new OleDbParameter("@pcbVersion",pcbVersion),
+                                            new OleDbParameter("@sleeveName",sleeveName),                                          
                                             new OleDbParameter("@housingVersion",housingVersion),
                                             new OleDbParameter("@finished","N")
 
@@ -323,8 +322,7 @@ namespace FFT_For_DOSE
             dataGV.Columns["moNum"].HeaderText = "工單號碼";
             dataGV.Columns["batchNum"].HeaderText = "批號";
             dataGV.Columns["total"].HeaderText = "數量";
-            dataGV.Columns["sleeveName"].HeaderText = "袖套名稱";
-            dataGV.Columns["pcbVersion"].HeaderText = "PCB版本";
+            dataGV.Columns["sleeveName"].HeaderText = "袖套名稱";          
             dataGV.Columns["housingVersion"].HeaderText = "外殼版本";
             dataGV.Columns["finished"].HeaderText = "完成";
 
@@ -332,16 +330,14 @@ namespace FFT_For_DOSE
             dataGV.Columns["moNum"].Width = 200;
             dataGV.Columns["batchNum"].Width = 200;
             dataGV.Columns["total"].Width = 60;
-            dataGV.Columns["sleeveName"].Width = 90;
-            dataGV.Columns["pcbVersion"].Width = 90;
+            dataGV.Columns["sleeveName"].Width = 90;           
             dataGV.Columns["housingVersion"].Width = 90;
             dataGV.Columns["finished"].Width = 80;
 
             dataGV.Columns["moNum"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGV.Columns["batchNum"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGV.Columns["total"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGV.Columns["sleeveName"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGV.Columns["pcbVersion"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGV.Columns["sleeveName"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;          
             dataGV.Columns["housingVersion"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGV.Columns["finished"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
         }
