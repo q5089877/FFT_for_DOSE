@@ -144,7 +144,7 @@ namespace FFT_DOSE
                 adapter1.Dispose();
                 return set1;
             }
-            catch (Exception ex)
+            catch 
             {
                 return set1;
             }

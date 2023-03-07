@@ -15,9 +15,7 @@ namespace FFT_For_DOSE
     {
         public bool showManage { get; set; }
         bool showLogForm;
-        AccessHelper accessHelper = new AccessHelper();
-
-        Form1 f1 = null;
+        AccessHelper accessHelper = new AccessHelper();      
 
         public loginForm(bool showLogForm)
         {

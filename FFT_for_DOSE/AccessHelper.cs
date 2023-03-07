@@ -12,13 +12,9 @@ namespace FFT_For_DOSE
     public class AccessHelper
     {
 
-        #region 连接字符串
+        #region database連接字串
         private static readonly string ConStr =
-        string.Format(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + Application.StartupPath + @"\Database.accdb; Jet OLEDB:Database Password=1235;");     
-
-        //accdb 数据库
-        //private static readonly string ConStr =
-        //    string.Format("Provider=Microsoft.ACE.OLEDB.12.0;Data Source={0};Persist Security Info=False;","路径\\db.accdb");
+        string.Format(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + Application.StartupPath + @"\FFTDatabase.accdb; Jet OLEDB:Database Password=1235;");          
         #endregion
 
         #region 私有方法
@@ -377,9 +373,7 @@ namespace FFT_For_DOSE
                         cmd.Dispose();
                         return "-1";
                     }                   
-                }               
-                cmd.Dispose();
-                return "-1";
+                }       
             }
         }
 

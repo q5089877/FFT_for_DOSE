@@ -20,7 +20,7 @@ namespace FFT_For_DOSE
         DataTable dtForGrid;
 
         // 創建一個 OleDbConnection
-        OleDbConnection conn = new OleDbConnection(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + Application.StartupPath + @"\Database.accdb; Jet OLEDB:Database Password=1235;");
+        OleDbConnection conn = new OleDbConnection(@"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + Application.StartupPath + @"\FFTDatabase.accdb; Jet OLEDB:Database Password=1235;");
 
         // 創建一個 OleDbDataAdapter
         OleDbDataAdapter adapter;

@@ -292,13 +292,15 @@
             // 
             // btnOpenCurrMeter
             // 
+            this.btnOpenCurrMeter.BackColor = System.Drawing.Color.Blue;
             this.btnOpenCurrMeter.Font = new System.Drawing.Font("Verdana", 12F);
+            this.btnOpenCurrMeter.ForeColor = System.Drawing.Color.White;
             this.btnOpenCurrMeter.Location = new System.Drawing.Point(12, 616);
             this.btnOpenCurrMeter.Name = "btnOpenCurrMeter";
             this.btnOpenCurrMeter.Size = new System.Drawing.Size(105, 28);
             this.btnOpenCurrMeter.TabIndex = 84;
             this.btnOpenCurrMeter.Text = "開啟電流計";
-            this.btnOpenCurrMeter.UseVisualStyleBackColor = true;
+            this.btnOpenCurrMeter.UseVisualStyleBackColor = false;
             this.btnOpenCurrMeter.Click += new System.EventHandler(this.btnOpenCurrMeter_Click);
             // 
             // FormManage

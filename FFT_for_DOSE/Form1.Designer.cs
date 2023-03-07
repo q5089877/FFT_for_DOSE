@@ -35,7 +35,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.RS232_PLC = new System.IO.Ports.SerialPort(this.components);
             this.RS232_DOSE = new System.IO.Ports.SerialPort(this.components);
-            this.btn_ass_chk = new System.Windows.Forms.Button();
             this.btn_clr_pcb = new System.Windows.Forms.Button();
             this.btn_ttl_send = new System.Windows.Forms.Button();
             this.tbx_Pcb_feed_back = new System.Windows.Forms.TextBox();
@@ -45,8 +44,6 @@
             this.chart2 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.label20 = new System.Windows.Forms.Label();
             this.lbl_charge_curr = new System.Windows.Forms.Label();
-            this.label34 = new System.Windows.Forms.Label();
-            this.tbxSn = new System.Windows.Forms.TextBox();
             this.btnOpenManage = new System.Windows.Forms.Button();
             this.btnShipMode = new System.Windows.Forms.Button();
             this.btnStatus = new System.Windows.Forms.Button();
@@ -76,18 +73,23 @@
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.lblSleeve = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.currGroupBox = new System.Windows.Forms.GroupBox();
             this.btnPNGtoPCX = new System.Windows.Forms.Button();
             this.btnPrintLabel = new System.Windows.Forms.Button();
+            this.tbxSn = new System.Windows.Forms.TextBox();
+            this.label34 = new System.Windows.Forms.Label();
+            this.btn_ass_chk = new System.Windows.Forms.Button();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
             ((System.ComponentModel.ISupportInitialize)(this.chart2)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
-            this.groupBox4.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.currGroupBox.SuspendLayout();
+            this.groupBox4.SuspendLayout();
+            this.groupBox6.SuspendLayout();
             this.SuspendLayout();
             // 
             // RS232_PLC
@@ -100,25 +102,13 @@
             this.RS232_DOSE.ReadBufferSize = 40960;
             this.RS232_DOSE.DataReceived += new System.IO.Ports.SerialDataReceivedEventHandler(this.RS232_DOSE_DataReceived);
             // 
-            // btn_ass_chk
-            // 
-            this.btn_ass_chk.Font = new System.Drawing.Font("Verdana", 12F);
-            this.btn_ass_chk.ForeColor = System.Drawing.Color.Navy;
-            this.btn_ass_chk.Location = new System.Drawing.Point(158, 63);
-            this.btn_ass_chk.Name = "btn_ass_chk";
-            this.btn_ass_chk.Size = new System.Drawing.Size(270, 86);
-            this.btn_ass_chk.TabIndex = 104;
-            this.btn_ass_chk.Text = "#ASS_CHECK";
-            this.btn_ass_chk.UseVisualStyleBackColor = true;
-            this.btn_ass_chk.Click += new System.EventHandler(this.btn_ass_chk_Click);
-            // 
             // btn_clr_pcb
             // 
             this.btn_clr_pcb.Font = new System.Drawing.Font("Verdana", 12F);
             this.btn_clr_pcb.ForeColor = System.Drawing.Color.Navy;
-            this.btn_clr_pcb.Location = new System.Drawing.Point(363, 652);
+            this.btn_clr_pcb.Location = new System.Drawing.Point(332, 652);
             this.btn_clr_pcb.Name = "btn_clr_pcb";
-            this.btn_clr_pcb.Size = new System.Drawing.Size(79, 27);
+            this.btn_clr_pcb.Size = new System.Drawing.Size(110, 27);
             this.btn_clr_pcb.TabIndex = 137;
             this.btn_clr_pcb.Text = "Clear";
             this.btn_clr_pcb.UseVisualStyleBackColor = true;
@@ -130,7 +120,7 @@
             this.btn_ttl_send.ForeColor = System.Drawing.Color.Navy;
             this.btn_ttl_send.Location = new System.Drawing.Point(211, 652);
             this.btn_ttl_send.Name = "btn_ttl_send";
-            this.btn_ttl_send.Size = new System.Drawing.Size(146, 27);
+            this.btn_ttl_send.Size = new System.Drawing.Size(115, 27);
             this.btn_ttl_send.TabIndex = 136;
             this.btn_ttl_send.Text = "Send";
             this.btn_ttl_send.UseVisualStyleBackColor = true;
@@ -138,14 +128,16 @@
             // 
             // tbx_Pcb_feed_back
             // 
+            this.tbx_Pcb_feed_back.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tbx_Pcb_feed_back.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(184)))), ((int)(((byte)(195)))));
             this.tbx_Pcb_feed_back.Font = new System.Drawing.Font("PMingLiU", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.tbx_Pcb_feed_back.ForeColor = System.Drawing.Color.DarkBlue;
-            this.tbx_Pcb_feed_back.Location = new System.Drawing.Point(6, 25);
+            this.tbx_Pcb_feed_back.Location = new System.Drawing.Point(3, 23);
             this.tbx_Pcb_feed_back.Multiline = true;
             this.tbx_Pcb_feed_back.Name = "tbx_Pcb_feed_back";
             this.tbx_Pcb_feed_back.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbx_Pcb_feed_back.Size = new System.Drawing.Size(436, 621);
+            this.tbx_Pcb_feed_back.Size = new System.Drawing.Size(445, 623);
             this.tbx_Pcb_feed_back.TabIndex = 134;
             // 
             // tbx_ttl_send
@@ -171,9 +163,9 @@
             // 
             this.btn_clear_com.Font = new System.Drawing.Font("Verdana", 12F);
             this.btn_clear_com.ForeColor = System.Drawing.Color.Navy;
-            this.btn_clear_com.Location = new System.Drawing.Point(6, 774);
+            this.btn_clear_com.Location = new System.Drawing.Point(25, 90);
             this.btn_clear_com.Name = "btn_clear_com";
-            this.btn_clear_com.Size = new System.Drawing.Size(448, 55);
+            this.btn_clear_com.Size = new System.Drawing.Size(280, 55);
             this.btn_clear_com.TabIndex = 139;
             this.btn_clear_com.Text = "Clear ComPort";
             this.btn_clear_com.UseVisualStyleBackColor = true;
@@ -218,26 +210,6 @@
             this.lbl_charge_curr.TabIndex = 142;
             this.lbl_charge_curr.Text = "200 mA";
             // 
-            // label34
-            // 
-            this.label34.AutoSize = true;
-            this.label34.Font = new System.Drawing.Font("Verdana", 12F);
-            this.label34.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.label34.Location = new System.Drawing.Point(43, 32);
-            this.label34.Name = "label34";
-            this.label34.Size = new System.Drawing.Size(111, 18);
-            this.label34.TabIndex = 169;
-            this.label34.Text = "目前製作序號:";
-            // 
-            // tbxSn
-            // 
-            this.tbxSn.Enabled = false;
-            this.tbxSn.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.tbxSn.Location = new System.Drawing.Point(159, 30);
-            this.tbxSn.Name = "tbxSn";
-            this.tbxSn.Size = new System.Drawing.Size(269, 27);
-            this.tbxSn.TabIndex = 170;
-            // 
             // btnOpenManage
             // 
             this.btnOpenManage.Font = new System.Drawing.Font("Verdana", 12F);
@@ -254,9 +226,9 @@
             // 
             this.btnShipMode.Font = new System.Drawing.Font("Verdana", 12F);
             this.btnShipMode.ForeColor = System.Drawing.Color.Navy;
-            this.btnShipMode.Location = new System.Drawing.Point(6, 713);
+            this.btnShipMode.Location = new System.Drawing.Point(25, 29);
             this.btnShipMode.Name = "btnShipMode";
-            this.btnShipMode.Size = new System.Drawing.Size(448, 55);
+            this.btnShipMode.Size = new System.Drawing.Size(280, 55);
             this.btnShipMode.TabIndex = 173;
             this.btnShipMode.Text = "Ship Mode";
             this.btnShipMode.UseVisualStyleBackColor = true;
@@ -264,11 +236,13 @@
             // 
             // btnStatus
             // 
+            this.btnStatus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.btnStatus.Font = new System.Drawing.Font("Verdana", 12F);
             this.btnStatus.ForeColor = System.Drawing.Color.Navy;
-            this.btnStatus.Location = new System.Drawing.Point(460, 713);
+            this.btnStatus.Location = new System.Drawing.Point(597, 29);
             this.btnStatus.Name = "btnStatus";
-            this.btnStatus.Size = new System.Drawing.Size(448, 55);
+            this.btnStatus.Size = new System.Drawing.Size(195, 55);
             this.btnStatus.TabIndex = 179;
             this.btnStatus.Text = "Status";
             this.btnStatus.UseVisualStyleBackColor = true;
@@ -276,11 +250,13 @@
             // 
             // btnDump
             // 
+            this.btnDump.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.btnDump.Font = new System.Drawing.Font("Verdana", 12F);
             this.btnDump.ForeColor = System.Drawing.Color.Navy;
-            this.btnDump.Location = new System.Drawing.Point(460, 774);
+            this.btnDump.Location = new System.Drawing.Point(597, 90);
             this.btnDump.Name = "btnDump";
-            this.btnDump.Size = new System.Drawing.Size(448, 55);
+            this.btnDump.Size = new System.Drawing.Size(195, 55);
             this.btnDump.TabIndex = 180;
             this.btnDump.Text = "Dump Data";
             this.btnDump.UseVisualStyleBackColor = true;
@@ -586,34 +562,21 @@
             this.label5.TabIndex = 194;
             this.label5.Text = "製作筆型:";
             // 
-            // groupBox4
-            // 
-            this.groupBox4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(184)))), ((int)(((byte)(195)))));
-            this.groupBox4.Controls.Add(this.btn_ass_chk);
-            this.groupBox4.Controls.Add(this.label34);
-            this.groupBox4.Controls.Add(this.tbxSn);
-            this.groupBox4.Font = new System.Drawing.Font("Verdana", 12F);
-            this.groupBox4.ForeColor = System.Drawing.Color.Navy;
-            this.groupBox4.Location = new System.Drawing.Point(6, 412);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(448, 166);
-            this.groupBox4.TabIndex = 201;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "主要作業區";
-            // 
             // groupBox5
             // 
+            this.groupBox5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(184)))), ((int)(((byte)(195)))));
-            this.groupBox5.Controls.Add(this.tbx_Pcb_feed_back);
             this.groupBox5.Controls.Add(this.btn_clr_pcb);
             this.groupBox5.Controls.Add(this.tbx_ttl_send);
             this.groupBox5.Controls.Add(this.label19);
             this.groupBox5.Controls.Add(this.btn_ttl_send);
+            this.groupBox5.Controls.Add(this.tbx_Pcb_feed_back);
             this.groupBox5.Font = new System.Drawing.Font("Verdana", 12F);
             this.groupBox5.ForeColor = System.Drawing.Color.Navy;
             this.groupBox5.Location = new System.Drawing.Point(460, 12);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(448, 695);
+            this.groupBox5.Size = new System.Drawing.Size(457, 695);
             this.groupBox5.TabIndex = 202;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "裝置回傳";
@@ -638,9 +601,9 @@
             // 
             this.btnPNGtoPCX.Font = new System.Drawing.Font("Verdana", 12F);
             this.btnPNGtoPCX.ForeColor = System.Drawing.Color.Navy;
-            this.btnPNGtoPCX.Location = new System.Drawing.Point(914, 713);
+            this.btnPNGtoPCX.Location = new System.Drawing.Point(311, 29);
             this.btnPNGtoPCX.Name = "btnPNGtoPCX";
-            this.btnPNGtoPCX.Size = new System.Drawing.Size(252, 55);
+            this.btnPNGtoPCX.Size = new System.Drawing.Size(280, 55);
             this.btnPNGtoPCX.TabIndex = 204;
             this.btnPNGtoPCX.Text = "PNG to PCX";
             this.btnPNGtoPCX.UseVisualStyleBackColor = true;
@@ -650,32 +613,95 @@
             // 
             this.btnPrintLabel.Font = new System.Drawing.Font("Verdana", 12F);
             this.btnPrintLabel.ForeColor = System.Drawing.Color.Navy;
-            this.btnPrintLabel.Location = new System.Drawing.Point(914, 774);
+            this.btnPrintLabel.Location = new System.Drawing.Point(311, 90);
             this.btnPrintLabel.Name = "btnPrintLabel";
-            this.btnPrintLabel.Size = new System.Drawing.Size(252, 55);
+            this.btnPrintLabel.Size = new System.Drawing.Size(280, 55);
             this.btnPrintLabel.TabIndex = 205;
             this.btnPrintLabel.Text = "Print Label";
             this.btnPrintLabel.UseVisualStyleBackColor = true;
             this.btnPrintLabel.Click += new System.EventHandler(this.btnPrintLabel_Click);
+            // 
+            // tbxSn
+            // 
+            this.tbxSn.Enabled = false;
+            this.tbxSn.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.tbxSn.Location = new System.Drawing.Point(159, 30);
+            this.tbxSn.Name = "tbxSn";
+            this.tbxSn.Size = new System.Drawing.Size(269, 27);
+            this.tbxSn.TabIndex = 170;
+            // 
+            // label34
+            // 
+            this.label34.AutoSize = true;
+            this.label34.Font = new System.Drawing.Font("Verdana", 12F);
+            this.label34.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.label34.Location = new System.Drawing.Point(43, 32);
+            this.label34.Name = "label34";
+            this.label34.Size = new System.Drawing.Size(111, 18);
+            this.label34.TabIndex = 169;
+            this.label34.Text = "目前製作序號:";
+            // 
+            // btn_ass_chk
+            // 
+            this.btn_ass_chk.Font = new System.Drawing.Font("Verdana", 12F);
+            this.btn_ass_chk.ForeColor = System.Drawing.Color.Navy;
+            this.btn_ass_chk.Location = new System.Drawing.Point(158, 63);
+            this.btn_ass_chk.Name = "btn_ass_chk";
+            this.btn_ass_chk.Size = new System.Drawing.Size(270, 86);
+            this.btn_ass_chk.TabIndex = 104;
+            this.btn_ass_chk.Text = "#ASS_CHECK";
+            this.btn_ass_chk.UseVisualStyleBackColor = true;
+            this.btn_ass_chk.Click += new System.EventHandler(this.btn_ass_chk_Click);
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(184)))), ((int)(((byte)(195)))));
+            this.groupBox4.Controls.Add(this.btn_ass_chk);
+            this.groupBox4.Controls.Add(this.label34);
+            this.groupBox4.Controls.Add(this.tbxSn);
+            this.groupBox4.Font = new System.Drawing.Font("Verdana", 12F);
+            this.groupBox4.ForeColor = System.Drawing.Color.Navy;
+            this.groupBox4.Location = new System.Drawing.Point(6, 412);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(448, 166);
+            this.groupBox4.TabIndex = 201;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "主要作業區";
+            // 
+            // groupBox6
+            // 
+            this.groupBox6.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(184)))), ((int)(((byte)(195)))));
+            this.groupBox6.Controls.Add(this.btnStatus);
+            this.groupBox6.Controls.Add(this.btnPrintLabel);
+            this.groupBox6.Controls.Add(this.btnShipMode);
+            this.groupBox6.Controls.Add(this.btnPNGtoPCX);
+            this.groupBox6.Controls.Add(this.btn_clear_com);
+            this.groupBox6.Controls.Add(this.btnDump);
+            this.groupBox6.Font = new System.Drawing.Font("Verdana", 12F);
+            this.groupBox6.ForeColor = System.Drawing.Color.Navy;
+            this.groupBox6.Location = new System.Drawing.Point(6, 713);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(911, 164);
+            this.groupBox6.TabIndex = 206;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "功能按鈕";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(40)))));
-            this.ClientSize = new System.Drawing.Size(1668, 840);
-            this.Controls.Add(this.btnPrintLabel);
-            this.Controls.Add(this.btnPNGtoPCX);
+            this.ClientSize = new System.Drawing.Size(922, 887);
+            this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.currGroupBox);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
-            this.Controls.Add(this.btnStatus);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.btnDump);
-            this.Controls.Add(this.btnShipMode);
-            this.Controls.Add(this.btn_clear_com);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.Text = "DOSE Final Function Test";
@@ -688,12 +714,13 @@
             this.groupBox2.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
-            this.groupBox4.ResumeLayout(false);
-            this.groupBox4.PerformLayout();
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
             this.currGroupBox.ResumeLayout(false);
             this.currGroupBox.PerformLayout();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
+            this.groupBox6.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -701,7 +728,6 @@
         #endregion
         private System.IO.Ports.SerialPort RS232_PLC;
         private System.IO.Ports.SerialPort RS232_DOSE;
-        private System.Windows.Forms.Button btn_ass_chk;
         private System.Windows.Forms.Button btn_clr_pcb;
         private System.Windows.Forms.Button btn_ttl_send;
         private System.Windows.Forms.TextBox tbx_Pcb_feed_back;
@@ -711,8 +737,6 @@
         private System.Windows.Forms.DataVisualization.Charting.Chart chart2;
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.Label lbl_charge_curr;
-        private System.Windows.Forms.Label label34;
-        private System.Windows.Forms.TextBox tbxSn;
         private System.Windows.Forms.Button btnOpenManage;
         private System.Windows.Forms.Button btnShipMode;
         private System.Windows.Forms.Button btnStatus;
@@ -740,13 +764,17 @@
         private System.Windows.Forms.ComboBox cbx_power;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.GroupBox currGroupBox;
         private System.Windows.Forms.Button btnPNGtoPCX;
         private System.Windows.Forms.Button btnPrintLabel;
         private System.Windows.Forms.Label lblSleeve;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox tbxSn;
+        private System.Windows.Forms.Label label34;
+        private System.Windows.Forms.Button btn_ass_chk;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.GroupBox groupBox6;
     }
 
    
