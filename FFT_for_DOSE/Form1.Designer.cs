@@ -59,7 +59,7 @@
             this.label39 = new System.Windows.Forms.Label();
             this.label41 = new System.Windows.Forms.Label();
             this.btnLogin = new System.Windows.Forms.Button();
-            this.btxPrintLabel2 = new System.Windows.Forms.Button();
+            this.btnLabelManual = new System.Windows.Forms.Button();
             this.cbxSleeveName2 = new System.Windows.Forms.ComboBox();
             this.tbxSN2 = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -381,17 +381,17 @@
             this.btnLogin.UseVisualStyleBackColor = true;
             this.btnLogin.Click += new System.EventHandler(this.btnLogin_Click);
             // 
-            // btxPrintLabel2
+            // btnLabelManual
             // 
-            this.btxPrintLabel2.Font = new System.Drawing.Font("Verdana", 12F);
-            this.btxPrintLabel2.ForeColor = System.Drawing.Color.Navy;
-            this.btxPrintLabel2.Location = new System.Drawing.Point(292, 64);
-            this.btxPrintLabel2.Name = "btxPrintLabel2";
-            this.btxPrintLabel2.Size = new System.Drawing.Size(136, 41);
-            this.btxPrintLabel2.TabIndex = 194;
-            this.btxPrintLabel2.Text = "Print Label";
-            this.btxPrintLabel2.UseVisualStyleBackColor = true;
-            this.btxPrintLabel2.Click += new System.EventHandler(this.btxPrintLabel2_Click);
+            this.btnLabelManual.Font = new System.Drawing.Font("Verdana", 12F);
+            this.btnLabelManual.ForeColor = System.Drawing.Color.Navy;
+            this.btnLabelManual.Location = new System.Drawing.Point(292, 64);
+            this.btnLabelManual.Name = "btnLabelManual";
+            this.btnLabelManual.Size = new System.Drawing.Size(136, 41);
+            this.btnLabelManual.TabIndex = 194;
+            this.btnLabelManual.Text = "Print Label";
+            this.btnLabelManual.UseVisualStyleBackColor = true;
+            this.btnLabelManual.Click += new System.EventHandler(this.btnLabelManual_Click);
             // 
             // cbxSleeveName2
             // 
@@ -430,7 +430,7 @@
             // 
             this.groupBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(184)))), ((int)(((byte)(195)))));
             this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Controls.Add(this.btxPrintLabel2);
+            this.groupBox1.Controls.Add(this.btnLabelManual);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.cbxSleeveName2);
             this.groupBox1.Controls.Add(this.tbxSN2);
@@ -752,7 +752,7 @@
         private System.Windows.Forms.Label label39;
         private System.Windows.Forms.Label label41;
         private System.Windows.Forms.Button btnLogin;
-        private System.Windows.Forms.Button btxPrintLabel2;
+        private System.Windows.Forms.Button btnLabelManual;
         private System.Windows.Forms.ComboBox cbxSleeveName2;
         private System.Windows.Forms.TextBox tbxSN2;
         private System.Windows.Forms.Label label2;

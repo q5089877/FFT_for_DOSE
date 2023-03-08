@@ -23,36 +23,44 @@ using ZXing;
 namespace FFT_DOSE
 {
     public partial class Form1 : Form
-    {
+    {        
+        IMessageBasedSession session;           //POWER
+        MessageBasedFormattedIO formattedIO;    //POWER
+
+        MethodInvoker miCreateMaxSN;
+        AccessHelper accessHelper = new AccessHelper();
+
+        #region 公用常數
+        const int batteryFullCurr = 300;  //判斷充電電流是否小於此
+        const string leftSN = "D";        //SN前綴;      
+        const string testErr = "FFT測試失敗";
+        const int delay_time2 = 100;
+        const double chart_MAX = 250;        
+        const int chart_interval = 350; //設定電流表更新時間
+        int numberOfPointsInChart = 30;
+        #endregion
+
         #region 公用變數
-        int batteryFullCurr = 300;  //判斷充電電流是否小於此
         public bool showManage { get; set; }     //控制工單管理頁面 
         printLabel printLabel1;     //建立公用label元件        
         StreamWriter SW;
-
-        #region SN       
+                
         int intNextSn;              //現在要製作的SN, 數字型別
-        string strNextSn = "";      //現在要製作的SN, 字串型別
-        string leftSN = "D";        //SN前綴;      
-        #endregion
-
-        string testErr = "FFT測試失敗";
+        string strNextSn = "";      //現在要製作的SN, 字串型別                
 
         string GTIN = "";           //需隨批號變更內容
-
         string deviceID = "";       //Device ID
         string bleName = "";        //藍牙名稱
         string fwVersion = "";      //FW版本
         string pcbIQC = "";         //PCB IQC結果
         string batchNum = "";       //批號
-
         string StrSleeveName = "";  //Sleeve名稱  => 於選取批號時決定
         string pcbVer = "";         //PCB版本     => 從STATUS取得
         string bottomVer = "";      //Bottom版本  => 於選取批號時決定
-
         string assCheck = "";       //此字串用來判斷FFT結果 Pass or Fail              
         string PLC_COM = "";
         string POWER_COM = "";
+        string strSQL = "";
 
         bool WriteDumpData = false; //用來控制寫入dump date的txt檔用
         bool toShippingMode = false;
@@ -60,48 +68,35 @@ namespace FFT_DOSE
         bool useCurrMeter = false;
         int FFTCurr = 0;
         byte[] UTF8bytes;
-        // Define some variables
-        int numberOfPointsInChart = 30;
         int newX = 0;
         int charge_max = 0;
 
-        //校正參數用
+        //********校正參數用********
         string buildDate = "", accXmax = "2000", accXmin = "-2000", accYmax = "2000", accYmin = "-2000", accZmax = "2000", accZmin = "-2000"
          , gyroXmax = "", gyroXmin = "", gyroYmax = "", gyroYmin = "", gyroZmax = "", gyroZmin = "", mouseXmax = "", mouseXmin = "", mouseYmax = "", mouseYmin = "", mouseSmax = ""
          , mouseSmin = "", mouseFmax = "", mouseFmin = "", mouseImax = "", mouseImin = "", IRmax = "", IRmin = "", batterymax = "", batterymin = "", mountingSwitch = "";
-
-        int label_X_Move = 30;  //控制LABE位置  
-
-        MethodInvoker miCreateMaxSN;
-        AccessHelper accessHelper = new AccessHelper();
-        string strSQL;
-        static double chart_MAX = 250;
-
-        //設定電流表更新時間
-        static int chart_interval = 350;
+        //********校正參數用********
 
         bool CheckShipping = false;
         // DBConn access_data;
-        string strFeedbackDose = "";       
+        string strFeedbackDose = "";
 
-        //POWER
-        IMessageBasedSession session;
-        MessageBasedFormattedIO formattedIO;
-
-        //Chart
+        //********Chart********
+        Chart chart1 = new RealtimeChart().GetChart;
         private System.Windows.Forms.Timer timerRealTimeData;
         private Random random = new Random();
-        private int pointIndex = 0;
-        Chart chart1 = new RealtimeChart().GetChart;
-        int[] int_curr_value = new int[] { 7200 };
-        int delay_time2 = 100;
+        private int pointIndex = 0;        
+        int[] int_curr_value = new int[] { 200 };
+        //********Chart********
 
-        //流程控制
+        //********流程控制//********
         bool boolMountingSwitch = false;
         bool boolAssCheckEnd = false; //勿刪
         bool boolDeviceReceived = false;
+        //********流程控制//********
 
         #endregion
+
         public Form1()
         {
             InitializeComponent();
@@ -109,6 +104,9 @@ namespace FFT_DOSE
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            //創建printLabel
+            printLabel1 = new printLabel();
+
             //讀取電流計是否要開啟
             if (File.Exists(Application.StartupPath + @"\meter.txt"))
             {
@@ -120,18 +118,16 @@ namespace FFT_DOSE
                     lblPowCom.Visible = true;
                     cbx_power.Visible = true;
                     //變更windows大小                    
-                    this.Size = new System.Drawing.Size(1684, 880);
+                    this.Size = new System.Drawing.Size(1684, 926);
                 }
                 // 將檔案內容寫回檔案中以清空檔案內容
                 File.WriteAllText(Application.StartupPath + @"\meter.txt", string.Empty);
-            }
-
-            printLabel1 = new printLabel();
+            }            
 
             //載入使用者名稱到下拉選單
             loadUserName();
 
-            //   showLogForm = false;          
+            //取得Com port            
             GetPortInformation();
 
             //初始化上一次選擇  
@@ -263,104 +259,129 @@ namespace FFT_DOSE
                     }
                     if (inData.Contains("ACC X Max. :") == true)
                     {
+                        //取得回傳值
                         accXmax = inData.Substring(inData.IndexOf("ACC X Max. :") + 12, inData.IndexOf("ACC X Min. :") - (inData.IndexOf("ACC X Max. :") + 12)).Replace("\r\n", "");
                     }
                     if (inData.Contains("ACC X Min. :") == true)
                     {
+                        //取得回傳值
                         accXmin = inData.Substring(inData.IndexOf("ACC X Min. :") + 12, inData.IndexOf("ACC Y Max. :") - (inData.IndexOf("ACC X Min. :") + 12)).Replace("\r\n", "");
                     }
                     if (inData.Contains("ACC Y Max. :") == true)
                     {
+                        //取得回傳值
                         accYmax = inData.Substring(inData.IndexOf("ACC Y Max. :") + 12, inData.IndexOf("ACC Y Min. :") - (inData.IndexOf("ACC Y Max. :") + 12)).Replace("\r\n", "");
                     }
                     if (inData.Contains("ACC Y Min. :") == true)
                     {
+                        //取得回傳值
                         accYmin = inData.Substring(inData.IndexOf("ACC Y Min. :") + 12, inData.IndexOf("ACC Z Max. :") - (inData.IndexOf("ACC Y Min. :") + 12)).Replace("\r\n", "");
                     }
                     if (inData.Contains("ACC Z Max. :") == true)
                     {
+                        //取得回傳值
                         accZmax = inData.Substring(inData.IndexOf("ACC Z Max. :") + 12, inData.IndexOf("ACC Z Min. :") - (inData.IndexOf("ACC Z Max. :") + 12)).Replace("\r\n", "");
                     }
                     if (inData.Contains("ACC Z Min. :") == true)
                     {
+                        //取得回傳值
                         accZmin = inData.Substring(inData.IndexOf("ACC Z Min. :") + 12, inData.IndexOf("GYRO X Max. :") - (inData.IndexOf("ACC Z Min. :") + 12)).Replace("\r\n", "");
                     }
                     if (inData.Contains("GYRO X Max. :") == true)
                     {
+                        //取得回傳值
                         gyroXmax = inData.Substring(inData.IndexOf("GYRO X Max. :") + 13, inData.IndexOf("GYRO X Min. :") - (inData.IndexOf("GYRO X Max. :") + 13)).Replace("\r\n", "");
                     }
                     if (inData.Contains("GYRO X Min. :") == true)
                     {
+                        //取得回傳值
                         gyroXmin = inData.Substring(inData.IndexOf("GYRO X Min. :") + 13, inData.IndexOf("GYRO Y Max. :") - (inData.IndexOf("GYRO X Min. :") + 13)).Replace("\r\n", "");
                     }
                     if (inData.Contains("GYRO Y Max. :") == true)
                     {
+                        //取得回傳值
                         gyroYmax = inData.Substring(inData.IndexOf("GYRO Y Max. :") + 13, inData.IndexOf("GYRO Y Min. :") - (inData.IndexOf("GYRO Y Max. :") + 13)).Replace("\r\n", "");
                     }
                     if (inData.Contains("GYRO Y Min. :") == true)
                     {
+                        //取得回傳值
                         gyroYmin = inData.Substring(inData.IndexOf("GYRO Y Min. :") + 13, inData.IndexOf("GYRO Z Max. :") - (inData.IndexOf("GYRO Y Min. :") + 13)).Replace("\r\n", "");
                     }
                     if (inData.Contains("GYRO Z Max. :") == true)
                     {
+                        //取得回傳值
                         gyroZmax = inData.Substring(inData.IndexOf("GYRO Z Max. :") + 13, inData.IndexOf("GYRO Z Min. :") - (inData.IndexOf("GYRO Z Max. :") + 13)).Replace("\r\n", "");
                     }
                     if (inData.Contains("GYRO Z Min. :") == true)
                     {
+                        //取得回傳值
                         gyroZmin = inData.Substring(inData.IndexOf("GYRO Z Min. :") + 13, inData.IndexOf("Mouse X Max. :") - (inData.IndexOf("GYRO Z Min. :") + 13)).Replace("\r\n", "");
                     }
                     if (inData.Contains("Mouse X Max. :") == true)
                     {
+                        //取得回傳值
                         mouseXmax = inData.Substring(inData.IndexOf("Mouse X Max. :") + 14, inData.IndexOf("Mouse X Min. :") - (inData.IndexOf("Mouse X Max. :") + 14)).Replace("\r\n", "");
                     }
                     if (inData.Contains("Mouse X Min. :") == true)
                     {
+                        //取得回傳值
                         mouseXmin = inData.Substring(inData.IndexOf("Mouse X Min. :") + 14, inData.IndexOf("Mouse Y Max. :") - (inData.IndexOf("Mouse X Min. :") + 14)).Replace("\r\n", "");
                     }
                     if (inData.Contains("Mouse Y Max. :") == true)
                     {
+                        //取得回傳值
                         mouseYmax = inData.Substring(inData.IndexOf("Mouse Y Max. :") + 14, inData.IndexOf("Mouse Y Min. :") - (inData.IndexOf("Mouse Y Max. :") + 14)).Replace("\r\n", "");
                     }
                     if (inData.Contains("Mouse Y Min. :") == true)
                     {
+                        //取得回傳值
                         mouseYmin = inData.Substring(inData.IndexOf("Mouse Y Min. :") + 14, inData.IndexOf("Mouse Shutter Max. :") - (inData.IndexOf("Mouse Y Min. :") + 14)).Replace("\r\n", "");
                     }
                     if (inData.Contains("Mouse Shutter Max. :") == true)
                     {
+                        //取得回傳值
                         mouseSmax = inData.Substring(inData.IndexOf("Mouse Shutter Max. :") + 20, inData.IndexOf("Mouse Shutter Min. :") - (inData.IndexOf("Mouse Shutter Max. :") + 20)).Replace("\r\n", "");
                     }
                     if (inData.Contains("Mouse Shutter Min. :") == true)
                     {
+                        //取得回傳值
                         mouseSmin = inData.Substring(inData.IndexOf("Mouse Shutter Min. :") + 20, inData.IndexOf("Mouse Frame Max. :") - (inData.IndexOf("Mouse Shutter Min. :") + 20)).Replace("\r\n", "");
                     }
                     if (inData.Contains("Mouse Frame Max. :") == true)
                     {
+                        //取得回傳值
                         mouseFmax = inData.Substring(inData.IndexOf("Mouse Frame Max. :") + 18, inData.IndexOf("Mouse Frame Min. :") - (inData.IndexOf("Mouse Frame Max. :") + 18)).Replace("\r\n", "");
                     }
                     if (inData.Contains("Mouse Frame Min. :") == true)
                     {
+                        //取得回傳值
                         mouseFmin = inData.Substring(inData.IndexOf("Mouse Frame Min. :") + 18, inData.IndexOf("Mouse IQ Max. :") - (inData.IndexOf("Mouse Frame Min. :") + 18)).Replace("\r\n", "");
                     }
                     if (inData.Contains("Mouse IQ Max. :") == true)
                     {
+                        //取得回傳值
                         mouseImax = inData.Substring(inData.IndexOf("Mouse IQ Max. :") + 15, inData.IndexOf("Mouse IQ Min. :") - (inData.IndexOf("Mouse IQ Max. :") + 15)).Replace("\r\n", "");
                     }
                     if (inData.Contains("Mouse IQ Min. :") == true)
                     {
+                        //取得回傳值
                         mouseImin = inData.Substring(inData.IndexOf("Mouse IQ Min. :") + 15, inData.IndexOf("IR Max. :") - (inData.IndexOf("Mouse IQ Min. :") + 15)).Replace("\r\n", "");
                     }
                     if (inData.Contains("IR Max. :") == true)
                     {
+                        //取得回傳值
                         IRmax = inData.Substring(inData.IndexOf("IR Max. :") + 9, inData.IndexOf("IR Min. :") - (inData.IndexOf("IR Max. :") + 9)).Replace("\r\n", "");
                     }
                     if (inData.Contains("IR Min. :") == true)
                     {
+                        //取得回傳值
                         IRmin = inData.Substring(inData.IndexOf("IR Min. :") + 9, inData.IndexOf("Battery Max. :") - (inData.IndexOf("IR Min. :") + 9)).Replace("\r\n", "");
                     }
                     if (inData.Contains("Battery Max. :") == true)
                     {
                         try
                         {
+                            //取得回傳值
                             batterymax = inData.Substring(inData.IndexOf("Battery Max. :") + 14, inData.IndexOf("Battery Min. :") - (inData.IndexOf("Battery Max. :") + 14)).Replace("\r\n", "");
                         }
                         catch
@@ -372,6 +393,7 @@ namespace FFT_DOSE
                     {
                         try
                         {
+                            //取得回傳值
                             batterymin = inData.Substring(inData.IndexOf("Battery Min. :") + 14, inData.IndexOf("Charging") - (inData.IndexOf("Battery Min. :") + 14)).Replace("\r\n", "");
                         }
                         catch
@@ -381,6 +403,7 @@ namespace FFT_DOSE
                     }
                     if (inData.Contains("Mount Btn :") == true)
                     {
+                        //取得回傳值
                         mountingSwitch = inData.Substring(inData.IndexOf("Mount Btn :") + 11, 2);
                         if (mountingSwitch == "Pr")
                         {
@@ -400,12 +423,14 @@ namespace FFT_DOSE
                     //FW version:
                     if (inData.Contains("FW version:") == true)
                     {
+                        //取得回傳值
                         fwVersion = inData.Substring(inData.IndexOf("FW version:") + 11, 5);
                     }
 
                     //IQC_PCBA :
                     if (inData.Contains("IQC_PCBA :") == true)
                     {
+                        //取得回傳值
                         pcbIQC = inData.Substring(inData.IndexOf("IQC_PCBA :") + 10, 4);
                     }
 
@@ -415,6 +440,7 @@ namespace FFT_DOSE
                     {
                         #region 測試跑完寫入deviceID，同時開始判斷是否pass
                         boolAssCheckEnd = true; //測試跑完
+                        //取得回傳值
                         assCheck = inData.Substring(inData.IndexOf("ASS_CHECK") + 11, 4);
                         //create building Date
                         buildDate = DateTime.Now.ToString("yyyy MMM dd", CultureInfo.CreateSpecificCulture("en-US"));
@@ -646,6 +672,11 @@ namespace FFT_DOSE
 
         private void btnPNGtoPCX_Click(object sender, EventArgs e)
         {
+            gtinToPCX();
+        }
+
+        private void gtinToPCX()
+        {
             BarcodeWriter barcodeWriter1 = new BarcodeWriter();
             barcodeWriter1.Format = BarcodeFormat.DATA_MATRIX;
             barcodeWriter1.Options = new ZXing.Datamatrix.DatamatrixEncodingOptions();
@@ -696,7 +727,7 @@ namespace FFT_DOSE
             using (MagickImage image = new MagickImage(beforeImage))
             {
                 //增加轉換為黑白色彩
-                image.Format = MagickFormat.Pcx;                
+                image.Format = MagickFormat.Pcx;
                 image.ColorType = ColorType.Palette;
 
                 //取得目錄字串
@@ -707,7 +738,11 @@ namespace FFT_DOSE
 
         private void btnPrintLabel_Click(object sender, EventArgs e)
         {
-            printLabel1.PrintOneLabel();
+            printLabel1.labenBatNum = batchNum;
+            printLabel1.labenSN = tbxSn.Text;
+            printLabel1.labenGTIN = GTIN;
+            printLabel1.labenBLE = bleName;
+            printLabel1.PrintOneLabel();            
         }
 
         private void btnLogin_Click(object sender, EventArgs e)
@@ -793,18 +828,9 @@ namespace FFT_DOSE
             }
         }
 
-        //for DET TEST
-        private void btxPrintLabel2_Click(object sender, EventArgs e)
+        private void btnLabelManual_Click(object sender, EventArgs e)
         {
-            try
-            {
-                //這裡有問題
-                printLabel1.PrintOneLabel_PCX();
-            }
-            catch
-            {
-                MessageBox.Show("載入批號相關資訊");
-            }
+            MessageBox.Show("暫時沒功能");
         }
 
         private void btnDump_Click(object sender, EventArgs e)
