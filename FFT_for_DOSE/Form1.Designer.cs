@@ -60,8 +60,8 @@
             this.label41 = new System.Windows.Forms.Label();
             this.btnLogin = new System.Windows.Forms.Button();
             this.btnLabelManual = new System.Windows.Forms.Button();
-            this.cbxSleeveName2 = new System.Windows.Forms.ComboBox();
-            this.tbxSN2 = new System.Windows.Forms.TextBox();
+            this.cbxSleeveName_for_Mprint = new System.Windows.Forms.ComboBox();
+            this.tbxSN_for_Mprint = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -393,27 +393,28 @@
             this.btnLabelManual.UseVisualStyleBackColor = true;
             this.btnLabelManual.Click += new System.EventHandler(this.btnLabelManual_Click);
             // 
-            // cbxSleeveName2
+            // cbxSleeveName_for_Mprint
             // 
-            this.cbxSleeveName2.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.cbxSleeveName2.FormattingEnabled = true;
-            this.cbxSleeveName2.Items.AddRange(new object[] {
-            "SS ",
-            "FT ",
-            "KP ",
+            this.cbxSleeveName_for_Mprint.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.cbxSleeveName_for_Mprint.FormattingEnabled = true;
+            this.cbxSleeveName_for_Mprint.Items.AddRange(new object[] {
+            "SS",
+            "FT",
+            "KP",
             "NP5"});
-            this.cbxSleeveName2.Location = new System.Drawing.Point(160, 34);
-            this.cbxSleeveName2.Name = "cbxSleeveName2";
-            this.cbxSleeveName2.Size = new System.Drawing.Size(83, 24);
-            this.cbxSleeveName2.TabIndex = 195;
+            this.cbxSleeveName_for_Mprint.Location = new System.Drawing.Point(160, 34);
+            this.cbxSleeveName_for_Mprint.Name = "cbxSleeveName_for_Mprint";
+            this.cbxSleeveName_for_Mprint.Size = new System.Drawing.Size(83, 24);
+            this.cbxSleeveName_for_Mprint.TabIndex = 195;
             // 
-            // tbxSN2
+            // tbxSN_for_Mprint
             // 
-            this.tbxSN2.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.tbxSN2.Location = new System.Drawing.Point(292, 31);
-            this.tbxSN2.Name = "tbxSN2";
-            this.tbxSN2.Size = new System.Drawing.Size(136, 27);
-            this.tbxSN2.TabIndex = 196;
+            this.tbxSN_for_Mprint.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.tbxSN_for_Mprint.Location = new System.Drawing.Point(292, 31);
+            this.tbxSN_for_Mprint.Name = "tbxSN_for_Mprint";
+            this.tbxSN_for_Mprint.Size = new System.Drawing.Size(136, 27);
+            this.tbxSN_for_Mprint.TabIndex = 196;
+            this.tbxSN_for_Mprint.Text = "000000";
             // 
             // label2
             // 
@@ -432,8 +433,8 @@
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.btnLabelManual);
             this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Controls.Add(this.cbxSleeveName2);
-            this.groupBox1.Controls.Add(this.tbxSN2);
+            this.groupBox1.Controls.Add(this.cbxSleeveName_for_Mprint);
+            this.groupBox1.Controls.Add(this.tbxSN_for_Mprint);
             this.groupBox1.Font = new System.Drawing.Font("Verdana", 12F);
             this.groupBox1.ForeColor = System.Drawing.Color.Navy;
             this.groupBox1.Location = new System.Drawing.Point(6, 584);
@@ -753,8 +754,8 @@
         private System.Windows.Forms.Label label41;
         private System.Windows.Forms.Button btnLogin;
         private System.Windows.Forms.Button btnLabelManual;
-        private System.Windows.Forms.ComboBox cbxSleeveName2;
-        private System.Windows.Forms.TextBox tbxSN2;
+        private System.Windows.Forms.ComboBox cbxSleeveName_for_Mprint;
+        private System.Windows.Forms.TextBox tbxSN_for_Mprint;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label label3;

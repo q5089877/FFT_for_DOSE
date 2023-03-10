@@ -176,7 +176,6 @@ namespace FFT_For_DOSE
             }
         }
 
-
         /// <summary>
         /// 取得DataColumn
         /// </summary>
@@ -205,9 +204,6 @@ namespace FFT_For_DOSE
                 }
             }
         }
-
-
-
 
         /// <summary>
         /// 執行語法
@@ -240,8 +236,7 @@ namespace FFT_For_DOSE
         {
             return this.GetNum(Sqlstrs);
         }
-
-
+        
         /// <summary>
         /// 執行更新語法
         /// </summary>    
@@ -271,9 +266,7 @@ namespace FFT_For_DOSE
             return "fail";
         }
 
-
         #region ACCESS高效分页
-
         /// <summary>
         /// ACCESS高效分页
         /// </summary>
@@ -345,12 +338,7 @@ namespace FFT_For_DOSE
         }
 
         #endregion
-
-
         #endregion
-
-
-
 
         public string readData(string sqlStr)
         {

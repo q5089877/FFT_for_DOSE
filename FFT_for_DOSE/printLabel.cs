@@ -105,42 +105,7 @@ namespace FFT_For_DOSE
             }
             #endregion
         }     
-
-        public void PrintOneLabel_PCX()
-        {
-            #region print Short label 
-            try
-            {
-                //創造新PCX
-                //  CreatePCX(strSN);
-                #region pringLabel
-                TSCLIB_DLL.openport("Bar Code Printer TT053-61");
-                TSCLIB_DLL.setup("49.92", "8.7", "1", "15", "0", "3", "-0.3");
-                TSCLIB_DLL.clearbuffer();
-
-                //Label PCX
-                string str_path = System.Windows.Forms.Application.StartupPath;
-                int aa = TSCLIB_DLL.downloadpcx(str_path + "\\label2.PCX", "label2.PCX");
-                int bb = TSCLIB_DLL.sendcommand("PUTPCX 30,0,\"label2.PCX\"");
-
-                //TSCLIB_DLL.windowsfont(440 + label_X_Move,       50, 36, 0, 2, 0, "FreeSans", "2023-01-07");
-                //TSCLIB_DLL.windowsfont(445 + label_X_Move + 100, 97, 36, 0, 2, 0, "FreeSans", "KP");
-                //TSCLIB_DLL.windowsfont(445 + label_X_Move + 270, 97, 36, 0, 2, 0, "FreeSans", "DKP000999");
-                //TSCLIB_DLL.windowsfont(440 + label_X_Move + 500, 170, 36, 0, 2, 0, "FreeSans", "3IG7MBIE");
-
-                TSCLIB_DLL.sendcommand("PRINT 1");
-                TSCLIB_DLL.sendcommand("DIRECTION 1");
-                TSCLIB_DLL.closeport();
-                #endregion
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString());
-            }
-            #endregion
-        }
-             
-
+      
         private void gtinToPCX()
         {
             BarcodeWriter barcodeWriter1 = new BarcodeWriter();

@@ -23,7 +23,7 @@ using ZXing;
 namespace FFT_DOSE
 {
     public partial class Form1 : Form
-    {        
+    {
         IMessageBasedSession session;           //POWER
         MessageBasedFormattedIO formattedIO;    //POWER
 
@@ -35,7 +35,7 @@ namespace FFT_DOSE
         const string leftSN = "D";        //SN前綴;      
         const string testErr = "FFT測試失敗";
         const int delay_time2 = 100;
-        const double chart_MAX = 250;        
+        const double chart_MAX = 250;
         const int chart_interval = 350; //設定電流表更新時間
         int numberOfPointsInChart = 30;
         #endregion
@@ -44,7 +44,7 @@ namespace FFT_DOSE
         public bool showManage { get; set; }     //控制工單管理頁面 
         printLabel printLabel1;     //建立公用label元件        
         StreamWriter SW;
-                
+
         int intNextSn;              //現在要製作的SN, 數字型別
         string strNextSn = "";      //現在要製作的SN, 字串型別                
 
@@ -85,7 +85,7 @@ namespace FFT_DOSE
         Chart chart1 = new RealtimeChart().GetChart;
         private System.Windows.Forms.Timer timerRealTimeData;
         private Random random = new Random();
-        private int pointIndex = 0;        
+        private int pointIndex = 0;
         int[] int_curr_value = new int[] { 200 };
         //********Chart********
 
@@ -107,6 +107,9 @@ namespace FFT_DOSE
             //創建printLabel
             printLabel1 = new printLabel();
 
+            //初始化下拉選單
+            cbxSleeveName_for_Mprint.SelectedIndex = 0;
+
             //讀取電流計是否要開啟
             if (File.Exists(Application.StartupPath + @"\meter.txt"))
             {
@@ -122,7 +125,7 @@ namespace FFT_DOSE
                 }
                 // 將檔案內容寫回檔案中以清空檔案內容
                 File.WriteAllText(Application.StartupPath + @"\meter.txt", string.Empty);
-            }            
+            }
 
             //載入使用者名稱到下拉選單
             loadUserName();
@@ -497,7 +500,7 @@ namespace FFT_DOSE
                                     else
                                     {
                                         intoDeviceDataNoSN();
-                                        MessageBox.Show(testErr);                                        
+                                        MessageBox.Show(testErr);
                                     }
                                     #endregion
                                 }
@@ -552,7 +555,7 @@ namespace FFT_DOSE
                     }
                     strFeedbackDose = strFeedbackDose + inData;
                     feebacktbx(strFeedbackDose);
-                     //  this.BeginInvoke(mi_pcb_feedback, null);
+                    //  this.BeginInvoke(mi_pcb_feedback, null);
                 }
                 catch (Exception err)
                 {
@@ -742,7 +745,7 @@ namespace FFT_DOSE
             printLabel1.labenSN = tbxSn.Text;
             printLabel1.labenGTIN = GTIN;
             printLabel1.labenBLE = bleName;
-            printLabel1.PrintOneLabel();            
+            printLabel1.PrintOneLabel();
         }
 
         private void btnLogin_Click(object sender, EventArgs e)
@@ -804,7 +807,7 @@ namespace FFT_DOSE
                     int _num = getCompletedNumForBatch();                   //取得完成數量
 
                     //取得GTIN
-                    strSQL = string.Format("select gtin from gtin where penName = '{0}'", StrSleeveName);
+                    strSQL = string.Format("select gtin from gtin where sleeveName = '{0}'", StrSleeveName);
                     GTIN = accessHelper.readData(strSQL);
                     //批號選擇完成, 刪掉密碼, 鎖定批號
                     tbxPassword.Text = "";
@@ -830,29 +833,44 @@ namespace FFT_DOSE
 
         private void btnLabelManual_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("暫時沒功能");
+            try
+            {
+                string deviceSN = tbxSN_for_Mprint.Text;
+                string deviceSleeve = cbxSleeveName_for_Mprint.SelectedItem.ToString();
+
+                int SN_num;
+                bool SN_is_num = int.TryParse(deviceSN, out SN_num);
+
+                //SN長度為6, 且是數字並大於0
+                if (deviceSN.Length == 6 && SN_is_num && SN_num > 0)
+                {
+                    strSQL = string.Format("select * from snData where sn = '{0}' and sleeveName = '{1}' ", deviceSN,deviceSleeve);
+                    DataTable dt_selectData = accessHelper.GetDataTable(strSQL);
+
+                    //由Sleeve取得GTIN
+                    string GTIN = accessHelper.readData(string.Format("select gtin from gtin where sleeveName = '{0}' ", deviceSleeve));
+
+                    printLabel1.labenBatNum = Convert.ToString(dt_selectData.Rows[0]["batchNum"]);
+                    printLabel1.labenSN = "D" + deviceSleeve + deviceSN;
+                    printLabel1.labenGTIN = GTIN;
+                    printLabel1.labenBLE = Convert.ToString(dt_selectData.Rows[0]["bleName"]);
+                    printLabel1.PrintOneLabel();
+                }
+                else
+                {
+                    MessageBox.Show("SN錯誤");
+                }
+            }
+            catch
+            {
+                MessageBox.Show("功能錯誤");
+            }
         }
 
         private void btnDump_Click(object sender, EventArgs e)
         {
             MessageBox.Show("此功能暫時關閉");
-            //WriteDumpData = true;
-            //SW = new StreamWriter("C:\\DOSE_DumpData\\" + cbxBatch.Text + "\\" + tbxSn.Text + ".txt");          
-            //try
-            //{
-            //    RS232_DOSE.Close();
-            //    RS232_DOSE.Dispose();
-            //    RS232_DOSE.PortName = GetPortInformation_for_DOSE_COM();
-            //    RS232_DOSE.Open();
 
-            //    byte[] UTF8bytes = Encoding.UTF8.GetBytes("#DUMP_DATA" + Environment.NewLine);
-            //    RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-            //    Thread.Sleep(100);
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show("ComPort Error!");
-            //}
         }
 
         private void btnStatus_Click(object sender, EventArgs e)
@@ -1187,7 +1205,7 @@ namespace FFT_DOSE
                                             MessageBox.Show("寫入成功!");
                                             //將SN補0並在左邊增加文字
                                             string strNextSnLen = leftSN + StrSleeveName + Convert.ToInt16(strNextSn).ToString("D6");
-                                          //  printLabel1.PrintOneLabel(strNextSnLen, bleName, StrSleeveName);
+                                            //  printLabel1.PrintOneLabel(strNextSnLen, bleName, StrSleeveName);
 
                                             //將SN增加為1
                                             miCreateMaxSN = new MethodInvoker(this.createSnMax);
@@ -1316,7 +1334,7 @@ namespace FFT_DOSE
         #region *************COM PORT區*************
 
         private void serialPort1_DataReceived(object sender, SerialDataReceivedEventArgs e)
-        {         
+        {
             SerialPort sp = (SerialPort)sender;
             Thread.Sleep(50);
 
@@ -1578,7 +1596,7 @@ namespace FFT_DOSE
             string userRoot = "HKEY_LOCAL_MACHINE";
             string subkey = "SYSTEM\\CurrentControlSet\\Control\\COM Name Arbiter\\Devices";
             string keyName = userRoot + "\\" + subkey;
-       
+
             using (RegistryKey key = Registry.LocalMachine.OpenSubKey(subkey, true))
             {
                 if (key == null)

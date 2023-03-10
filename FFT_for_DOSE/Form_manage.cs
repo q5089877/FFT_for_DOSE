@@ -345,12 +345,12 @@ namespace FFT_For_DOSE
         void reLoadGtin()
         {
             GvGtin.Columns["id"].Visible = false;
-            GvGtin.Columns["penName"].HeaderText = "筆型";
-            GvGtin.Columns["penName"].ReadOnly = true;
+            GvGtin.Columns["sleeveName"].HeaderText = "筆型";
+            GvGtin.Columns["sleeveName"].ReadOnly = true;
             GvGtin.Columns["gtin"].HeaderText = "GTIN";
-            GvGtin.Columns["penName"].Width = 200;
+            GvGtin.Columns["sleeveName"].Width = 200;
             GvGtin.Columns["gtin"].Width = 300;
-            GvGtin.Columns["penName"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            GvGtin.Columns["sleeveName"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             GvGtin.Columns["gtin"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
         }
 
@@ -404,7 +404,7 @@ namespace FFT_For_DOSE
                 // 獲取修改後的資料
                 DataGridViewRow row = GvGtin.Rows[e.RowIndex];
                 dtGtin.Rows[e.RowIndex]["id"] = (int)row.Cells["id"].Value;
-                dtGtin.Rows[e.RowIndex]["penName"] = (string)row.Cells["penName"].Value;
+                dtGtin.Rows[e.RowIndex]["sleeveName"] = (string)row.Cells["sleeveName"].Value;
                 dtGtin.Rows[e.RowIndex]["gtin"] = (string)row.Cells["gtin"].Value;
 
                 // 更新資料庫中的資料
