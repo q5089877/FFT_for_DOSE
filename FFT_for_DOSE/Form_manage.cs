@@ -101,7 +101,7 @@ namespace FFT_For_DOSE
             Form fr = Application.OpenForms[formName];
             if (fr != null)
             {
-                Form1 f1 = (Form1)fr;   //取得Form1                
+                MainForm f1 = (MainForm)fr;   //取得Form1                
                 f1.showManage = false;  //改變showManage的值
             }
         }

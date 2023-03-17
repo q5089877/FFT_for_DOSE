@@ -1,6 +1,6 @@
 ﻿namespace FFT_DOSE
 {
-    partial class Form1
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.
@@ -32,7 +32,7 @@
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.RS232_PLC = new System.IO.Ports.SerialPort(this.components);
             this.RS232_DOSE = new System.IO.Ports.SerialPort(this.components);
             this.btn_clr_pcb = new System.Windows.Forms.Button();
@@ -47,7 +47,6 @@
             this.btnOpenManage = new System.Windows.Forms.Button();
             this.btnShipMode = new System.Windows.Forms.Button();
             this.btnStatus = new System.Windows.Forms.Button();
-            this.btnDump = new System.Windows.Forms.Button();
             this.label37 = new System.Windows.Forms.Label();
             this.cbxBatch = new System.Windows.Forms.ComboBox();
             this.label38 = new System.Windows.Forms.Label();
@@ -75,7 +74,6 @@
             this.label5 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.currGroupBox = new System.Windows.Forms.GroupBox();
-            this.btnPNGtoPCX = new System.Windows.Forms.Button();
             this.btnPrintLabel = new System.Windows.Forms.Button();
             this.tbxSn = new System.Windows.Forms.TextBox();
             this.label34 = new System.Windows.Forms.Label();
@@ -247,20 +245,6 @@
             this.btnStatus.Text = "Status";
             this.btnStatus.UseVisualStyleBackColor = true;
             this.btnStatus.Click += new System.EventHandler(this.btnStatus_Click);
-            // 
-            // btnDump
-            // 
-            this.btnDump.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDump.Font = new System.Drawing.Font("Verdana", 12F);
-            this.btnDump.ForeColor = System.Drawing.Color.Navy;
-            this.btnDump.Location = new System.Drawing.Point(597, 90);
-            this.btnDump.Name = "btnDump";
-            this.btnDump.Size = new System.Drawing.Size(195, 55);
-            this.btnDump.TabIndex = 180;
-            this.btnDump.Text = "Dump Data";
-            this.btnDump.UseVisualStyleBackColor = true;
-            this.btnDump.Click += new System.EventHandler(this.btnDump_Click);
             // 
             // label37
             // 
@@ -598,23 +582,11 @@
             this.currGroupBox.Text = "電流表";
             this.currGroupBox.Visible = false;
             // 
-            // btnPNGtoPCX
-            // 
-            this.btnPNGtoPCX.Font = new System.Drawing.Font("Verdana", 12F);
-            this.btnPNGtoPCX.ForeColor = System.Drawing.Color.Navy;
-            this.btnPNGtoPCX.Location = new System.Drawing.Point(311, 29);
-            this.btnPNGtoPCX.Name = "btnPNGtoPCX";
-            this.btnPNGtoPCX.Size = new System.Drawing.Size(280, 55);
-            this.btnPNGtoPCX.TabIndex = 204;
-            this.btnPNGtoPCX.Text = "PNG to PCX";
-            this.btnPNGtoPCX.UseVisualStyleBackColor = true;
-            this.btnPNGtoPCX.Click += new System.EventHandler(this.btnPNGtoPCX_Click);
-            // 
             // btnPrintLabel
             // 
             this.btnPrintLabel.Font = new System.Drawing.Font("Verdana", 12F);
             this.btnPrintLabel.ForeColor = System.Drawing.Color.Navy;
-            this.btnPrintLabel.Location = new System.Drawing.Point(311, 90);
+            this.btnPrintLabel.Location = new System.Drawing.Point(311, 29);
             this.btnPrintLabel.Name = "btnPrintLabel";
             this.btnPrintLabel.Size = new System.Drawing.Size(280, 55);
             this.btnPrintLabel.TabIndex = 205;
@@ -678,24 +650,22 @@
             this.groupBox6.Controls.Add(this.btnStatus);
             this.groupBox6.Controls.Add(this.btnPrintLabel);
             this.groupBox6.Controls.Add(this.btnShipMode);
-            this.groupBox6.Controls.Add(this.btnPNGtoPCX);
             this.groupBox6.Controls.Add(this.btn_clear_com);
-            this.groupBox6.Controls.Add(this.btnDump);
             this.groupBox6.Font = new System.Drawing.Font("Verdana", 12F);
             this.groupBox6.ForeColor = System.Drawing.Color.Navy;
             this.groupBox6.Location = new System.Drawing.Point(6, 713);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(911, 164);
+            this.groupBox6.Size = new System.Drawing.Size(911, 158);
             this.groupBox6.TabIndex = 206;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "功能按鈕";
             // 
-            // Form1
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(40)))));
-            this.ClientSize = new System.Drawing.Size(922, 887);
+            this.ClientSize = new System.Drawing.Size(922, 881);
             this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.currGroupBox);
             this.Controls.Add(this.groupBox5);
@@ -704,10 +674,10 @@
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "Form1";
+            this.Name = "MainForm";
             this.Text = "DOSE Final Function Test";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+            this.Load += new System.EventHandler(this.MainForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.chart2)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
@@ -741,7 +711,6 @@
         private System.Windows.Forms.Button btnOpenManage;
         private System.Windows.Forms.Button btnShipMode;
         private System.Windows.Forms.Button btnStatus;
-        private System.Windows.Forms.Button btnDump;
         private System.Windows.Forms.Label label37;
         private System.Windows.Forms.ComboBox cbxBatch;
         private System.Windows.Forms.Label label38;
@@ -767,7 +736,6 @@
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.GroupBox currGroupBox;
-        private System.Windows.Forms.Button btnPNGtoPCX;
         private System.Windows.Forms.Button btnPrintLabel;
         private System.Windows.Forms.Label lblSleeve;
         private System.Windows.Forms.Label label5;
@@ -778,6 +746,6 @@
         private System.Windows.Forms.GroupBox groupBox6;
     }
 
-   
+
 }
 

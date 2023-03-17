@@ -22,7 +22,7 @@ using ZXing;
 
 namespace FFT_DOSE
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
         IMessageBasedSession session;           //POWER
         MessageBasedFormattedIO formattedIO;    //POWER
@@ -97,12 +97,12 @@ namespace FFT_DOSE
 
         #endregion
 
-        public Form1()
+        public MainForm()
         {
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void MainForm_Load(object sender, EventArgs e)
         {
             //創建printLabel
             printLabel1 = new printLabel();
@@ -181,7 +181,7 @@ namespace FFT_DOSE
             #endregion                       
         }
 
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             try
             {
@@ -671,74 +671,7 @@ namespace FFT_DOSE
         }
         #endregion
 
-        #region *************按鈕事件集中區*************
-
-        private void btnPNGtoPCX_Click(object sender, EventArgs e)
-        {
-            gtinToPCX();
-        }
-
-        private void gtinToPCX()
-        {
-            BarcodeWriter barcodeWriter1 = new BarcodeWriter();
-            barcodeWriter1.Format = BarcodeFormat.DATA_MATRIX;
-            barcodeWriter1.Options = new ZXing.Datamatrix.DatamatrixEncodingOptions();
-            barcodeWriter1.Options.Width = 400;
-            barcodeWriter1.Options.Height = 400;
-            barcodeWriter1.Options.Margin = 0;
-            if (GTIN == "") { MessageBox.Show("GTIN為空白"); }
-            string label = (char)29 + "01" + GTIN + "10" + batchNum + (char)29 + "11" + DateTime.Now.ToString("yyMMdd") + "17" + DateTime.Now.AddYears(1).ToString("yyMMdd") + "21" + tbxSn.Text;
-
-            Image pngTemp = barcodeWriter1.Write(label);
-
-            using (System.Drawing.Image oOrgImg = new Bitmap(pngTemp))
-            {
-                using (System.IO.MemoryStream oMS = new System.IO.MemoryStream())
-                {
-                    //將oTarImg儲存（指定）到記憶體串流中
-                    oOrgImg.Save(oMS, System.Drawing.Imaging.ImageFormat.Png);
-                    //將串流整個讀到陣列中，寫入某個路徑中的某個檔案裡
-                    using (System.IO.FileStream oFS = System.IO.File.Open(Application.StartupPath + @"\GS1.png", System.IO.FileMode.OpenOrCreate))
-                    { oFS.Write(oMS.ToArray(), 0, oMS.ToArray().Length); }
-                }
-            }
-
-            //黑白反轉
-            using (Image PNGimage = Image.FromFile(Application.StartupPath + @"\GS1.png"))
-            {
-                using (Bitmap pic = new Bitmap(PNGimage))
-                {
-                    for (int y = 0; (y
-                                <= (pic.Height - 1)); y++)
-                    {
-                        for (int x = 0; (x
-                                    <= (pic.Width - 1)); x++)
-                        {
-                            Color inv = pic.GetPixel(x, y);
-                            inv = Color.FromArgb(255, (255 - inv.R), (255 - inv.G), (255 - inv.B));
-                            pic.SetPixel(x, y, inv);
-                        }
-                    }
-                    Image PNGimage2 = pic;
-                    PNGimage2.Save(Application.StartupPath + @"\GS2.png");
-                    PNGimage2.Dispose();
-                }
-            }
-
-            //png to pcx
-            var beforeImage = new MagickImage(Application.StartupPath + @"\GS2.png");
-            using (MagickImage image = new MagickImage(beforeImage))
-            {
-                //增加轉換為黑白色彩
-                image.Format = MagickFormat.Pcx;
-                image.ColorType = ColorType.Palette;
-
-                //取得目錄字串
-                image.Write(Application.StartupPath + @"\GS1.PCX");
-            }
-            beforeImage.Dispose();
-        }
-
+        #region *************按鈕事件集中區*************     
         private void btnPrintLabel_Click(object sender, EventArgs e)
         {
             printLabel1.labenBatNum = batchNum;
@@ -867,11 +800,7 @@ namespace FFT_DOSE
             }
         }
 
-        private void btnDump_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("此功能暫時關閉");
 
-        }
 
         private void btnStatus_Click(object sender, EventArgs e)
         {
@@ -1873,8 +1802,7 @@ namespace FFT_DOSE
             return result;
         }
         #endregion
-
-
+        
         bool intoDeviceData()
         {
             //SQL語法：insert into deviceData
@@ -2098,7 +2026,6 @@ namespace FFT_DOSE
                 writer.WriteLine(content);
             }
         }
-
 
         //增加文字到tbx_Pcb_feed_back的方法
         private void feebacktbx(string text)
