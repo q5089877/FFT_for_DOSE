@@ -364,6 +364,29 @@ namespace FFT_For_DOSE
             }
         }
 
+        ////回傳PLC,電流表COM PORT
+        //public Dictionary<string, string> useKeyGetValueFromSQL(string sqlStr,string key,string value)
+        //{
+        //    Dictionary<string, string> dictionary = new Dictionary<string, string>();
+        //    using (OleDbConnection con = new OleDbConnection(ConStr))
+        //    {
+        //        con.Open();
+        //        OleDbCommand cmd = new OleDbCommand(sqlStr, con);
+        //        string result = string.Empty;
+        //        using (OleDbDataReader dr = cmd.ExecuteReader())
+        //        {
+        //            while (dr.Read())
+        //            {
+        //                string _key = dr[key].ToString();
+        //                string _value = dr[value].ToString(); 
+        //                dictionary.Add(_key, _value);
+        //            }
+        //            dr.Close();
+        //        }
+        //    }     
+        //    return dictionary;
+        //}
+
     }
 
 }

@@ -97,7 +97,7 @@ namespace FFT_For_DOSE
 
         private void Form_manage_FormClosed(object sender, FormClosedEventArgs e)
         {
-            string formName = "Form1";
+            string formName = "MainForm";
             Form fr = Application.OpenForms[formName];
             if (fr != null)
             {

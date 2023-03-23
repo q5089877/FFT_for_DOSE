@@ -240,7 +240,7 @@
             this.btnStatus.ForeColor = System.Drawing.Color.Navy;
             this.btnStatus.Location = new System.Drawing.Point(597, 29);
             this.btnStatus.Name = "btnStatus";
-            this.btnStatus.Size = new System.Drawing.Size(195, 55);
+            this.btnStatus.Size = new System.Drawing.Size(305, 55);
             this.btnStatus.TabIndex = 179;
             this.btnStatus.Text = "Status";
             this.btnStatus.UseVisualStyleBackColor = true;
@@ -675,7 +675,7 @@
             this.Controls.Add(this.groupBox1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
-            this.Text = "DOSE Final Function Test";
+            this.Text = "DOSE Final Function Test V1.0";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.chart2)).EndInit();

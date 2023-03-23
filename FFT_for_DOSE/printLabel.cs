@@ -44,7 +44,7 @@ namespace FFT_For_DOSE
         }
 
         //  public void PrintOneLabel(string deviceSN, string deviceBLEName, string deviceSleeve)
-        public void PrintOneLabel()
+        public void PrintTwoLabel()
         {
             gtinToPCX();
 

@@ -4,6 +4,7 @@ using Ivi.Visa;
 using Ivi.Visa.FormattedIO;
 using Microsoft.Win32;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
@@ -47,7 +48,7 @@ namespace FFT_DOSE
 
         int intNextSn;              //現在要製作的SN, 數字型別
         string strNextSn = "";      //現在要製作的SN, 字串型別                
-
+        string appLog = Application.StartupPath + @"\log.txt";
         string GTIN = "";           //需隨批號變更內容
         string deviceID = "";       //Device ID
         string bleName = "";        //藍牙名稱
@@ -57,13 +58,12 @@ namespace FFT_DOSE
         string StrSleeveName = "";  //Sleeve名稱  => 於選取批號時決定
         string pcbVer = "";         //PCB版本     => 從STATUS取得
         string bottomVer = "";      //Bottom版本  => 於選取批號時決定
-        string assCheck = "";       //此字串用來判斷FFT結果 Pass or Fail              
-        string PLC_COM = "";
-        string POWER_COM = "";
+        string assCheck = "";       //此字串用來判斷FFT結果 Pass or Fail      
         string strSQL = "";
-
+        string pathTXT = "";        //dump data TXT檔路徑
         bool WriteDumpData = false; //用來控制寫入dump date的txt檔用
-        bool toShippingMode = false;
+        bool WriteDumpData_before = false; //用來控制寫入dump date的txt檔用
+      //  bool toShippingMode = false;
         bool checkSTATUSEnd = false;//用來決定是否可以開始判斷測試完成              
         bool useCurrMeter = false;
         int FFTCurr = 0;
@@ -111,9 +111,15 @@ namespace FFT_DOSE
             cbxSleeveName_for_Mprint.SelectedIndex = 0;
 
             //讀取電流計是否要開啟
-            if (File.Exists(Application.StartupPath + @"\meter.txt"))
+            string filePath = Path.Combine(Application.StartupPath, "meter.txt");
+            if (File.Exists(filePath))
             {
-                string fileContent = File.ReadAllText(Application.StartupPath + @"\meter.txt");
+                string fileContent = string.Empty;
+                using (var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
+                {
+                    fileContent = streamReader.ReadToEnd();
+                }
                 if (fileContent.Contains("open"))
                 {
                     useCurrMeter = true;
@@ -124,7 +130,11 @@ namespace FFT_DOSE
                     this.Size = new System.Drawing.Size(1684, 926);
                 }
                 // 將檔案內容寫回檔案中以清空檔案內容
-                File.WriteAllText(Application.StartupPath + @"\meter.txt", string.Empty);
+                using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.Read))
+                using (var streamWriter = new StreamWriter(fileStream, Encoding.UTF8))
+                {
+                    streamWriter.Write(string.Empty);
+                }
             }
 
             //載入使用者名稱到下拉選單
@@ -138,20 +148,17 @@ namespace FFT_DOSE
             try
             {
                 DataTable dt_selectData = accessHelper.GetDataTable("select * from selectData");
-                for (int i = 0; i < dt_selectData.Rows.Count; i++)
+                foreach (DataRow row in dt_selectData.Rows)
                 {
-                    string temp_select = dt_selectData.Rows[i][1].ToString();
-                    string temp_item = dt_selectData.Rows[i][2].ToString();
-                    if (temp_item == "1" && Convert.ToUInt16(temp_select) > 0) // plc com
+                    string selectNum = row[1].ToString();
+                    string deviceName = row[2].ToString();
+                    if (deviceName == "PLC" && Convert.ToUInt16(selectNum) > 0) // plc com
                     {
-                        cbx_plc.SelectedIndex = Convert.ToUInt16(temp_select);
-                        PLC_COM = cbx_plc.SelectedItem.ToString();
+                        cbx_plc.SelectedIndex = Convert.ToUInt16(selectNum);
                     }
-
-                    if (useCurrMeter == true && temp_item == "3" && Convert.ToUInt16(temp_select) > 0) // power com
+                    else if (useCurrMeter && deviceName == "POWER" && Convert.ToUInt16(selectNum) > 0) // power com
                     {
-                        cbx_power.SelectedIndex = Convert.ToUInt16(temp_select);
-                        POWER_COM = cbx_power.SelectedItem.ToString();
+                        cbx_power.SelectedIndex = Convert.ToUInt16(selectNum);
                     }
                 }
 
@@ -197,7 +204,7 @@ namespace FFT_DOSE
         {
             string inData = "";
             SerialPort sp = (SerialPort)sender;
-            Thread.Sleep(50);
+            Thread.Sleep(5);
             inData = sp.ReadExisting();
             sp.DiscardInBuffer();
             if (inData.Length > 3)
@@ -205,23 +212,22 @@ namespace FFT_DOSE
                 #region DOSE回傳內容
                 try
                 {
-                    Console.WriteLine(inData);
+                   // Console.WriteLine(inData);
 
-                    if (WriteDumpData)
+                    //將收到的內容顯示在UI上
+                    strFeedbackDose = strFeedbackDose + inData;
+                    feebacktbx(strFeedbackDose);                
+
+                    #region 讀取DOSE回傳
+                    if (WriteDumpData_before)
                     {
-                        SW.Write(inData);
-                        if (inData.Contains("Assembly_Serial_Number"))
+                        using (StreamWriter SW = new StreamWriter(pathTXT, true))
                         {
-                            //WriteDumpData =true 且有回傳 Assembly_Serial_Number則代表DumpData跑完了
-                            WriteDumpData = false;
-                            toShippingMode = true;
-                            SW.Close();
-
-                            Thread.Sleep(100);
-                            //請DOSE回傳目前狀態
-                            byte[] UTF8bytes = Encoding.UTF8.GetBytes("#STATUS" + Environment.NewLine);
-                            RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                            Thread.Sleep(100);
+                            SW.Write(inData);
+                            //if (inData.Contains("Assembly_Serial_Number"))
+                            //{
+                            //    toShippingMode = true;
+                            //}
                         }
                     }
                     if (inData.Contains("Device ID:") == true)
@@ -436,6 +442,7 @@ namespace FFT_DOSE
                         //取得回傳值
                         pcbIQC = inData.Substring(inData.IndexOf("IQC_PCBA :") + 10, 4);
                     }
+                    #endregion
 
                     //程式一開始會執行#STATUS和checkSTATUSEnd = false, 讓下方程式碼先忽略掉裝置的回傳
                     //到後半段程式會將checkSTATUSEnd設為true, 此時才開始判斷是否測試完畢
@@ -500,7 +507,7 @@ namespace FFT_DOSE
                                     else
                                     {
                                         intoDeviceDataNoSN();
-                                        MessageBox.Show(testErr);
+                                     //   MessageBox.Show(testErr);
                                     }
                                     #endregion
                                 }
@@ -531,11 +538,26 @@ namespace FFT_DOSE
                                     //執行SQL updata SnData
                                     if (updataSnData())
                                     {
-                                        //進入出貨模式
-                                        //UTF8bytes = Encoding.UTF8.GetBytes("#SHIP_MODE" + Environment.NewLine);
-                                        //RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                                        //Thread.Sleep(delay_time2);
-                                        MessageBox.Show("要進入出貨模式，請先打開此功能");
+                                        if (WriteDumpData && IsFileGreaterThan46K(pathTXT)) //進入Shipping Mode，須確定dump data寫入完成
+                                        {
+
+                                            WriteDumpData = false; //重置 WriteDumpData
+
+                                            //印出全部LABEL
+                                            printTwoLabel();
+
+                                            //進入出貨模式
+                                            UTF8bytes = Encoding.UTF8.GetBytes("#SHIP_MODE" + Environment.NewLine);
+                                            RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                                            Thread.Sleep(delay_time2);
+
+                                            // 使用 StreamWriter 類別將內容寫入檔案
+                                            using (StreamWriter writer = new StreamWriter(appLog))
+                                            {
+                                                writer.WriteLine(deviceID + " 進入Shipping Mode");
+                                            }
+                                            //MessageBox.Show("要進入出貨模式，請先打開此功能");
+                                        }
                                     }
                                     else
                                     {
@@ -553,8 +575,8 @@ namespace FFT_DOSE
                         #endregion
                         #endregion
                     }
-                    strFeedbackDose = strFeedbackDose + inData;
-                    feebacktbx(strFeedbackDose);
+                    //strFeedbackDose = strFeedbackDose + inData;
+                    //feebacktbx(strFeedbackDose);
                     //  this.BeginInvoke(mi_pcb_feedback, null);
                 }
                 catch (Exception err)
@@ -674,11 +696,16 @@ namespace FFT_DOSE
         #region *************按鈕事件集中區*************     
         private void btnPrintLabel_Click(object sender, EventArgs e)
         {
+            printTwoLabel();
+        }
+
+        private void printTwoLabel()
+        {
             printLabel1.labenBatNum = batchNum;
             printLabel1.labenSN = tbxSn.Text;
             printLabel1.labenGTIN = GTIN;
             printLabel1.labenBLE = bleName;
-            printLabel1.PrintOneLabel();
+            printLabel1.PrintTwoLabel();
         }
 
         private void btnLogin_Click(object sender, EventArgs e)
@@ -777,7 +804,7 @@ namespace FFT_DOSE
                 //SN長度為6, 且是數字並大於0
                 if (deviceSN.Length == 6 && SN_is_num && SN_num > 0)
                 {
-                    strSQL = string.Format("select * from snData where sn = '{0}' and sleeveName = '{1}' ", deviceSN,deviceSleeve);
+                    strSQL = string.Format("select * from snData where sn = '{0}' and sleeveName = '{1}' ", deviceSN, deviceSleeve);
                     DataTable dt_selectData = accessHelper.GetDataTable(strSQL);
 
                     //由Sleeve取得GTIN
@@ -787,7 +814,7 @@ namespace FFT_DOSE
                     printLabel1.labenSN = "D" + deviceSleeve + deviceSN;
                     printLabel1.labenGTIN = GTIN;
                     printLabel1.labenBLE = Convert.ToString(dt_selectData.Rows[0]["bleName"]);
-                    printLabel1.PrintOneLabel();
+                    printLabel1.PrintTwoLabel();
                 }
                 else
                 {
@@ -981,7 +1008,8 @@ namespace FFT_DOSE
                             await Task.Delay(1);
                             if (boolMountingSwitch)
                             {
-                                Thread.Sleep(3000);
+                                await Task.Delay(3000);
+                               // Thread.Sleep(3000);
 
                                 UTF8bytes = Encoding.UTF8.GetBytes("#ASS_START" + Environment.NewLine);
                                 RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
@@ -1018,7 +1046,8 @@ namespace FFT_DOSE
                             {
                                 UTF8bytes = Encoding.UTF8.GetBytes("#ASS_STOP" + Environment.NewLine);
                                 RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                                Thread.Sleep(delay_time);
+                                await Task.Delay(delay_time);
+                                //Thread.Sleep(delay_time);
                                 MessageBox.Show("超過亖秒沒按下Mounting Switch, 請重測試!!");
                                 break;
                             }
@@ -1086,21 +1115,21 @@ namespace FFT_DOSE
 
                             Thread.Sleep(2000);
 
-                            #region dump_data 寫入txt
-                            WriteDumpData = true; //用來判斷dump_data是否寫入完成
+                            #region dump_data 寫入txt     
+                            WriteDumpData_before = true;
 
+                            string batchDirectoryPath = Path.Combine("C:\\DOSE_DumpData\\", cbxBatch.Text);
+                            pathTXT = Path.Combine(batchDirectoryPath, tbxSn.Text + ".txt");
 
-                            // 如果批號資料夾不存在, 便建立其資料夾                    
-                            if (Directory.Exists("C:\\DOSE_DumpData\\" + cbxBatch.Text))
+                            if (Directory.Exists(batchDirectoryPath))
                             {
-                                Console.WriteLine("The directory {0} already exists.", "C:\\DOSE_DumpData\\" + cbxBatch.Text);
+                                Console.WriteLine("The directory {0} already exists.", batchDirectoryPath);
                             }
                             else
                             {
-                                Directory.CreateDirectory("C:\\DOSE_DumpData\\" + cbxBatch.Text);
-                                Console.WriteLine("The directory {0} was created.", "C:\\DOSE_DumpData\\" + cbxBatch.Text);
+                                Directory.CreateDirectory(batchDirectoryPath);
+                                Console.WriteLine("The directory {0} was created.", batchDirectoryPath);
                             }
-                            SW = new StreamWriter("C:\\DOSE_DumpData\\" + cbxBatch.Text + "\\" + tbxSn.Text + ".txt");
 
                             try
                             {
@@ -1110,9 +1139,20 @@ namespace FFT_DOSE
                             }
                             catch (Exception ex)
                             {
-                                MessageBox.Show("ComPort Error!");
+                                MessageBox.Show("#DUMP_DATA送出失敗!");
                             }
                             #endregion
+
+                            Thread.Sleep(8000);
+
+                            WriteDumpData_before = false;
+
+                            //請DOSE回傳目前狀態
+                            UTF8bytes = Encoding.UTF8.GetBytes("#STATUS" + Environment.NewLine);
+                            RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                            Thread.Sleep(100);
+
+                            WriteDumpData = true; //用來判斷dump_data是否寫入完成
 
                             #region Shipping Mode
                             try
@@ -1131,7 +1171,7 @@ namespace FFT_DOSE
                                         #region *************shipping PASS 寫入shippingMode*************                                         
                                         if (intoShippingMode())
                                         {
-                                            MessageBox.Show("寫入成功!");
+
                                             //將SN補0並在左邊增加文字
                                             string strNextSnLen = leftSN + StrSleeveName + Convert.ToInt16(strNextSn).ToString("D6");
                                             //  printLabel1.PrintOneLabel(strNextSnLen, bleName, StrSleeveName);
@@ -1140,14 +1180,23 @@ namespace FFT_DOSE
                                             miCreateMaxSN = new MethodInvoker(this.createSnMax);
                                             this.BeginInvoke(miCreateMaxSN);
 
-                                            if (WriteDumpData && toShippingMode) //進入Shipping Mode，須確定dump data寫入完成
+                                            if (WriteDumpData && IsFileGreaterThan46K(pathTXT)) //進入Shipping Mode，須確定dump data寫入完成
                                             {
-                                                MessageBox.Show("進入出貨模式，請將其它 Code Uncomment才能真的進入出貨模式");
-                                                toShippingMode = false; //進入ShippingMode, 重置bool
+                                                //印出全部LABEL
+                                                printTwoLabel();
+
+                                                WriteDumpData = false; //重置 WriteDumpData                                          
+                                              
                                                 ////進入出貨模式
                                                 UTF8bytes = Encoding.UTF8.GetBytes("#SHIP_MODE" + Environment.NewLine);
                                                 RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
                                                 Thread.Sleep(delay_time2);
+
+                                                // 使用 StreamWriter 類別將內容寫入檔案
+                                                using (StreamWriter writer = new StreamWriter(appLog))
+                                                {
+                                                    writer.WriteLine(deviceID + " 進入Shipping Mode");
+                                                }
                                             }
                                         }
                                         else
@@ -1248,7 +1297,7 @@ namespace FFT_DOSE
                     catch (Exception ex)
                     {
                         writeLog(ex.ToString());
-                        MessageBox.Show("DOSE COM PORT異常");
+                        MessageBox.Show("COM PORT異常");
                     }
                 }
             }
@@ -1372,30 +1421,14 @@ namespace FFT_DOSE
         private void defineCurrComPort()
         {
             //SQL語法：                    
-            strSQL = "UPDATE selectData set select_data =@number where com = @com";
+            strSQL = "UPDATE selectData set select_data =@number, com_name =@com_name where com = @com";
             if (string.IsNullOrEmpty(strSQL) == false)
             {
                 //添加參數
                 OleDbParameter[] pars = new OleDbParameter[] {
-                                            new OleDbParameter("@number",cbx_power.SelectedIndex.ToString()),
-                                            new OleDbParameter("@com","3")
-                                                                };
-                //執行SQL
-                string errorInfo = accessHelper.ExecSql(strSQL, pars);
-                if (errorInfo.Length != 0)
-                {
-                    MessageBox.Show("更新失敗！" + errorInfo);
-                }
-            }
-
-            //SQL語法：                    
-            strSQL = "UPDATE selectData set com_name =@com_name where com = @com";
-            if (string.IsNullOrEmpty(strSQL) == false)
-            {
-                //添加參數
-                OleDbParameter[] pars = new OleDbParameter[] {
-                                            new OleDbParameter("@com_name",cbx_power .SelectedItem.ToString()),
-                                            new OleDbParameter("@com","3")
+                                        new OleDbParameter("@number",cbx_power.SelectedIndex.ToString()),
+                                        new OleDbParameter("@com_name",cbx_power .SelectedItem.ToString()),
+                                        new OleDbParameter("@com","POWER")
                                                                 };
                 //執行SQL
                 string errorInfo = accessHelper.ExecSql(strSQL, pars);
@@ -1416,30 +1449,14 @@ namespace FFT_DOSE
             try
             {
                 //SQL語法：                    
-                strSQL = "UPDATE selectData set select_data =@number where com = @com";
+                strSQL = "UPDATE selectData set select_data =@number,com_name =@com_name where com = @com";
                 if (string.IsNullOrEmpty(strSQL) == false)
                 {
                     //添加參數
                     OleDbParameter[] pars = new OleDbParameter[] {
                                             new OleDbParameter("@number",cbx_plc.SelectedIndex.ToString()),
-                                            new OleDbParameter("@com","1")
-                                                                };
-                    //執行SQL
-                    string errorInfo = accessHelper.ExecSql(strSQL, pars);
-                    if (errorInfo.Length != 0)
-                    {
-                        MessageBox.Show("更新失敗！" + errorInfo);
-                    }
-                }
-
-                //SQL語法：                    
-                strSQL = "UPDATE selectData set com_name =@com_name where com = @com";
-                if (string.IsNullOrEmpty(strSQL) == false)
-                {
-                    //添加參數
-                    OleDbParameter[] pars = new OleDbParameter[] {
                                             new OleDbParameter("@com_name",cbx_plc.SelectedItem.ToString()),
-                                            new OleDbParameter("@com","1")
+                                            new OleDbParameter("@com","PLC")
                                                                 };
                     //執行SQL
                     string errorInfo = accessHelper.ExecSql(strSQL, pars);
@@ -1802,7 +1819,7 @@ namespace FFT_DOSE
             return result;
         }
         #endregion
-        
+
         bool intoDeviceData()
         {
             //SQL語法：insert into deviceData
@@ -2038,6 +2055,14 @@ namespace FFT_DOSE
             {
                 tbx_Pcb_feed_back.AppendText(text);
             }
+        }
+
+        public static bool IsFileGreaterThan46K(string filePath)
+        {
+            FileInfo fileInfo = new FileInfo(filePath);
+            long fileSizeInBytes = fileInfo.Length;
+            long fileSizeInKilobytes = fileSizeInBytes / 1024; // 1 KB = 1024 bytes
+            return fileSizeInKilobytes > 46;
         }
     }
 }
