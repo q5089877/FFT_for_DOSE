@@ -1,5 +1,4 @@
 ﻿using FFT_DOSE;
-using ImageMagick;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -7,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ImageMagick;
 using ZXing;
 
 namespace FFT_For_DOSE
@@ -55,7 +55,7 @@ namespace FFT_For_DOSE
 
                 #region pringLabel
                 TSCLIB_DLL.openport("Bar Code Printer TT053-61");
-                TSCLIB_DLL.setup("46", "41.5", "1", "15", "0", "3", "0");
+                TSCLIB_DLL.setup("46", "41.5", "3", "30", "0", "3", "0");
                 TSCLIB_DLL.clearbuffer();                
 
                 #region big label

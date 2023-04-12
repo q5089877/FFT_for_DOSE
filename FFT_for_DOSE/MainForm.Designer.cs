@@ -74,7 +74,6 @@
             this.label5 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.currGroupBox = new System.Windows.Forms.GroupBox();
-            this.btnPrintLabel = new System.Windows.Forms.Button();
             this.tbxSn = new System.Windows.Forms.TextBox();
             this.label34 = new System.Windows.Forms.Label();
             this.btn_ass_chk = new System.Windows.Forms.Button();
@@ -161,9 +160,9 @@
             // 
             this.btn_clear_com.Font = new System.Drawing.Font("Verdana", 12F);
             this.btn_clear_com.ForeColor = System.Drawing.Color.Navy;
-            this.btn_clear_com.Location = new System.Drawing.Point(25, 90);
+            this.btn_clear_com.Location = new System.Drawing.Point(6, 29);
             this.btn_clear_com.Name = "btn_clear_com";
-            this.btn_clear_com.Size = new System.Drawing.Size(280, 55);
+            this.btn_clear_com.Size = new System.Drawing.Size(442, 55);
             this.btn_clear_com.TabIndex = 139;
             this.btn_clear_com.Text = "Clear ComPort";
             this.btn_clear_com.UseVisualStyleBackColor = true;
@@ -224,12 +223,13 @@
             // 
             this.btnShipMode.Font = new System.Drawing.Font("Verdana", 12F);
             this.btnShipMode.ForeColor = System.Drawing.Color.Navy;
-            this.btnShipMode.Location = new System.Drawing.Point(25, 29);
+            this.btnShipMode.Location = new System.Drawing.Point(142, 559);
             this.btnShipMode.Name = "btnShipMode";
-            this.btnShipMode.Size = new System.Drawing.Size(280, 55);
+            this.btnShipMode.Size = new System.Drawing.Size(105, 55);
             this.btnShipMode.TabIndex = 173;
             this.btnShipMode.Text = "Ship Mode";
             this.btnShipMode.UseVisualStyleBackColor = true;
+            this.btnShipMode.Visible = false;
             this.btnShipMode.Click += new System.EventHandler(this.btnShipMode_Click);
             // 
             // btnStatus
@@ -238,9 +238,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnStatus.Font = new System.Drawing.Font("Verdana", 12F);
             this.btnStatus.ForeColor = System.Drawing.Color.Navy;
-            this.btnStatus.Location = new System.Drawing.Point(597, 29);
+            this.btnStatus.Location = new System.Drawing.Point(454, 29);
             this.btnStatus.Name = "btnStatus";
-            this.btnStatus.Size = new System.Drawing.Size(305, 55);
+            this.btnStatus.Size = new System.Drawing.Size(442, 55);
             this.btnStatus.TabIndex = 179;
             this.btnStatus.Text = "Status";
             this.btnStatus.UseVisualStyleBackColor = true;
@@ -552,6 +552,7 @@
             this.groupBox5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(184)))), ((int)(((byte)(195)))));
+            this.groupBox5.Controls.Add(this.btnShipMode);
             this.groupBox5.Controls.Add(this.btn_clr_pcb);
             this.groupBox5.Controls.Add(this.tbx_ttl_send);
             this.groupBox5.Controls.Add(this.label19);
@@ -581,18 +582,6 @@
             this.currGroupBox.TabStop = false;
             this.currGroupBox.Text = "電流表";
             this.currGroupBox.Visible = false;
-            // 
-            // btnPrintLabel
-            // 
-            this.btnPrintLabel.Font = new System.Drawing.Font("Verdana", 12F);
-            this.btnPrintLabel.ForeColor = System.Drawing.Color.Navy;
-            this.btnPrintLabel.Location = new System.Drawing.Point(311, 29);
-            this.btnPrintLabel.Name = "btnPrintLabel";
-            this.btnPrintLabel.Size = new System.Drawing.Size(280, 55);
-            this.btnPrintLabel.TabIndex = 205;
-            this.btnPrintLabel.Text = "Print Label";
-            this.btnPrintLabel.UseVisualStyleBackColor = true;
-            this.btnPrintLabel.Click += new System.EventHandler(this.btnPrintLabel_Click);
             // 
             // tbxSn
             // 
@@ -647,15 +636,13 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(184)))), ((int)(((byte)(195)))));
-            this.groupBox6.Controls.Add(this.btnStatus);
-            this.groupBox6.Controls.Add(this.btnPrintLabel);
-            this.groupBox6.Controls.Add(this.btnShipMode);
             this.groupBox6.Controls.Add(this.btn_clear_com);
+            this.groupBox6.Controls.Add(this.btnStatus);
             this.groupBox6.Font = new System.Drawing.Font("Verdana", 12F);
             this.groupBox6.ForeColor = System.Drawing.Color.Navy;
             this.groupBox6.Location = new System.Drawing.Point(6, 713);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(911, 158);
+            this.groupBox6.Size = new System.Drawing.Size(911, 100);
             this.groupBox6.TabIndex = 206;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "功能按鈕";
@@ -665,7 +652,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(40)))));
-            this.ClientSize = new System.Drawing.Size(922, 881);
+            this.ClientSize = new System.Drawing.Size(922, 825);
             this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.currGroupBox);
             this.Controls.Add(this.groupBox5);
@@ -736,7 +723,6 @@
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.GroupBox currGroupBox;
-        private System.Windows.Forms.Button btnPrintLabel;
         private System.Windows.Forms.Label lblSleeve;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox tbxSn;

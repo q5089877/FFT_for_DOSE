@@ -63,7 +63,7 @@ namespace FFT_DOSE
         string pathTXT = "";        //dump data TXT檔路徑
         bool WriteDumpData = false; //用來控制寫入dump date的txt檔用
         bool WriteDumpData_before = false; //用來控制寫入dump date的txt檔用
-      //  bool toShippingMode = false;
+                                           //  bool toShippingMode = false;
         bool checkSTATUSEnd = false;//用來決定是否可以開始判斷測試完成              
         bool useCurrMeter = false;
         int FFTCurr = 0;
@@ -212,11 +212,11 @@ namespace FFT_DOSE
                 #region DOSE回傳內容
                 try
                 {
-                   // Console.WriteLine(inData);
+                    // Console.WriteLine(inData);
 
                     //將收到的內容顯示在UI上
                     strFeedbackDose = strFeedbackDose + inData;
-                    feebacktbx(strFeedbackDose);                
+                    feebacktbx(strFeedbackDose);
 
                     #region 讀取DOSE回傳
                     if (WriteDumpData_before)
@@ -446,7 +446,7 @@ namespace FFT_DOSE
 
                     //程式一開始會執行#STATUS和checkSTATUSEnd = false, 讓下方程式碼先忽略掉裝置的回傳
                     //到後半段程式會將checkSTATUSEnd設為true, 此時才開始判斷是否測試完畢
-                    if (inData.Contains("ASS_CHECK") && inData.Contains("#") == false && checkSTATUSEnd == true)
+                    if (inData.Contains("ASS_CHECK :") && inData.Contains("#") == false && checkSTATUSEnd == true)
                     {
                         #region 測試跑完寫入deviceID，同時開始判斷是否pass
                         boolAssCheckEnd = true; //測試跑完
@@ -507,7 +507,7 @@ namespace FFT_DOSE
                                     else
                                     {
                                         intoDeviceDataNoSN();
-                                     //   MessageBox.Show(testErr);
+                                        //   MessageBox.Show(testErr);
                                     }
                                     #endregion
                                 }
@@ -535,35 +535,9 @@ namespace FFT_DOSE
                                     configDoseDevice();
 
                                     #region *************利用device id UPDATE snData，並進入shipping mode*************                  
-                                    //執行SQL updata SnData
-                                    if (updataSnData())
-                                    {
-                                        if (WriteDumpData && IsFileGreaterThan46K(pathTXT)) //進入Shipping Mode，須確定dump data寫入完成
-                                        {
 
-                                            WriteDumpData = false; //重置 WriteDumpData
 
-                                            //印出全部LABEL
-                                            printTwoLabel();
-
-                                            //進入出貨模式
-                                            UTF8bytes = Encoding.UTF8.GetBytes("#SHIP_MODE" + Environment.NewLine);
-                                            RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                                            Thread.Sleep(delay_time2);
-
-                                            // 使用 StreamWriter 類別將內容寫入檔案
-                                            using (StreamWriter writer = new StreamWriter(appLog))
-                                            {
-                                                writer.WriteLine(deviceID + " 進入Shipping Mode");
-                                            }
-                                            //MessageBox.Show("要進入出貨模式，請先打開此功能");
-                                        }
-                                    }
-                                    else
-                                    {
-                                        MessageBox.Show("更新失敗！");
-                                    }
-                                    #endregion                                   
+                                    #endregion
                                 }
                             }
                             else
@@ -694,10 +668,6 @@ namespace FFT_DOSE
         #endregion
 
         #region *************按鈕事件集中區*************     
-        private void btnPrintLabel_Click(object sender, EventArgs e)
-        {
-            printTwoLabel();
-        }
 
         private void printTwoLabel()
         {
@@ -837,8 +807,6 @@ namespace FFT_DOSE
                 RS232_DOSE.Dispose();
                 RS232_DOSE.PortName = GetPortInformation_for_DOSE_COM();
                 RS232_DOSE.Open();
-                //#SET_CONFIG_DATA 
-                //Mounted_Sleeve:       
                 byte[] UTF8bytes = Encoding.UTF8.GetBytes("#STATUS" + Environment.NewLine);
                 RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
                 Thread.Sleep(100);
@@ -1009,7 +977,7 @@ namespace FFT_DOSE
                             if (boolMountingSwitch)
                             {
                                 await Task.Delay(3000);
-                               // Thread.Sleep(3000);
+                                // Thread.Sleep(3000);
 
                                 UTF8bytes = Encoding.UTF8.GetBytes("#ASS_START" + Environment.NewLine);
                                 RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
@@ -1186,11 +1154,14 @@ namespace FFT_DOSE
                                                 printTwoLabel();
 
                                                 WriteDumpData = false; //重置 WriteDumpData                                          
-                                              
-                                                ////進入出貨模式
+
+                                                //進入出貨模式
                                                 UTF8bytes = Encoding.UTF8.GetBytes("#SHIP_MODE" + Environment.NewLine);
                                                 RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
                                                 Thread.Sleep(delay_time2);
+
+                                                //執行SQL updata SnData
+                                                updataSnData();
 
                                                 // 使用 StreamWriter 類別將內容寫入檔案
                                                 using (StreamWriter writer = new StreamWriter(appLog))
@@ -1539,22 +1510,40 @@ namespace FFT_DOSE
         {
             /* Start COM Clear */
 
-            string userRoot = "HKEY_LOCAL_MACHINE";
-            string subkey = "SYSTEM\\CurrentControlSet\\Control\\COM Name Arbiter\\Devices";
-            string keyName = userRoot + "\\" + subkey;
+            //////string userRoot = "HKEY_LOCAL_MACHINE";
+            //////string subkey = "SYSTEM\\CurrentControlSet\\Control\\COM Name Arbiter\\Devices";
+            //////string keyName = userRoot + "\\" + subkey;
 
-            using (RegistryKey key = Registry.LocalMachine.OpenSubKey(subkey, true))
+            //////using (RegistryKey key = Registry.LocalMachine.OpenSubKey(subkey, true))
+            //////{
+            //////    if (key == null)
+            //////    {
+            //////        MessageBox.Show("什麼都沒發生");
+            //////    }
+            //////    else
+            //////    {
+            //////        key.DeleteValue("COM6");
+            //////        //  key.DeleteSubKey("COM6");
+            //////    }
+            //////}          
+
+            RegistryKey comPorts = Registry.LocalMachine.OpenSubKey("HARDWARE\\DEVICEMAP\\SERIALCOMM");
+
+            foreach (string portName in comPorts.GetValueNames())
             {
-                if (key == null)
+                string portValue = (string)comPorts.GetValue(portName);
+                int portNumber;
+
+                if (int.TryParse(portValue.Substring(3), out portNumber))
                 {
-                    MessageBox.Show("什麼都沒發生");
-                }
-                else
-                {
-                    key.DeleteValue("COM6");
-                    //  key.DeleteSubKey("COM6");
+                    if (portNumber > 10)
+                    {
+                        comPorts.DeleteValue(portName);
+                    }
                 }
             }
+
+
 
             /* End COM Clear */
         }
