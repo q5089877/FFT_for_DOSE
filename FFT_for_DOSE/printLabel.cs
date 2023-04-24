@@ -56,7 +56,7 @@ namespace FFT_For_DOSE
                 #region pringLabel
                 TSCLIB_DLL.openport("Bar Code Printer TT053-61");
                 TSCLIB_DLL.setup("46", "41.5", "3", "30", "0", "3", "0");
-                TSCLIB_DLL.clearbuffer();                
+                TSCLIB_DLL.clearbuffer();
 
                 #region big label
                 //DataMatrix
@@ -85,13 +85,13 @@ namespace FFT_For_DOSE
 
                 #region small label
                 //Date
-                TSCLIB_DLL.windowsfont(445, 817, 35, 0, 2, 0, "FreeSans", DateTime.Now.ToString("yyyy-MM-dd"));
+                TSCLIB_DLL.windowsfont(445 + 10, 817, 35, 0, 2, 0, "FreeSans", DateTime.Now.ToString("yyyy-MM-dd"));
                 //GTIN
-                TSCLIB_DLL.windowsfont(740, 817, 35, 0, 2, 0, "FreeSans", gtin);
+                TSCLIB_DLL.windowsfont(740 + 10, 817, 35, 0, 2, 0, "FreeSans", gtin);
                 //SN
-                TSCLIB_DLL.windowsfont(740, 862, 35, 0, 2, 0, "FreeSans", deviceSN);
+                TSCLIB_DLL.windowsfont(740 + 10, 862, 35, 0, 2, 0, "FreeSans", deviceSN);
                 //BLE Name
-                TSCLIB_DLL.windowsfont(910, 935, 35, 0, 2, 0, "FreeSans", bleName);
+                TSCLIB_DLL.windowsfont(910 + 10, 935, 35, 0, 2, 0, "FreeSans", bleName);
                 #endregion
 
                 TSCLIB_DLL.sendcommand("PRINT 1");
@@ -104,8 +104,8 @@ namespace FFT_For_DOSE
                 MessageBox.Show(ex.ToString());
             }
             #endregion
-        }     
-      
+        }
+
         private void gtinToPCX()
         {
             BarcodeWriter barcodeWriter1 = new BarcodeWriter();
