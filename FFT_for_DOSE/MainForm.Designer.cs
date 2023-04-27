@@ -79,6 +79,8 @@
             this.btn_ass_chk = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.lbl_assCheck = new System.Windows.Forms.Label();
+            this.lbl_iqc = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.chart2)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -223,7 +225,7 @@
             // 
             this.btnShipMode.Font = new System.Drawing.Font("Verdana", 12F);
             this.btnShipMode.ForeColor = System.Drawing.Color.Navy;
-            this.btnShipMode.Location = new System.Drawing.Point(142, 559);
+            this.btnShipMode.Location = new System.Drawing.Point(675, 29);
             this.btnShipMode.Name = "btnShipMode";
             this.btnShipMode.Size = new System.Drawing.Size(105, 55);
             this.btnShipMode.TabIndex = 173;
@@ -238,9 +240,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnStatus.Font = new System.Drawing.Font("Verdana", 12F);
             this.btnStatus.ForeColor = System.Drawing.Color.Navy;
-            this.btnStatus.Location = new System.Drawing.Point(454, 29);
+            this.btnStatus.Location = new System.Drawing.Point(786, 29);
             this.btnStatus.Name = "btnStatus";
-            this.btnStatus.Size = new System.Drawing.Size(442, 55);
+            this.btnStatus.Size = new System.Drawing.Size(110, 55);
             this.btnStatus.TabIndex = 179;
             this.btnStatus.Text = "Status";
             this.btnStatus.UseVisualStyleBackColor = true;
@@ -552,7 +554,6 @@
             this.groupBox5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(184)))), ((int)(((byte)(195)))));
-            this.groupBox5.Controls.Add(this.btnShipMode);
             this.groupBox5.Controls.Add(this.btn_clr_pcb);
             this.groupBox5.Controls.Add(this.tbx_ttl_send);
             this.groupBox5.Controls.Add(this.label19);
@@ -636,6 +637,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(184)))), ((int)(((byte)(195)))));
+            this.groupBox6.Controls.Add(this.btnShipMode);
+            this.groupBox6.Controls.Add(this.lbl_assCheck);
+            this.groupBox6.Controls.Add(this.lbl_iqc);
             this.groupBox6.Controls.Add(this.btn_clear_com);
             this.groupBox6.Controls.Add(this.btnStatus);
             this.groupBox6.Font = new System.Drawing.Font("Verdana", 12F);
@@ -646,6 +650,28 @@
             this.groupBox6.TabIndex = 206;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "功能按鈕";
+            // 
+            // lbl_assCheck
+            // 
+            this.lbl_assCheck.AutoSize = true;
+            this.lbl_assCheck.Font = new System.Drawing.Font("Verdana", 12F);
+            this.lbl_assCheck.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.lbl_assCheck.Location = new System.Drawing.Point(451, 58);
+            this.lbl_assCheck.Name = "lbl_assCheck";
+            this.lbl_assCheck.Size = new System.Drawing.Size(117, 18);
+            this.lbl_assCheck.TabIndex = 181;
+            this.lbl_assCheck.Text = "ASS_CHECK=";
+            // 
+            // lbl_iqc
+            // 
+            this.lbl_iqc.AutoSize = true;
+            this.lbl_iqc.Font = new System.Drawing.Font("Verdana", 12F);
+            this.lbl_iqc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.lbl_iqc.Location = new System.Drawing.Point(451, 32);
+            this.lbl_iqc.Name = "lbl_iqc";
+            this.lbl_iqc.Size = new System.Drawing.Size(105, 18);
+            this.lbl_iqc.TabIndex = 180;
+            this.lbl_iqc.Text = "IQC_PCBA=";
             // 
             // MainForm
             // 
@@ -679,6 +705,7 @@
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.groupBox6.ResumeLayout(false);
+            this.groupBox6.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -730,6 +757,8 @@
         private System.Windows.Forms.Button btn_ass_chk;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.Label lbl_assCheck;
+        private System.Windows.Forms.Label lbl_iqc;
     }
 
 

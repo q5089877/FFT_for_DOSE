@@ -53,7 +53,7 @@ namespace FFT_DOSE
         string deviceID = "";       //Device ID
         string bleName = "";        //藍牙名稱
         string fwVersion = "";      //FW版本
-        string pcbIQC = "";         //PCB IQC結果
+        string IQC_pcba = "";         //PCB IQC結果
         string batchNum = "";       //批號
         string StrSleeveName = "";  //Sleeve名稱  => 於選取批號時決定
         string pcbVer = "";         //PCB版本     => 從STATUS取得
@@ -440,9 +440,11 @@ namespace FFT_DOSE
                     if (inData.Contains("IQC_PCBA :") == true)
                     {
                         //取得回傳值
-                        pcbIQC = inData.Substring(inData.IndexOf("IQC_PCBA :") + 10, 4);
+                        IQC_pcba = inData.Substring(inData.IndexOf("IQC_PCBA :") + 10, 4);
+                        change_Iqc_lbl(IQC_pcba);
                     }
                     #endregion
+
 
                     //程式一開始會執行#STATUS和checkSTATUSEnd = false, 讓下方程式碼先忽略掉裝置的回傳
                     //到後半段程式會將checkSTATUSEnd設為true, 此時才開始判斷是否測試完畢
@@ -451,7 +453,9 @@ namespace FFT_DOSE
                         #region 測試跑完寫入deviceID，同時開始判斷是否pass
                         boolAssCheckEnd = true; //測試跑完
                         //取得回傳值
-                        assCheck = inData.Substring(inData.IndexOf("ASS_CHECK") + 11, 4);
+                        assCheck = inData.Substring(inData.IndexOf("ASS_CHECK :") + 11, 4);
+                        change_ASS_Chk_lbl(assCheck);
+
                         //create building Date
                         buildDate = DateTime.Now.ToString("yyyy MMM dd", CultureInfo.CreateSpecificCulture("en-US"));
 
@@ -486,14 +490,19 @@ namespace FFT_DOSE
                                 }
                                 else //插入snData成功，再插入deviceDatae測試資料
                                 {
-                                    if (assCheck == "Pass" && pcbIQC == "Pass")
+                                    if (assCheck == "Pass" && IQC_pcba == "Pass")
                                     {
                                         intoDeviceData();
                                         boolMountingSwitch = false;
-                                        #region*************FFT測試PASS，將Config寫入FW，*************                                                                                    
+                                        //#region*************FFT測試PASS，將Config寫入FW，*************                                                                                    
                                         try
                                         {
-                                            configDoseDevice();
+                                            ////////configDoseDevice();
+                                            //////// 使用 StreamWriter 類別將內容寫入檔案
+                                            ////////using (StreamWriter writer = new StreamWriter(appLog, true))
+                                            ////////{
+                                            ////////    writer.WriteLine("寫入Config 2");
+                                            ////////}
                                             #region *************利用device id UPDATE snData*************                         
                                             updataSnData();
                                             #endregion
@@ -502,7 +511,7 @@ namespace FFT_DOSE
                                         {
                                             MessageBox.Show(ex.ToString());
                                         }
-                                        #endregion
+                                        //#endregion
                                     }
                                     else
                                     {
@@ -520,31 +529,35 @@ namespace FFT_DOSE
                         {
                             #region 寫入測試資料庫insert into deviceData
                             bool checkInto = false;
-                            if (assCheck == "Pass" && pcbIQC == "Pass")
-                            { checkInto = intoDeviceData(); } //寫入有SN的deviceData
-                            else
-                            { checkInto = intoDeviceDataNoSN(); } //寫入無SN的deviceData
-
-                            if (checkInto)
+                            if (assCheck == "Pass" && IQC_pcba == "Pass")
                             {
-                                #endregion
-                                boolMountingSwitch = false;
-                                #region *************如果FFT測試PASS，將Config寫入FW，*************                     
-                                if (assCheck == "Pass" && pcbIQC == "Pass")
-                                {
-                                    configDoseDevice();
-
-                                    #region *************利用device id UPDATE snData，並進入shipping mode*************                  
-
-
-                                    #endregion
-                                }
-                            }
+                                checkInto = intoDeviceData();
+                            } //寫入有SN的deviceData
                             else
                             {
-                                MessageBox.Show(testErr);
-                            }
+                                checkInto = intoDeviceDataNoSN();
+                            } //寫入無SN的deviceData
+
+                            //////if (checkInto)
+                            //////{
                             #endregion
+                            //////    boolMountingSwitch = false;
+
+                            //////    //////if (assCheck == "Pass" && IQC_pcba == "Pass")
+                            //////    //////{
+                            //////    //////    //configDoseDevice();
+                            //////    //////    // 使用 StreamWriter 類別將內容寫入檔案
+                            //////    //////    using (StreamWriter writer = new StreamWriter(appLog, true))
+                            //////    //////    {
+                            //////    //////        writer.WriteLine("寫入Config 3");
+                            //////    //////    }
+                            //////    //////}
+                            //////}
+                            //////else
+                            //////{
+                            //////    MessageBox.Show(testErr + "4");
+                            //////}
+
                         }
                         #endregion
                         #endregion
@@ -919,6 +932,9 @@ namespace FFT_DOSE
                 {
                     #region ASS_CHECK
 
+                    lbl_iqc.Text = "IQC_PCBA=";
+                    lbl_assCheck.Text = "ASS_CHECK=";
+
                     charge_max = 0;
                     strFeedbackDose = "";
                     try
@@ -1053,7 +1069,7 @@ namespace FFT_DOSE
                                 _counter++;
                                 if (_counter == 6000)
                                 {
-                                    MessageBox.Show(testErr);
+                                    MessageBox.Show(testErr + "2");
                                     break;
                                 }
                             }
@@ -1070,12 +1086,17 @@ namespace FFT_DOSE
                                     boolAssCheckEnd = false;
                                     //#SET_CONFIG_DATA                                          
                                     configDoseDevice();
+                                    // 使用 StreamWriter 類別將內容寫入檔案
+                                    using (StreamWriter writer = new StreamWriter(appLog, true))
+                                    {
+                                        writer.WriteLine("寫入Config 1");
+                                    }
                                     break;
                                 }
                                 _counter++;
                                 if (_counter == 6000)
                                 {
-                                    MessageBox.Show(testErr);
+                                    MessageBox.Show(testErr + "1");
                                     break;
                                 }
                             }
@@ -1125,7 +1146,7 @@ namespace FFT_DOSE
                             #region Shipping Mode
                             try
                             {
-                                if (assCheck == "Pass" && pcbIQC == "Pass")
+                                if (assCheck == "Pass" && IQC_pcba == "Pass")
                                 {
                                     #region FFT PASS
                                     //由電流來決定shippingStatus的狀態
@@ -1139,21 +1160,22 @@ namespace FFT_DOSE
                                         #region *************shipping PASS 寫入shippingMode*************                                         
                                         if (intoShippingMode())
                                         {
-
                                             //將SN補0並在左邊增加文字
                                             string strNextSnLen = leftSN + StrSleeveName + Convert.ToInt16(strNextSn).ToString("D6");
                                             //  printLabel1.PrintOneLabel(strNextSnLen, bleName, StrSleeveName);
 
-                                            //將SN增加為1
-                                            miCreateMaxSN = new MethodInvoker(this.createSnMax);
-                                            this.BeginInvoke(miCreateMaxSN);
-
                                             if (WriteDumpData && IsFileGreaterThan46K(pathTXT)) //進入Shipping Mode，須確定dump data寫入完成
                                             {
+                                                //將SN增加為1
+                                                miCreateMaxSN = new MethodInvoker(this.createSnMax);
+                                                this.BeginInvoke(miCreateMaxSN);
+
                                                 //印出全部LABEL
                                                 printTwoLabel();
 
                                                 WriteDumpData = false; //重置 WriteDumpData                                          
+
+                                                Thread.Sleep(1000); //等待另一邊執行緒
 
                                                 //進入出貨模式
                                                 UTF8bytes = Encoding.UTF8.GetBytes("#SHIP_MODE" + Environment.NewLine);
@@ -1164,10 +1186,14 @@ namespace FFT_DOSE
                                                 updataSnData();
 
                                                 // 使用 StreamWriter 類別將內容寫入檔案
-                                                using (StreamWriter writer = new StreamWriter(appLog))
+                                                using (StreamWriter writer = new StreamWriter(appLog, true))
                                                 {
                                                     writer.WriteLine(deviceID + " 進入Shipping Mode");
                                                 }
+                                            }
+                                            else
+                                            {
+                                                MessageBox.Show("進入shippingMode失敗!!");
                                             }
                                         }
                                         else
@@ -1180,7 +1206,7 @@ namespace FFT_DOSE
                                 }
                                 else
                                 {
-                                    MessageBox.Show(testErr);
+                                    MessageBox.Show(testErr + "3");
                                 }
                             }
                             catch (Exception ex)
@@ -2043,6 +2069,30 @@ namespace FFT_DOSE
             else
             {
                 tbx_Pcb_feed_back.AppendText(text);
+            }
+        }
+
+        private void change_Iqc_lbl(string text)
+        {
+            if (lbl_iqc.InvokeRequired)
+            {
+                lbl_iqc.BeginInvoke(new Action<string>(change_Iqc_lbl), text);
+            }
+            else
+            {
+                lbl_iqc.Text = "IQC_PCBA=" + text;
+            }
+        }
+
+        private void change_ASS_Chk_lbl(string text)
+        {
+            if (lbl_iqc.InvokeRequired)
+            {
+                lbl_iqc.BeginInvoke(new Action<string>(change_ASS_Chk_lbl), text);
+            }
+            else
+            {
+                lbl_assCheck.Text = "ASS_CHECK=" + text;
             }
         }
 
