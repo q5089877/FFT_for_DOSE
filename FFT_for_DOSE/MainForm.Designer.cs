@@ -81,6 +81,7 @@
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.lbl_assCheck = new System.Windows.Forms.Label();
             this.lbl_iqc = new System.Windows.Forms.Label();
+            this.chk_FFT_Test = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.chart2)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -162,9 +163,9 @@
             // 
             this.btn_clear_com.Font = new System.Drawing.Font("Verdana", 12F);
             this.btn_clear_com.ForeColor = System.Drawing.Color.Navy;
-            this.btn_clear_com.Location = new System.Drawing.Point(6, 29);
+            this.btn_clear_com.Location = new System.Drawing.Point(6, 22);
             this.btn_clear_com.Name = "btn_clear_com";
-            this.btn_clear_com.Size = new System.Drawing.Size(442, 55);
+            this.btn_clear_com.Size = new System.Drawing.Size(442, 47);
             this.btn_clear_com.TabIndex = 139;
             this.btn_clear_com.Text = "Clear ComPort";
             this.btn_clear_com.UseVisualStyleBackColor = true;
@@ -225,7 +226,7 @@
             // 
             this.btnShipMode.Font = new System.Drawing.Font("Verdana", 12F);
             this.btnShipMode.ForeColor = System.Drawing.Color.Navy;
-            this.btnShipMode.Location = new System.Drawing.Point(675, 29);
+            this.btnShipMode.Location = new System.Drawing.Point(189, 432);
             this.btnShipMode.Name = "btnShipMode";
             this.btnShipMode.Size = new System.Drawing.Size(105, 55);
             this.btnShipMode.TabIndex = 173;
@@ -240,9 +241,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnStatus.Font = new System.Drawing.Font("Verdana", 12F);
             this.btnStatus.ForeColor = System.Drawing.Color.Navy;
-            this.btnStatus.Location = new System.Drawing.Point(786, 29);
+            this.btnStatus.Location = new System.Drawing.Point(734, 22);
             this.btnStatus.Name = "btnStatus";
-            this.btnStatus.Size = new System.Drawing.Size(110, 55);
+            this.btnStatus.Size = new System.Drawing.Size(162, 47);
             this.btnStatus.TabIndex = 179;
             this.btnStatus.Text = "Status";
             this.btnStatus.UseVisualStyleBackColor = true;
@@ -554,6 +555,7 @@
             this.groupBox5.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(184)))), ((int)(((byte)(195)))));
+            this.groupBox5.Controls.Add(this.btnShipMode);
             this.groupBox5.Controls.Add(this.btn_clr_pcb);
             this.groupBox5.Controls.Add(this.tbx_ttl_send);
             this.groupBox5.Controls.Add(this.label19);
@@ -637,7 +639,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(184)))), ((int)(((byte)(195)))));
-            this.groupBox6.Controls.Add(this.btnShipMode);
+            this.groupBox6.Controls.Add(this.chk_FFT_Test);
             this.groupBox6.Controls.Add(this.lbl_assCheck);
             this.groupBox6.Controls.Add(this.lbl_iqc);
             this.groupBox6.Controls.Add(this.btn_clear_com);
@@ -646,7 +648,7 @@
             this.groupBox6.ForeColor = System.Drawing.Color.Navy;
             this.groupBox6.Location = new System.Drawing.Point(6, 713);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(911, 100);
+            this.groupBox6.Size = new System.Drawing.Size(911, 111);
             this.groupBox6.TabIndex = 206;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "功能按鈕";
@@ -673,12 +675,23 @@
             this.lbl_iqc.TabIndex = 180;
             this.lbl_iqc.Text = "IQC_PCBA=";
             // 
+            // chk_FFT_Test
+            // 
+            this.chk_FFT_Test.AutoSize = true;
+            this.chk_FFT_Test.Location = new System.Drawing.Point(10, 78);
+            this.chk_FFT_Test.Name = "chk_FFT_Test";
+            this.chk_FFT_Test.Size = new System.Drawing.Size(270, 22);
+            this.chk_FFT_Test.TabIndex = 182;
+            this.chk_FFT_Test.Text = "測試FFT，不進入Shipping Mode";
+            this.chk_FFT_Test.UseVisualStyleBackColor = true;
+            this.chk_FFT_Test.CheckedChanged += new System.EventHandler(this.chk_FFT_Test_CheckedChanged);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(40)))));
-            this.ClientSize = new System.Drawing.Size(922, 825);
+            this.ClientSize = new System.Drawing.Size(922, 836);
             this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.currGroupBox);
             this.Controls.Add(this.groupBox5);
@@ -759,6 +772,7 @@
         private System.Windows.Forms.GroupBox groupBox6;
         private System.Windows.Forms.Label lbl_assCheck;
         private System.Windows.Forms.Label lbl_iqc;
+        private System.Windows.Forms.CheckBox chk_FFT_Test;
     }
 
 

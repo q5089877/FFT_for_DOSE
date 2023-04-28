@@ -93,6 +93,7 @@ namespace FFT_DOSE
         bool boolMountingSwitch = false;
         bool boolAssCheckEnd = false; //勿刪
         bool boolDeviceReceived = false;
+        bool boolFFT_Test = false;
         //********流程控制//********
 
         #endregion
@@ -253,8 +254,6 @@ namespace FFT_DOSE
                             writeLog("bleName Error");
                         }
                     }
-
-
                     if (inData.Contains("BLE Device Name") == true)
                     {
                         try
@@ -445,33 +444,43 @@ namespace FFT_DOSE
                     }
                     #endregion
 
-
                     //程式一開始會執行#STATUS和checkSTATUSEnd = false, 讓下方程式碼先忽略掉裝置的回傳
                     //到後半段程式會將checkSTATUSEnd設為true, 此時才開始判斷是否測試完畢
                     if (inData.Contains("ASS_CHECK :") && inData.Contains("#") == false && checkSTATUSEnd == true)
                     {
-                        #region 測試跑完寫入deviceID，同時開始判斷是否pass
                         boolAssCheckEnd = true; //測試跑完
                         //取得回傳值
                         assCheck = inData.Substring(inData.IndexOf("ASS_CHECK :") + 11, 4);
                         change_ASS_Chk_lbl(assCheck);
+                    }
+                    #endregion
+                }
+                catch (Exception err)
+                {
+                    Console.WriteLine(err.ToString());
+                }
+            }
+        }
 
-                        //create building Date
-                        buildDate = DateTime.Now.ToString("yyyy MMM dd", CultureInfo.CreateSpecificCulture("en-US"));
+        private void WriteDataBase_when_checkEnd()
+        {
+            //create building Date
+            buildDate = DateTime.Now.ToString("yyyy MMM dd", CultureInfo.CreateSpecificCulture("en-US"));
 
-                        //判斷deviceID是否不存在於snData, 若是則寫入一筆資料到snData
-                        strSQL = string.Format("select * from snData where deviceID = '{0}'", deviceID);
-                        string checkDeviceID = accessHelper.readData(strSQL);
-                        if (checkDeviceID == "-1" && boolDeviceReceived)
-                        {
-                            boolDeviceReceived = false;
-                            #region*************執行into SQL 2次，deviceID不存在故同時寫入snData & deviceDatae測試資料 各1筆資料 和設定FW*************
-                            //寫入資料庫snData                     
-                            strSQL = "insert into snData(sn,deviceID,bleName,batchNum,fwVersion,sleeveName,buildDate,pcbVersion,housingVersion) VALUES(@sn,@deviceID,@bleName,@batchNum,@fwVersion,@sleeveName,@buildDate,@pcbVersion,@housingVersion)";
-                            if (string.IsNullOrEmpty(strSQL) == false)
-                            {
-                                //SN先寫入空字串，待測試成功之後再寫入SN                                                    
-                                OleDbParameter[] pars = new OleDbParameter[] {
+            #region 測試跑完寫入deviceID，同時開始判斷是否pass
+            //判斷deviceID是否不存在於snData, 若是則寫入一筆資料到snData
+            strSQL = string.Format("select * from snData where deviceID = '{0}'", deviceID);
+            string checkDeviceID = accessHelper.readData(strSQL);
+            if (checkDeviceID == "-1" && boolDeviceReceived)
+            {
+                boolDeviceReceived = false;
+                #region*************執行into SQL 2次，deviceID不存在故同時寫入snData & deviceDatae測試資料 各1筆資料*************
+                //寫入資料庫snData                     
+                strSQL = "insert into snData(sn,deviceID,bleName,batchNum,fwVersion,sleeveName,buildDate,pcbVersion,housingVersion) VALUES(@sn,@deviceID,@bleName,@batchNum,@fwVersion,@sleeveName,@buildDate,@pcbVersion,@housingVersion)";
+                if (string.IsNullOrEmpty(strSQL) == false)
+                {
+                    //SN先寫入空字串，待測試成功之後再寫入SN                                                    
+                    OleDbParameter[] pars = new OleDbParameter[] {
                                             new OleDbParameter("@sn",""),
                                             new OleDbParameter("@deviceID",deviceID),
                                             new OleDbParameter("@bleName",bleName),
@@ -482,95 +491,87 @@ namespace FFT_DOSE
                                             new OleDbParameter("@pcbVersion",pcbVer),
                                             new OleDbParameter("@housingVersion",bottomVer)
                                                                 };
-                                //執行SQL插入資料 insert into deviceData
-                                string errorInfo = accessHelper.ExecSql(strSQL, pars);
-                                if (errorInfo.Length != 0)
+                    //執行SQL插入資料 insert into deviceData
+                    string errorInfo = accessHelper.ExecSql(strSQL, pars);
+                    if (errorInfo.Length != 0)
+                    {
+                        MessageBox.Show("寫入失敗！" + errorInfo);
+                    }
+                    else //插入snData成功，再插入deviceDatae測試資料
+                    {
+                        //使用 StreamWriter 類別將內容寫入檔案
+                        using (StreamWriter writer = new StreamWriter(appLog, true))
+                        {
+                            writer.WriteLine("insert into snData");
+                        }
+
+                        if (assCheck == "Pass" && IQC_pcba == "Pass")
+                        {
+                            intoDeviceDataHasSN();
+                            //使用 StreamWriter 類別將內容寫入檔案
+                            using (StreamWriter writer = new StreamWriter(appLog, true))
+                            {
+                                writer.WriteLine("intoDeviceDataHasSN()");
+                            }
+                            boolMountingSwitch = false;
+                            try
+                            {
+                                #region *************利用device id UPDATE snData*************                         
+                                updataSnData();
+                                //使用 StreamWriter 類別將內容寫入檔案
+                                using (StreamWriter writer = new StreamWriter(appLog, true))
                                 {
-                                    MessageBox.Show("寫入失敗！" + errorInfo);
+                                    writer.WriteLine("updata SnData()---");
                                 }
-                                else //插入snData成功，再插入deviceDatae測試資料
-                                {
-                                    if (assCheck == "Pass" && IQC_pcba == "Pass")
-                                    {
-                                        intoDeviceData();
-                                        boolMountingSwitch = false;
-                                        //#region*************FFT測試PASS，將Config寫入FW，*************                                                                                    
-                                        try
-                                        {
-                                            ////////configDoseDevice();
-                                            //////// 使用 StreamWriter 類別將內容寫入檔案
-                                            ////////using (StreamWriter writer = new StreamWriter(appLog, true))
-                                            ////////{
-                                            ////////    writer.WriteLine("寫入Config 2");
-                                            ////////}
-                                            #region *************利用device id UPDATE snData*************                         
-                                            updataSnData();
-                                            #endregion
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            MessageBox.Show(ex.ToString());
-                                        }
-                                        //#endregion
-                                    }
-                                    else
-                                    {
-                                        intoDeviceDataNoSN();
-                                        //   MessageBox.Show(testErr);
-                                    }
-                                    #endregion
-                                }
+                                #endregion
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show(ex.ToString());
+                            }
+                        }
+                        else
+                        {
+                            intoDeviceDataNoSN();
+                            //使用 StreamWriter 類別將內容寫入檔案
+                            using (StreamWriter writer = new StreamWriter(appLog, true))
+                            {
+                                writer.WriteLine("intoDeviceDataNoSN()");
                             }
                         }
                         #endregion
-
-                        #region*************再次測試，deviceID已存在，故只寫入deviceData測試資料 1筆資料和設定FW*************
-                        else if (boolDeviceReceived) //deviceID已存在,故只寫入測試資料  
-                        {
-                            #region 寫入測試資料庫insert into deviceData
-                            bool checkInto = false;
-                            if (assCheck == "Pass" && IQC_pcba == "Pass")
-                            {
-                                checkInto = intoDeviceData();
-                            } //寫入有SN的deviceData
-                            else
-                            {
-                                checkInto = intoDeviceDataNoSN();
-                            } //寫入無SN的deviceData
-
-                            //////if (checkInto)
-                            //////{
-                            #endregion
-                            //////    boolMountingSwitch = false;
-
-                            //////    //////if (assCheck == "Pass" && IQC_pcba == "Pass")
-                            //////    //////{
-                            //////    //////    //configDoseDevice();
-                            //////    //////    // 使用 StreamWriter 類別將內容寫入檔案
-                            //////    //////    using (StreamWriter writer = new StreamWriter(appLog, true))
-                            //////    //////    {
-                            //////    //////        writer.WriteLine("寫入Config 3");
-                            //////    //////    }
-                            //////    //////}
-                            //////}
-                            //////else
-                            //////{
-                            //////    MessageBox.Show(testErr + "4");
-                            //////}
-
-                        }
-                        #endregion
-                        #endregion
                     }
-                    //strFeedbackDose = strFeedbackDose + inData;
-                    //feebacktbx(strFeedbackDose);
-                    //  this.BeginInvoke(mi_pcb_feedback, null);
-                }
-                catch (Exception err)
-                {
-                    Console.WriteLine(err.ToString());
                 }
             }
+            #endregion
+
+            #region*************再次測試，deviceID已存在，故只寫入deviceData測試資料 1筆資料*************
+            else if (boolDeviceReceived) //deviceID已存在,故只寫入測試資料  
+            {
+                #region 寫入測試資料庫insert into deviceData        
+                if (assCheck == "Pass" && IQC_pcba == "Pass")
+                {
+                    //寫入有SN的deviceData
+                    intoDeviceDataHasSN();
+                    //使用 StreamWriter 類別將內容寫入檔案
+                    using (StreamWriter writer = new StreamWriter(appLog, true))
+                    {
+                        writer.WriteLine("intoDeviceDataHasSN()");
+                    }
+                }
+                else
+                {
+                    //寫入無SN的deviceData
+                    intoDeviceDataNoSN();
+                    //使用 StreamWriter 類別將內容寫入檔案
+                    using (StreamWriter writer = new StreamWriter(appLog, true))
+                    {
+                        writer.WriteLine("intoDeviceDataNoSN()");
+                    }
+                }
+                #endregion
+            }
+            #endregion
         }
 
         #region *************Function集中區*************
@@ -850,6 +851,57 @@ namespace FFT_DOSE
             }
         }
 
+        private void chk_FFT_Test_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chk_FFT_Test.Checked)
+            {
+                if ((tbxPassword.Text.Length > 3) && (tbxPassword.Text != ""))
+                {
+                    //此判斷帳號密碼是否正確
+                    string str_sql = string.Format("SELECT pass_word FROM _user where user_name = '{0}'", "Neil");
+                    string pass_word = accessHelper.readData(str_sql);
+
+                    if (pass_word != "-2")
+                    {
+                        //帳號密碼存在，比對密碼
+                        if (pass_word == tbxPassword.Text)
+                        {
+                            //登入成功;
+                            try
+                            {
+                                chk_FFT_Test.Checked = true;
+                                boolFFT_Test = true;
+                                MessageBox.Show("啟用FFT測試模式成功");
+                            }
+                            catch
+                            {
+                                MessageBox.Show("帳號錯誤，啟用失敗");
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("帳號錯誤，啟用失敗");
+                            chk_FFT_Test.Checked = false;
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("帳號錯誤，啟用失敗");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("密碼長度不足");
+                }
+            }
+            else
+            {
+                chk_FFT_Test.Checked = false;
+                boolFFT_Test = false;
+                MessageBox.Show("關閉FFT測試模式成功");
+            }
+        }
+
         private void btnOpenManage_Click(object sender, EventArgs e)
         {
             if ((tbxPassword.Text.Length > 3) && (tbxPassword.Text != ""))
@@ -935,6 +987,9 @@ namespace FFT_DOSE
                     lbl_iqc.Text = "IQC_PCBA=";
                     lbl_assCheck.Text = "ASS_CHECK=";
 
+                    //init
+                    IQC_pcba = "";
+                    assCheck = "";
                     charge_max = 0;
                     strFeedbackDose = "";
                     try
@@ -1083,6 +1138,9 @@ namespace FFT_DOSE
                                 // boolAssCheckEnd = true 代表測試跑完
                                 if (boolAssCheckEnd)
                                 {
+                                    //將測試結果寫入資料庫
+                                    WriteDataBase_when_checkEnd();
+
                                     boolAssCheckEnd = false;
                                     //#SET_CONFIG_DATA                                          
                                     configDoseDevice();
@@ -1157,50 +1215,57 @@ namespace FFT_DOSE
                                     }
                                     else
                                     {
-                                        #region *************shipping PASS 寫入shippingMode*************                                         
-                                        if (intoShippingMode())
+                                        if (boolFFT_Test == false) //非測試模式
                                         {
-                                            //將SN補0並在左邊增加文字
-                                            string strNextSnLen = leftSN + StrSleeveName + Convert.ToInt16(strNextSn).ToString("D6");
-                                            //  printLabel1.PrintOneLabel(strNextSnLen, bleName, StrSleeveName);
-
-                                            if (WriteDumpData && IsFileGreaterThan46K(pathTXT)) //進入Shipping Mode，須確定dump data寫入完成
+                                            #region *************shipping PASS 寫入shippingMode*************                                         
+                                            if (intoShippingMode())
                                             {
-                                                //將SN增加為1
-                                                miCreateMaxSN = new MethodInvoker(this.createSnMax);
-                                                this.BeginInvoke(miCreateMaxSN);
+                                                //將SN補0並在左邊增加文字
+                                                string strNextSnLen = leftSN + StrSleeveName + Convert.ToInt16(strNextSn).ToString("D6");
+                                                //  printLabel1.PrintOneLabel(strNextSnLen, bleName, StrSleeveName);
 
-                                                //印出全部LABEL
-                                                printTwoLabel();
-
-                                                WriteDumpData = false; //重置 WriteDumpData                                          
-
-                                                Thread.Sleep(1000); //等待另一邊執行緒
-
-                                                //進入出貨模式
-                                                UTF8bytes = Encoding.UTF8.GetBytes("#SHIP_MODE" + Environment.NewLine);
-                                                RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
-                                                Thread.Sleep(delay_time2);
-
-                                                //執行SQL updata SnData
-                                                updataSnData();
-
-                                                // 使用 StreamWriter 類別將內容寫入檔案
-                                                using (StreamWriter writer = new StreamWriter(appLog, true))
+                                                if (WriteDumpData && IsFileGreaterThan46K(pathTXT)) //進入Shipping Mode，須確定dump data寫入完成
                                                 {
-                                                    writer.WriteLine(deviceID + " 進入Shipping Mode");
+                                                    //將SN增加為1
+                                                    miCreateMaxSN = new MethodInvoker(this.createSnMax);
+                                                    this.BeginInvoke(miCreateMaxSN);
+
+                                                    //印出全部LABEL
+                                                    printTwoLabel();
+
+                                                    WriteDumpData = false; //重置 WriteDumpData                                          
+
+                                                    Thread.Sleep(1000); //等待另一邊執行緒
+
+                                                    //進入出貨模式
+                                                    UTF8bytes = Encoding.UTF8.GetBytes("#SHIP_MODE" + Environment.NewLine);
+                                                    RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
+                                                    Thread.Sleep(delay_time2);
+
+                                                    //執行SQL updata SnData
+                                                    updataSnData();
+
+                                                    // 使用 StreamWriter 類別將內容寫入檔案
+                                                    using (StreamWriter writer = new StreamWriter(appLog, true))
+                                                    {
+                                                        writer.WriteLine(deviceID + " 進入Shipping Mode");
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    MessageBox.Show("進入shippingMode失敗!!");
                                                 }
                                             }
                                             else
                                             {
-                                                MessageBox.Show("進入shippingMode失敗!!");
+                                                MessageBox.Show("寫入shippingMode資料庫失敗!");
                                             }
+                                            #endregion
                                         }
                                         else
                                         {
-                                            MessageBox.Show("寫入shippingMode失敗!");
+                                            MessageBox.Show("目前為測試FFT模式，故不列印Label也不進入Shipping");
                                         }
-                                        #endregion                                     
                                     }
                                     #endregion
                                 }
@@ -1835,7 +1900,7 @@ namespace FFT_DOSE
         }
         #endregion
 
-        bool intoDeviceData()
+        bool intoDeviceDataHasSN()
         {
             //SQL語法：insert into deviceData
             strSQL = "insert into deviceData(sn,deviceID,batchNum,sleeve,buildDate,assCheck,accXmax,accXmin,accYmax,accYmin,accZmax,accZmin," +
