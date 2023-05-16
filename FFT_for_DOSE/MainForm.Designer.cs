@@ -40,7 +40,6 @@
             this.tbx_Pcb_feed_back = new System.Windows.Forms.TextBox();
             this.tbx_ttl_send = new System.Windows.Forms.TextBox();
             this.label19 = new System.Windows.Forms.Label();
-            this.btn_clear_com = new System.Windows.Forms.Button();
             this.chart2 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.label20 = new System.Windows.Forms.Label();
             this.lbl_charge_curr = new System.Windows.Forms.Label();
@@ -79,9 +78,9 @@
             this.btn_ass_chk = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.chk_FFT_Test = new System.Windows.Forms.CheckBox();
             this.lbl_assCheck = new System.Windows.Forms.Label();
             this.lbl_iqc = new System.Windows.Forms.Label();
-            this.chk_FFT_Test = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.chart2)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -159,18 +158,6 @@
             this.label19.TabIndex = 135;
             this.label19.Text = "指令:";
             // 
-            // btn_clear_com
-            // 
-            this.btn_clear_com.Font = new System.Drawing.Font("Verdana", 12F);
-            this.btn_clear_com.ForeColor = System.Drawing.Color.Navy;
-            this.btn_clear_com.Location = new System.Drawing.Point(6, 22);
-            this.btn_clear_com.Name = "btn_clear_com";
-            this.btn_clear_com.Size = new System.Drawing.Size(442, 47);
-            this.btn_clear_com.TabIndex = 139;
-            this.btn_clear_com.Text = "Clear ComPort";
-            this.btn_clear_com.UseVisualStyleBackColor = true;
-            this.btn_clear_com.Click += new System.EventHandler(this.btn_clear_com_Click);
-            // 
             // chart2
             // 
             chartArea1.Name = "ChartArea1";
@@ -241,9 +228,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnStatus.Font = new System.Drawing.Font("Verdana", 12F);
             this.btnStatus.ForeColor = System.Drawing.Color.Navy;
-            this.btnStatus.Location = new System.Drawing.Point(734, 22);
+            this.btnStatus.Location = new System.Drawing.Point(454, 22);
             this.btnStatus.Name = "btnStatus";
-            this.btnStatus.Size = new System.Drawing.Size(162, 47);
+            this.btnStatus.Size = new System.Drawing.Size(442, 47);
             this.btnStatus.TabIndex = 179;
             this.btnStatus.Text = "Status";
             this.btnStatus.UseVisualStyleBackColor = true;
@@ -332,7 +319,7 @@
             this.tbxPassword.PasswordChar = '*';
             this.tbxPassword.Size = new System.Drawing.Size(268, 27);
             this.tbxPassword.TabIndex = 191;
-            this.tbxPassword.Text = "690422";
+            this.tbxPassword.Text = "6904";
             // 
             // label39
             // 
@@ -642,7 +629,6 @@
             this.groupBox6.Controls.Add(this.chk_FFT_Test);
             this.groupBox6.Controls.Add(this.lbl_assCheck);
             this.groupBox6.Controls.Add(this.lbl_iqc);
-            this.groupBox6.Controls.Add(this.btn_clear_com);
             this.groupBox6.Controls.Add(this.btnStatus);
             this.groupBox6.Font = new System.Drawing.Font("Verdana", 12F);
             this.groupBox6.ForeColor = System.Drawing.Color.Navy;
@@ -653,12 +639,23 @@
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "功能按鈕";
             // 
+            // chk_FFT_Test
+            // 
+            this.chk_FFT_Test.AutoSize = true;
+            this.chk_FFT_Test.Location = new System.Drawing.Point(10, 79);
+            this.chk_FFT_Test.Name = "chk_FFT_Test";
+            this.chk_FFT_Test.Size = new System.Drawing.Size(270, 22);
+            this.chk_FFT_Test.TabIndex = 182;
+            this.chk_FFT_Test.Text = "測試FFT，不進入Shipping Mode";
+            this.chk_FFT_Test.UseVisualStyleBackColor = true;
+            this.chk_FFT_Test.CheckedChanged += new System.EventHandler(this.chk_FFT_Test_CheckedChanged);
+            // 
             // lbl_assCheck
             // 
             this.lbl_assCheck.AutoSize = true;
             this.lbl_assCheck.Font = new System.Drawing.Font("Verdana", 12F);
             this.lbl_assCheck.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.lbl_assCheck.Location = new System.Drawing.Point(451, 58);
+            this.lbl_assCheck.Location = new System.Drawing.Point(10, 54);
             this.lbl_assCheck.Name = "lbl_assCheck";
             this.lbl_assCheck.Size = new System.Drawing.Size(117, 18);
             this.lbl_assCheck.TabIndex = 181;
@@ -669,22 +666,11 @@
             this.lbl_iqc.AutoSize = true;
             this.lbl_iqc.Font = new System.Drawing.Font("Verdana", 12F);
             this.lbl_iqc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.lbl_iqc.Location = new System.Drawing.Point(451, 32);
+            this.lbl_iqc.Location = new System.Drawing.Point(10, 26);
             this.lbl_iqc.Name = "lbl_iqc";
             this.lbl_iqc.Size = new System.Drawing.Size(105, 18);
             this.lbl_iqc.TabIndex = 180;
             this.lbl_iqc.Text = "IQC_PCBA=";
-            // 
-            // chk_FFT_Test
-            // 
-            this.chk_FFT_Test.AutoSize = true;
-            this.chk_FFT_Test.Location = new System.Drawing.Point(10, 78);
-            this.chk_FFT_Test.Name = "chk_FFT_Test";
-            this.chk_FFT_Test.Size = new System.Drawing.Size(270, 22);
-            this.chk_FFT_Test.TabIndex = 182;
-            this.chk_FFT_Test.Text = "測試FFT，不進入Shipping Mode";
-            this.chk_FFT_Test.UseVisualStyleBackColor = true;
-            this.chk_FFT_Test.CheckedChanged += new System.EventHandler(this.chk_FFT_Test_CheckedChanged);
             // 
             // MainForm
             // 
@@ -731,7 +717,6 @@
         private System.Windows.Forms.TextBox tbx_Pcb_feed_back;
         private System.Windows.Forms.TextBox tbx_ttl_send;
         private System.Windows.Forms.Label label19;
-        private System.Windows.Forms.Button btn_clear_com;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart2;
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.Label lbl_charge_curr;

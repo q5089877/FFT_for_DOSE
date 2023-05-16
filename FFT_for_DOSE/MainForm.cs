@@ -46,8 +46,8 @@ namespace FFT_DOSE
         printLabel printLabel1;     //建立公用label元件        
         StreamWriter SW;
 
-        int intNextSn;              //現在要製作的SN, 數字型別
-        string strNextSn = "";      //現在要製作的SN, 字串型別                
+        int intNowSn;              //現在要製作的SN, 數字型別
+        string strNowSn = "";      //現在要製作的SN, 字串型別                
         string appLog = Application.StartupPath + @"\log.txt";
         string GTIN = "";           //需隨批號變更內容
         string deviceID = "";       //Device ID
@@ -66,6 +66,7 @@ namespace FFT_DOSE
                                            //  bool toShippingMode = false;
         bool checkSTATUSEnd = false;//用來決定是否可以開始判斷測試完成              
         bool useCurrMeter = false;
+        bool change_SN_LOT = false; //資料庫有舊資料時, 使用舊SN, LOT
         int FFTCurr = 0;
         byte[] UTF8bytes;
         int newX = 0;
@@ -240,6 +241,7 @@ namespace FFT_DOSE
                             if (checkShippingExist(deviceID) == 1)
                             {
                                 MessageBox.Show("此DEVICEID " + deviceID + " 曾經進入過Shipping Mode");
+                                change_SN_LOT = true;
                             }
                         }
                     }
@@ -507,7 +509,7 @@ namespace FFT_DOSE
 
                         if (assCheck == "Pass" && IQC_pcba == "Pass")
                         {
-                            intoDeviceDataHasSN();
+                            insertDeviceDataHasSN();
                             //使用 StreamWriter 類別將內容寫入檔案
                             using (StreamWriter writer = new StreamWriter(appLog, true))
                             {
@@ -532,7 +534,7 @@ namespace FFT_DOSE
                         }
                         else
                         {
-                            intoDeviceDataNoSN();
+                            insertDeviceDataNoSN();
                             //使用 StreamWriter 類別將內容寫入檔案
                             using (StreamWriter writer = new StreamWriter(appLog, true))
                             {
@@ -552,7 +554,7 @@ namespace FFT_DOSE
                 if (assCheck == "Pass" && IQC_pcba == "Pass")
                 {
                     //寫入有SN的deviceData
-                    intoDeviceDataHasSN();
+                    insertDeviceDataHasSN();
                     //使用 StreamWriter 類別將內容寫入檔案
                     using (StreamWriter writer = new StreamWriter(appLog, true))
                     {
@@ -562,7 +564,7 @@ namespace FFT_DOSE
                 else
                 {
                     //寫入無SN的deviceData
-                    intoDeviceDataNoSN();
+                    insertDeviceDataNoSN();
                     //使用 StreamWriter 類別將內容寫入檔案
                     using (StreamWriter writer = new StreamWriter(appLog, true))
                     {
@@ -631,12 +633,12 @@ namespace FFT_DOSE
                     strSQL = string.Format("SELECT MAX(sn) FROM snData where sleeveName = '{0}'", StrSleeveName); //取得SN最大值
 
                     string _snMax = accessHelper.readData(strSQL);//執行SQL
-                    intNextSn = Convert.ToInt32(_snMax) + 1;
-                    strNextSn = intNextSn.ToString("D6");
+                    intNowSn = Convert.ToInt32(_snMax) + 1;
+                    strNowSn = intNowSn.ToString("D6");
                     if (_snMax != "-1")
                     {
                         //SN = D + Sleeve + SN                        
-                        tbxSn.Text = leftSN + StrSleeveName + Convert.ToInt16(strNextSn).ToString("D6");
+                        tbxSn.Text = leftSN + StrSleeveName + Convert.ToInt16(strNowSn).ToString("D6");
                     }
                     else
                     {
@@ -992,6 +994,7 @@ namespace FFT_DOSE
                     assCheck = "";
                     charge_max = 0;
                     strFeedbackDose = "";
+                    CheckShipping = true;
                     try
                     {
                         RS232_DOSE.Close();
@@ -1112,6 +1115,24 @@ namespace FFT_DOSE
                         {
                             #region *************FFT主要測試區塊*************
 
+                            //如果該ID已存在於shipping mode資料表, 更新batchnum, SN
+                            if (change_SN_LOT)
+                            {
+                                change_SN_LOT = false;
+                                //取得舊有SN
+                                strSQL = string.Format("SELECT batchNum FROM deviceData where deviceID = '{0}' and assCheck = 'Pass'", deviceID);
+                                batchNum = accessHelper.readData(strSQL);//執行SQL                              
+
+                                //取得舊有SN
+                                strSQL = string.Format("SELECT sn FROM deviceData where deviceID = '{0}' and assCheck = 'Pass'", deviceID);
+                                string old_SN = accessHelper.readData(strSQL);//執行SQL                    
+                                intNowSn = Convert.ToInt32(old_SN);
+                                strNowSn = old_SN;
+                                tbxSn.Text = leftSN + StrSleeveName + Convert.ToInt16(old_SN).ToString("D6");
+                            }
+
+
+
                             #region 若有接收到FW回傳繼續往下
                             _counter = 0;
                             while (true)
@@ -1218,10 +1239,10 @@ namespace FFT_DOSE
                                         if (boolFFT_Test == false) //非測試模式
                                         {
                                             #region *************shipping PASS 寫入shippingMode*************                                         
-                                            if (intoShippingMode())
+                                            if (insertShippingMode())
                                             {
                                                 //將SN補0並在左邊增加文字
-                                                string strNextSnLen = leftSN + StrSleeveName + Convert.ToInt16(strNextSn).ToString("D6");
+                                                string strNextSnLen = leftSN + StrSleeveName + Convert.ToInt16(strNowSn).ToString("D6");
                                                 //  printLabel1.PrintOneLabel(strNextSnLen, bleName, StrSleeveName);
 
                                                 if (WriteDumpData && IsFileGreaterThan46K(pathTXT)) //進入Shipping Mode，須確定dump data寫入完成
@@ -1900,7 +1921,7 @@ namespace FFT_DOSE
         }
         #endregion
 
-        bool intoDeviceDataHasSN()
+        bool insertDeviceDataHasSN()
         {
             //SQL語法：insert into deviceData
             strSQL = "insert into deviceData(sn,deviceID,batchNum,sleeve,buildDate,assCheck,accXmax,accXmin,accYmax,accYmin,accZmax,accZmin," +
@@ -1913,7 +1934,7 @@ namespace FFT_DOSE
             {
                 //添加參數
                 OleDbParameter[] pars = new OleDbParameter[] {
-                                            new OleDbParameter("@sn",intNextSn.ToString("D6")),
+                                            new OleDbParameter("@sn",intNowSn.ToString("D6")),
                                             new OleDbParameter("@deviceID",deviceID),
                                             new OleDbParameter("@batchNum",batchNum),
                                             new OleDbParameter("@sleeve",StrSleeveName),
@@ -1958,7 +1979,7 @@ namespace FFT_DOSE
             return false;
         }
 
-        bool intoDeviceDataNoSN()
+        bool insertDeviceDataNoSN()
         {
             //SQL語法：insert into deviceData
             strSQL = "insert into deviceData(sn,deviceID,batchNum,sleeve,buildDate,assCheck,accXmax,accXmin,accYmax,accYmin,accZmax,accZmin," +
@@ -2025,7 +2046,7 @@ namespace FFT_DOSE
             {
                 //添加參數
                 OleDbParameter[] pars3 = new OleDbParameter[] {
-                                            new OleDbParameter("@sn",intNextSn.ToString("D6")),
+                                            new OleDbParameter("@sn",intNowSn.ToString("D6")),
                                             new OleDbParameter("@batchNum",batchNum),
                                             new OleDbParameter("@fwVersion",fwVersion),
                                             new OleDbParameter("@sleeveName",StrSleeveName),
@@ -2077,7 +2098,7 @@ namespace FFT_DOSE
             Thread.Sleep(delay_time2);
 
             //將SN補0並在左邊增加文字
-            string strNextSnLen = leftSN + StrSleeveName + Convert.ToInt16(strNextSn).ToString("D6");
+            string strNextSnLen = leftSN + StrSleeveName + Convert.ToInt16(strNowSn).ToString("D6");
             UTF8bytes = Encoding.UTF8.GetBytes("Assembly_Serial_Number:" + strNextSnLen + Environment.NewLine);
             RS232_DOSE.Write(UTF8bytes, 0, UTF8bytes.Length);
             Thread.Sleep(delay_time2);
@@ -2087,7 +2108,7 @@ namespace FFT_DOSE
             Thread.Sleep(delay_time2);
         }
 
-        bool intoShippingMode()
+        bool insertShippingMode()
         {
             strSQL = "insert into shippingMode(deviceID,sn,shippingStatus,_current) VALUES(@deviceID, @sn,@shippingStatus,@_current)";
             if (string.IsNullOrEmpty(strSQL) == false)
@@ -2095,7 +2116,7 @@ namespace FFT_DOSE
                 //添加參數
                 OleDbParameter[] pars = new OleDbParameter[] {
                                             new OleDbParameter("@deviceID",deviceID),
-                                            new OleDbParameter("@sn",strNextSn),
+                                            new OleDbParameter("@sn",strNowSn),
                                             new OleDbParameter("@shippingStatus","Pass"),
                                             new OleDbParameter("@_current",FFTCurr.ToString())
                                     };
