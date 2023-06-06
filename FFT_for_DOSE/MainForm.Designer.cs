@@ -81,6 +81,7 @@
             this.chk_FFT_Test = new System.Windows.Forms.CheckBox();
             this.lbl_assCheck = new System.Windows.Forms.Label();
             this.lbl_iqc = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.chart2)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -105,7 +106,7 @@
             // 
             this.btn_clr_pcb.Font = new System.Drawing.Font("Verdana", 12F);
             this.btn_clr_pcb.ForeColor = System.Drawing.Color.Navy;
-            this.btn_clr_pcb.Location = new System.Drawing.Point(332, 652);
+            this.btn_clr_pcb.Location = new System.Drawing.Point(332, 689);
             this.btn_clr_pcb.Name = "btn_clr_pcb";
             this.btn_clr_pcb.Size = new System.Drawing.Size(110, 27);
             this.btn_clr_pcb.TabIndex = 137;
@@ -117,7 +118,7 @@
             // 
             this.btn_ttl_send.Font = new System.Drawing.Font("Verdana", 12F);
             this.btn_ttl_send.ForeColor = System.Drawing.Color.Navy;
-            this.btn_ttl_send.Location = new System.Drawing.Point(211, 652);
+            this.btn_ttl_send.Location = new System.Drawing.Point(211, 689);
             this.btn_ttl_send.Name = "btn_ttl_send";
             this.btn_ttl_send.Size = new System.Drawing.Size(115, 27);
             this.btn_ttl_send.TabIndex = 136;
@@ -136,13 +137,13 @@
             this.tbx_Pcb_feed_back.Multiline = true;
             this.tbx_Pcb_feed_back.Name = "tbx_Pcb_feed_back";
             this.tbx_Pcb_feed_back.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbx_Pcb_feed_back.Size = new System.Drawing.Size(445, 623);
+            this.tbx_Pcb_feed_back.Size = new System.Drawing.Size(445, 654);
             this.tbx_Pcb_feed_back.TabIndex = 134;
             // 
             // tbx_ttl_send
             // 
             this.tbx_ttl_send.Font = new System.Drawing.Font("PMingLiU", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.tbx_ttl_send.Location = new System.Drawing.Point(64, 652);
+            this.tbx_ttl_send.Location = new System.Drawing.Point(64, 689);
             this.tbx_ttl_send.Name = "tbx_ttl_send";
             this.tbx_ttl_send.Size = new System.Drawing.Size(141, 27);
             this.tbx_ttl_send.TabIndex = 133;
@@ -152,7 +153,7 @@
             this.label19.AutoSize = true;
             this.label19.Font = new System.Drawing.Font("Verdana", 12F);
             this.label19.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.label19.Location = new System.Drawing.Point(11, 658);
+            this.label19.Location = new System.Drawing.Point(11, 695);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(47, 18);
             this.label19.TabIndex = 135;
@@ -228,7 +229,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnStatus.Font = new System.Drawing.Font("Verdana", 12F);
             this.btnStatus.ForeColor = System.Drawing.Color.Navy;
-            this.btnStatus.Location = new System.Drawing.Point(454, 22);
+            this.btnStatus.Location = new System.Drawing.Point(454, 25);
             this.btnStatus.Name = "btnStatus";
             this.btnStatus.Size = new System.Drawing.Size(442, 47);
             this.btnStatus.TabIndex = 179;
@@ -413,7 +414,7 @@
             this.groupBox1.ForeColor = System.Drawing.Color.Navy;
             this.groupBox1.Location = new System.Drawing.Point(6, 584);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(448, 123);
+            this.groupBox1.Size = new System.Drawing.Size(448, 158);
             this.groupBox1.TabIndex = 198;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "手動列印區";
@@ -552,7 +553,7 @@
             this.groupBox5.ForeColor = System.Drawing.Color.Navy;
             this.groupBox5.Location = new System.Drawing.Point(460, 12);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(457, 695);
+            this.groupBox5.Size = new System.Drawing.Size(457, 730);
             this.groupBox5.TabIndex = 202;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "裝置回傳";
@@ -626,15 +627,16 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(184)))), ((int)(((byte)(195)))));
+            this.groupBox6.Controls.Add(this.button1);
             this.groupBox6.Controls.Add(this.chk_FFT_Test);
             this.groupBox6.Controls.Add(this.lbl_assCheck);
             this.groupBox6.Controls.Add(this.lbl_iqc);
             this.groupBox6.Controls.Add(this.btnStatus);
             this.groupBox6.Font = new System.Drawing.Font("Verdana", 12F);
             this.groupBox6.ForeColor = System.Drawing.Color.Navy;
-            this.groupBox6.Location = new System.Drawing.Point(6, 713);
+            this.groupBox6.Location = new System.Drawing.Point(6, 748);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(911, 111);
+            this.groupBox6.Size = new System.Drawing.Size(911, 116);
             this.groupBox6.TabIndex = 206;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "功能按鈕";
@@ -642,7 +644,7 @@
             // chk_FFT_Test
             // 
             this.chk_FFT_Test.AutoSize = true;
-            this.chk_FFT_Test.Location = new System.Drawing.Point(10, 79);
+            this.chk_FFT_Test.Location = new System.Drawing.Point(10, 82);
             this.chk_FFT_Test.Name = "chk_FFT_Test";
             this.chk_FFT_Test.Size = new System.Drawing.Size(270, 22);
             this.chk_FFT_Test.TabIndex = 182;
@@ -655,7 +657,7 @@
             this.lbl_assCheck.AutoSize = true;
             this.lbl_assCheck.Font = new System.Drawing.Font("Verdana", 12F);
             this.lbl_assCheck.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.lbl_assCheck.Location = new System.Drawing.Point(10, 54);
+            this.lbl_assCheck.Location = new System.Drawing.Point(10, 57);
             this.lbl_assCheck.Name = "lbl_assCheck";
             this.lbl_assCheck.Size = new System.Drawing.Size(117, 18);
             this.lbl_assCheck.TabIndex = 181;
@@ -666,7 +668,7 @@
             this.lbl_iqc.AutoSize = true;
             this.lbl_iqc.Font = new System.Drawing.Font("Verdana", 12F);
             this.lbl_iqc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.lbl_iqc.Location = new System.Drawing.Point(10, 26);
+            this.lbl_iqc.Location = new System.Drawing.Point(10, 29);
             this.lbl_iqc.Name = "lbl_iqc";
             this.lbl_iqc.Size = new System.Drawing.Size(105, 18);
             this.lbl_iqc.TabIndex = 180;
@@ -677,7 +679,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(40)))));
-            this.ClientSize = new System.Drawing.Size(922, 836);
+            this.ClientSize = new System.Drawing.Size(922, 869);
             this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.currGroupBox);
             this.Controls.Add(this.groupBox5);
@@ -758,6 +760,7 @@
         private System.Windows.Forms.Label lbl_assCheck;
         private System.Windows.Forms.Label lbl_iqc;
         private System.Windows.Forms.CheckBox chk_FFT_Test;
+        private System.Windows.Forms.Button button1;
     }
 
 

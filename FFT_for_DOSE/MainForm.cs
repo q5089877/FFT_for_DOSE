@@ -902,7 +902,7 @@ namespace FFT_DOSE
                 boolFFT_Test = false;
                 MessageBox.Show("關閉FFT測試模式成功");
             }
-        }
+        } 
 
         private void btnOpenManage_Click(object sender, EventArgs e)
         {
@@ -1187,7 +1187,16 @@ namespace FFT_DOSE
                             WriteDumpData_before = true;
 
                             string batchDirectoryPath = Path.Combine("C:\\DOSE_DumpData\\", cbxBatch.Text);
-                            pathTXT = Path.Combine(batchDirectoryPath, tbxSn.Text + ".txt");
+
+                            //ASS Check測試通過使用SN為檔名
+                            if (assCheck == "Pass")
+                            {
+                                pathTXT = Path.Combine(batchDirectoryPath, tbxSn.Text + ".txt");
+                            }
+                            else//ASS Check未測試通過使用SN + DeviceID + NG為檔名
+                            {
+                                pathTXT = Path.Combine(batchDirectoryPath, tbxSn.Text + "_NG__" + deviceID + "_.txt");
+                            }
 
                             if (Directory.Exists(batchDirectoryPath))
                             {
