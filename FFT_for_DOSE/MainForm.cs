@@ -1145,7 +1145,7 @@ namespace FFT_DOSE
                                 _counter++;
                                 if (_counter == 6000)
                                 {
-                                    MessageBox.Show(testErr + "2");
+                                    MessageBox.Show(testErr + " B");
                                     break;
                                 }
                             }
@@ -1175,7 +1175,7 @@ namespace FFT_DOSE
                                 _counter++;
                                 if (_counter == 6000)
                                 {
-                                    MessageBox.Show(testErr + "1");
+                                    MessageBox.Show(testErr + " A");
                                     break;
                                 }
                             }
@@ -1220,7 +1220,7 @@ namespace FFT_DOSE
                             }
                             #endregion
 
-                            Thread.Sleep(8000);
+                            Thread.Sleep(9000);
 
                             WriteDumpData_before = false;
 
@@ -1301,7 +1301,7 @@ namespace FFT_DOSE
                                 }
                                 else
                                 {
-                                    MessageBox.Show(testErr + "3");
+                                    MessageBox.Show(testErr + " C");
                                 }
                             }
                             catch (Exception ex)

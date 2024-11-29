@@ -81,7 +81,6 @@
             this.chk_FFT_Test = new System.Windows.Forms.CheckBox();
             this.lbl_assCheck = new System.Windows.Forms.Label();
             this.lbl_iqc = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.chart2)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -627,7 +626,6 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(184)))), ((int)(((byte)(195)))));
-            this.groupBox6.Controls.Add(this.button1);
             this.groupBox6.Controls.Add(this.chk_FFT_Test);
             this.groupBox6.Controls.Add(this.lbl_assCheck);
             this.groupBox6.Controls.Add(this.lbl_iqc);
@@ -760,7 +758,6 @@
         private System.Windows.Forms.Label lbl_assCheck;
         private System.Windows.Forms.Label lbl_iqc;
         private System.Windows.Forms.CheckBox chk_FFT_Test;
-        private System.Windows.Forms.Button button1;
     }
 
 
