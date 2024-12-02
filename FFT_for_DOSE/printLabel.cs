@@ -48,6 +48,9 @@ namespace FFT_For_DOSE
         {
             gtinToPCX();
 
+            //NP5改為顯示NP
+            deviceSN = deviceSN.Replace("NP5", "NP");
+
             #region print Short label 
             try
             {
